@@ -3,7 +3,10 @@
 
 This is the hand-made algorithms and data-structures module.
 
-![Types and func scheme](https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png "Types and func scheme")
+## **Types and func scheme**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" alt="Types and func scheme"/>
+</p>
 
 ----
 #### **Links**: 

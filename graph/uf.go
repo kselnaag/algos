@@ -1,0 +1,65 @@
+package graph
+
+import (
+	"github.com/kselnaag/algos/array"
+	"github.com/kselnaag/algos/math"
+)
+
+type UF struct {
+	id    []int
+	bag   array.Bag[int]
+	count int
+	size  int
+}
+
+func NewUF(n int) UF {
+	n = math.Abs(n)
+	arr := make([]int, n)
+	for i := 0; i < n; i++ {
+		arr[i] = i
+	}
+	return UF{
+		id:    arr,
+		bag:   array.NewBag[int](),
+		count: n,
+		size:  n,
+	}
+}
+
+func (uf *UF) Union(p, q int) {
+	pRoot := uf.Find(p)
+	qRoot := uf.Find(q)
+	if pRoot == qRoot {
+		return
+	}
+	uf.id[qRoot] = pRoot
+	uf.count--
+}
+
+func (uf *UF) Find(p int) int {
+	p = math.Abs(p)
+	for p != uf.id[p] {
+		uf.bag.Add(p)
+		p = uf.id[p]
+	}
+	// path compression
+	blen := uf.bag.Size()
+	for i := 0; i < blen; i++ {
+		t := uf.bag.Next()
+		uf.id[t] = p
+	}
+	uf.bag.Drop()
+	return p
+}
+
+func (uf *UF) Connected(p, q int) bool {
+	return uf.Find(p) == uf.Find(q)
+}
+
+func (uf *UF) Count() int {
+	return uf.count
+}
+
+func (uf *UF) Size() int {
+	return uf.size
+}

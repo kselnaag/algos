@@ -1,0 +1,19 @@
+run:
+  concurrency: 4
+  
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - goimports
+    
+issues:
+  exclude-rules:
+  - path: /
+    linters:
+    - typecheck

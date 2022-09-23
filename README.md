@@ -1,6 +1,8 @@
 ### **ALGOS**
 ----
 
+[Coverage](https://kselnaag.github.io/algos/ "ALGOS coverage")
+
 This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
 
 ### **Types and func scheme**

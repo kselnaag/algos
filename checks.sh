@@ -8,5 +8,5 @@ golangci-lint run ./...
 
 echo -e "\n>>_Testing_<<"
 go test -vet=off -count=1 -race -coverprofile=coverage.test ./...
-go tool cover -html=coverage.test -o ./coverage.html
+go tool cover -html=coverage.test -o ./index.html
 rm ./coverage.test

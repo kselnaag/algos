@@ -1,26 +1,28 @@
 package array
 
-import I "github.com/kselnaag/algos/types"
+import (
+	"math/rand"
+)
 
-func HeapSortOrd[T I.Ord](arr []T) {
+func HeapSort[T any](arr []T) {
 	alen := len(arr)
 	for k := alen / 2; k > 0; k-- {
-		sinkOrd(arr, k, alen-1)
+		sink(arr, k, alen-1)
 	}
 	for n := alen - 1; n > 1; {
 		swap(arr, 1, n)
 		n--
-		sinkOrd(arr, 1, n)
+		sink(arr, 1, n)
 	}
 }
 
-func sinkOrd[T I.Ord](arr []T, k, n int) {
+func sink[T any](arr []T, k, n int) {
 	for (2 * k) <= n {
 		j := 2 * k
-		if (j < n) && ltOrd(arr[j], arr[j+1]) {
+		if (j < n) && lt(arr[j], arr[j+1]) {
 			j++
 		}
-		if !ltOrd(arr[k], arr[j]) {
+		if !lt(arr[k], arr[j]) {
 			break
 		}
 		swap(arr, k, j)
@@ -28,33 +30,33 @@ func sinkOrd[T I.Ord](arr []T, k, n int) {
 	}
 }
 
-func QuickSortOrd[T I.Ord](arr []T) {
+func QuickSort[T any](arr []T) {
 	Shuffle(arr)
-	qsortOrd(arr, 0, len(arr)-1)
+	qsort(arr, 0, len(arr)-1)
 }
 
-func qsortOrd[T I.Ord](arr []T, lo, hi int) {
+func qsort[T any](arr []T, lo, hi int) {
 	if hi <= lo {
 		return
 	}
 	if (hi - lo + 1) <= 12 {
-		InsertSortOrd(arr)
+		InsertSort(arr)
 		return
 	}
-	j := pivotOrd(arr, lo, hi)
-	qsortOrd(arr, lo, j-1)
-	qsortOrd(arr, j+1, hi)
+	j := pivot(arr, lo, hi)
+	qsort(arr, lo, j-1)
+	qsort(arr, j+1, hi)
 }
 
-func pivotOrd[T I.Ord](arr []T, lo, hi int) int {
+func pivot[T any](arr []T, lo, hi int) int {
 	i, j, v := lo, hi, lo
 	for {
-		for ; ltOrd(arr[i], arr[v]); i++ {
+		for ; lt(arr[i], arr[v]); i++ {
 			if i == hi {
 				break
 			}
 		}
-		for ; ltOrd(arr[v], arr[j]); j-- {
+		for ; lt(arr[v], arr[j]); j-- {
 			if j == lo {
 				break
 			}
@@ -68,30 +70,30 @@ func pivotOrd[T I.Ord](arr []T, lo, hi int) int {
 	return j
 }
 
-func MergeSortOrd[T I.Ord](arr []T) {
+func MergeSort[T any](arr []T) {
 	alen := len(arr)
 	aux := make([]T, alen)
 	copy(aux, arr)
-	mrgsortOrd(aux, arr, 0, alen-1)
+	mrgsort(aux, arr, 0, alen-1)
 }
 
-func mrgsortOrd[T I.Ord](src []T, dst []T, lo, hi int) {
+func mrgsort[T any](src []T, dst []T, lo, hi int) {
 	if hi <= lo {
 		return
 	}
 	if (hi - lo + 1) <= 12 {
-		InsertSortOrd(src[lo : hi+1])
+		InsertSort(src[lo : hi+1])
 		copy(dst[lo:hi+1], src[lo:hi+1])
 		return
 	}
 	mid := lo + (hi-lo)/2
-	mrgsortOrd(dst, src, lo, mid)
-	mrgsortOrd(dst, src, mid+1, hi)
-	mergeOrd(src, dst, lo, mid, hi)
+	mrgsort(dst, src, lo, mid)
+	mrgsort(dst, src, mid+1, hi)
+	merge(src, dst, lo, mid, hi)
 }
 
-func mergeOrd[T I.Ord](src []T, dst []T, lo, mid, hi int) {
-	if !gtOrd(src[mid], src[mid+1]) {
+func merge[T any](src []T, dst []T, lo, mid, hi int) {
+	if !gt(src[mid], src[mid+1]) {
 		copy(dst[lo:hi+1], src[lo:hi+1])
 		return
 	}
@@ -107,7 +109,7 @@ func mergeOrd[T I.Ord](src []T, dst []T, lo, mid, hi int) {
 			i++
 			continue
 		}
-		if ltOrd(src[j], src[i]) {
+		if lt(src[j], src[i]) {
 			dst[k] = src[j]
 			j++
 		} else {
@@ -117,17 +119,17 @@ func mergeOrd[T I.Ord](src []T, dst []T, lo, mid, hi int) {
 	}
 }
 
-func ReverseSortOrd[T I.Ord](arr []T) {
+func ReverseSort[T any](arr []T) {
 	alen := len(arr)
 	mid := alen / 2
 	for i := 0; i < mid; i++ {
 		min := i
 		max := i
 		for j := i + 1; j < (alen - i); j++ {
-			if ltOrd(arr[j], arr[min]) {
+			if lt(arr[j], arr[min]) {
 				min = j
 			}
-			if gtOrd(arr[j], arr[max]) {
+			if gt(arr[j], arr[max]) {
 				max = j
 			}
 		}
@@ -145,12 +147,12 @@ func ReverseSortOrd[T I.Ord](arr []T) {
 	}
 }
 
-func SelectSortOrd[T I.Ord](arr []T) {
+func SelectSort[T any](arr []T) {
 	alen := len(arr)
 	for i := 0; i < alen; i++ {
 		min := i
 		for j := i + 1; j < alen; j++ {
-			if ltOrd(arr[j], arr[min]) {
+			if lt(arr[j], arr[min]) {
 				min = j
 			}
 		}
@@ -158,7 +160,7 @@ func SelectSortOrd[T I.Ord](arr []T) {
 	}
 }
 
-func ShellSortOrd[T I.Ord](arr []T) {
+func ShellSort[T any](arr []T) {
 	alen := len(arr)
 	h := 1
 	for h < (alen / 3) {
@@ -167,7 +169,7 @@ func ShellSortOrd[T I.Ord](arr []T) {
 	for h > 0 {
 		for i := h; i < alen; i++ {
 			for j := i; j >= h; j -= h {
-				if ltOrd(arr[j], arr[j-h]) {
+				if lt(arr[j], arr[j-h]) {
 					swap(arr, j, j-h)
 				} else {
 					break
@@ -178,11 +180,11 @@ func ShellSortOrd[T I.Ord](arr []T) {
 	}
 }
 
-func InsertSortOrd[T I.Ord](arr []T) {
+func InsertSort[T any](arr []T) {
 	alen := len(arr)
 	for i := 1; i < alen; i++ {
 		for j := i; j > 0; j-- {
-			if ltOrd(arr[j], arr[j-1]) {
+			if lt(arr[j], arr[j-1]) {
 				swap(arr, j, j-1)
 			} else {
 				break
@@ -191,38 +193,54 @@ func InsertSortOrd[T I.Ord](arr []T) {
 	}
 }
 
-func BinarySearchOrd[T I.Ord](arr []T, elem T) int {
+func BinarySearch[T any](arr []T, elem T) int {
 	low := 0
 	high := len(arr)
 	for low < high {
 		mid := (low + ((high - low) / 2))
 		val := arr[mid]
-		if eqOrd(val, elem) {
+		if eq(val, elem) {
 			return mid
-		} else if gtOrd(val, elem) {
+		} else if gt(val, elem) {
 			high = mid
-		} else if ltOrd(val, elem) {
+		} else if lt(val, elem) {
 			low = mid + 1
 		}
 	}
 	return -1
 }
 
-func ContainedOrd[T I.Ord](arr []T, elem T) int {
+func Contained[T any](arr []T, elem T) int {
 	for i, el := range arr {
-		if eqOrd(el, elem) {
+		if eq(el, elem) {
 			return i
 		}
 	}
 	return -1
 }
 
-func IsSortedOrd[T I.Ord](arr []T) bool {
+func IsSorted[T any](arr []T) bool {
 	alen := len(arr)
 	for i := 1; i < alen; i++ {
-		if ltOrd(arr[i], arr[i-1]) {
+		if lt(arr[i], arr[i-1]) {
 			return false
 		}
 	}
 	return true
+}
+
+func Shuffle[T any](arr []T) {
+	alen := len(arr)
+	for i := 0; i < alen; i++ {
+		j := rand.Intn(i + 1)
+		swap(arr, i, j)
+	}
+}
+
+func Reverse[T any](arr []T) {
+	alen := len(arr)
+	mid := alen / 2
+	for i := 0; i < mid; i++ {
+		swap(arr, i, alen-i-1)
+	}
 }

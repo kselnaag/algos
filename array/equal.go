@@ -1,77 +1,71 @@
 package array
 
 import (
-	"math/rand"
+	"fmt"
 
 	I "github.com/kselnaag/algos/types"
 )
 
-func gtOrd[T I.Ord](i, j T) bool {
-	return i > j
-}
-
-func ltOrd[T I.Ord](i, j T) bool {
-	return i < j
-}
-
-func eqOrd[T I.Ord](i, j T) bool {
-	return i == j
-}
-
-func gtComp[T I.Comp](i, j *T) bool {
-	return (*i).CompareTo(*j) > 0
-}
-
-func ltComp[T I.Comp](i, j *T) bool {
-	return (*i).CompareTo(*j) < 0
-}
-
-func eqComp[T I.Comp](i, j *T) bool {
-	return (*i).CompareTo(*j) == 0
-}
-
-func Shuffle[T any](arr []T) {
-	alen := len(arr)
-	for i := 0; i < alen; i++ {
-		j := rand.Intn(i + 1)
-		swap(arr, i, j)
+func lt[T any](i, j T) bool {
+	switch ii := any(i).(type) {
+	case int:
+		jj := any(j).(int)
+		return ii < jj
+	case float64:
+		jj := any(j).(float64)
+		return ii < jj
+	case string:
+		jj := any(j).(string)
+		return ii < jj
+	case I.Comp:
+		jj := any(j).(I.Comp)
+		return ii.CompareTo(jj) < 0
+	default:
+		fmt.Printf("i Type is: %T.  ", i)
+		panic("algos.(array).equals.lt[T any](i,j T): Type of args is not Ord or Comp")
 	}
 }
 
-func Reverse[T any](arr []T) {
-	alen := len(arr)
-	mid := alen / 2
-	for i := 0; i < mid; i++ {
-		swap(arr, i, alen-i-1)
+func gt[T any](i, j T) bool {
+	switch ii := any(i).(type) {
+	case int:
+		jj := any(j).(int)
+		return ii > jj
+	case float64:
+		jj := any(j).(float64)
+		return ii > jj
+	case string:
+		jj := any(j).(string)
+		return ii > jj
+	case I.Comp:
+		jj := any(j).(I.Comp)
+		return ii.CompareTo(jj) > 0
+	default:
+		fmt.Printf("i Type is: %T.  ", i)
+		panic("algos.(array).equals.gt[T any](i,j T): Type of args is not Ord or Comp")
+	}
+}
+
+func eq[T any](i, j T) bool {
+	switch ii := any(i).(type) {
+	case int:
+		jj := any(j).(int)
+		return ii == jj
+	case float64:
+		jj := any(j).(float64)
+		return ii == jj
+	case string:
+		jj := any(j).(string)
+		return ii == jj
+	case I.Comp:
+		jj := any(j).(I.Comp)
+		return ii.CompareTo(jj) == 0
+	default:
+		fmt.Printf("i Type is: %T.  ", i)
+		panic("algos.(array).equals.eq[T any](i,j T): Type of args is not Ord or Comp")
 	}
 }
 
 func swap[T any](arr []T, i, j int) {
 	arr[i], arr[j] = arr[j], arr[i]
 }
-
-/*
-func median3Ord[T I.Ord](arr []T, i, j, k int) int {
-	if ltOrd(arr, i, j) {
-		if ltOrd(arr, j, k) {
-			return j
-		} else {
-			if ltOrd(arr, i, k) {
-				return k
-			} else {
-				return i
-			}
-		}
-	} else {
-		if ltOrd(arr, k, j) {
-			return j
-		} else {
-			if ltOrd(arr, k, i) {
-				return k
-			} else {
-				return i
-			}
-		}
-	}
-}
-*/

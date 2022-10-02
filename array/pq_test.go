@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPQOrd(t *testing.T) {
+func TestPQ(t *testing.T) {
 	assert := assert.New(t)
 	defer func() {
 		err := recover()
@@ -16,7 +16,7 @@ func TestPQOrd(t *testing.T) {
 
 	t.Run("minPQ", func(t *testing.T) {
 		t.Run("integers", func(t *testing.T) {
-			minPQ := array.NewMinPQOrd[int]()
+			minPQ := array.NewMinPQ[int]()
 			assert.True(minPQ.IsEmpty())
 			assert.Equal(minPQ.Size(), 0)
 			minPQ.Add(134)
@@ -50,7 +50,7 @@ func TestPQOrd(t *testing.T) {
 			assert.Panics(func() { minPQ.GetMin() }, "algos.array.(minPQ).GetMin():  the code is not panic when structure is empty")
 		})
 		t.Run("floats", func(t *testing.T) {
-			minPQ := array.NewMinPQOrd[float64]()
+			minPQ := array.NewMinPQ[float64]()
 			assert.True(minPQ.IsEmpty())
 			assert.Equal(minPQ.Size(), 0)
 			minPQ.Add(134.0)
@@ -84,7 +84,7 @@ func TestPQOrd(t *testing.T) {
 			assert.Panics(func() { minPQ.GetMin() }, "algos.array.(minPQ).GetMin():  the code is not panic when structure is empty")
 		})
 		t.Run("strings", func(t *testing.T) {
-			minPQ := array.NewMinPQOrd[string]()
+			minPQ := array.NewMinPQ[string]()
 			assert.True(minPQ.IsEmpty())
 			assert.Equal(minPQ.Size(), 0)
 			minPQ.Add("ag")
@@ -121,7 +121,7 @@ func TestPQOrd(t *testing.T) {
 
 	t.Run("maxPQ", func(t *testing.T) {
 		t.Run("integers", func(t *testing.T) {
-			maxPQ := array.NewMaxPQOrd[int]()
+			maxPQ := array.NewMaxPQ[int]()
 			assert.True(maxPQ.IsEmpty())
 			assert.Equal(maxPQ.Size(), 0)
 			maxPQ.Add(134)
@@ -156,7 +156,7 @@ func TestPQOrd(t *testing.T) {
 
 		})
 		t.Run("floats", func(t *testing.T) {
-			maxPQ := array.NewMaxPQOrd[float64]()
+			maxPQ := array.NewMaxPQ[float64]()
 			assert.True(maxPQ.IsEmpty())
 			assert.Equal(maxPQ.Size(), 0)
 			maxPQ.Add(134.0)
@@ -190,7 +190,7 @@ func TestPQOrd(t *testing.T) {
 			assert.Panics(func() { maxPQ.GetMax() }, "algos.array.(maxPQ).GetMax():  the code is not panic when structure is empty")
 		})
 		t.Run("strings", func(t *testing.T) {
-			maxPQ := array.NewMaxPQOrd[string]()
+			maxPQ := array.NewMaxPQ[string]()
 			assert.True(maxPQ.IsEmpty())
 			assert.Equal(maxPQ.Size(), 0)
 			maxPQ.Add("ag")

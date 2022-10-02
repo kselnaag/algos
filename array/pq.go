@@ -1,43 +1,39 @@
 package array
 
-import (
-	I "github.com/kselnaag/algos/types"
-)
-
 // ===========================
-type MinPQOrd[T I.Ord] struct {
+type MinPQ[T any] struct {
 	pq   []T
 	size int
 }
 
-func NewMinPQOrd[T I.Ord]() MinPQOrd[T] {
-	return MinPQOrd[T]{
+func NewMinPQ[T any]() MinPQ[T] {
+	return MinPQ[T]{
 		pq:   make([]T, 1, 8),
 		size: 0,
 	}
 }
 
-func (min *MinPQOrd[T]) IsEmpty() bool {
+func (min *MinPQ[T]) IsEmpty() bool {
 	return min.size == 0
 }
 
-func (min *MinPQOrd[T]) Size() int {
+func (min *MinPQ[T]) Size() int {
 	return min.size
 }
 
-func (min *MinPQOrd[T]) swim(k int) {
-	for (k > 1) && gtOrd(min.pq[k/2], min.pq[k]) {
+func (min *MinPQ[T]) swim(k int) {
+	for (k > 1) && gt(min.pq[k/2], min.pq[k]) {
 		swap(min.pq, k/2, k)
 		k /= 2
 	}
 }
-func (min *MinPQOrd[T]) sink(k int) {
+func (min *MinPQ[T]) sink(k int) {
 	for (2 * k) <= min.size {
 		j := 2 * k
-		if (j < min.size) && gtOrd(min.pq[j], min.pq[j+1]) {
+		if (j < min.size) && gt(min.pq[j], min.pq[j+1]) {
 			j++
 		}
-		if !gtOrd(min.pq[k], min.pq[j]) {
+		if !gt(min.pq[k], min.pq[j]) {
 			break
 		}
 		swap(min.pq, k, j)
@@ -45,7 +41,7 @@ func (min *MinPQOrd[T]) sink(k int) {
 	}
 }
 
-func (min *MinPQOrd[T]) Add(val T) {
+func (min *MinPQ[T]) Add(val T) {
 	min.size++
 	if len(min.pq) > min.size {
 		min.pq[min.size] = val
@@ -55,14 +51,14 @@ func (min *MinPQOrd[T]) Add(val T) {
 	min.swim(min.size)
 }
 
-func (min *MinPQOrd[T]) Min() T {
+func (min *MinPQ[T]) Min() T {
 	if min.size < 1 {
 		panic("algos.array.(MinPQ).Min(): Queue is empty ")
 	}
 	return min.pq[1]
 }
 
-func (min *MinPQOrd[T]) GetMin() T {
+func (min *MinPQ[T]) GetMin() T {
 	if min.size < 1 {
 		panic("algos.array.(MinPQ).GetMin(): Queue is empty ")
 	}
@@ -74,39 +70,39 @@ func (min *MinPQOrd[T]) GetMin() T {
 }
 
 // ===========================
-type MaxPQOrd[T I.Ord] struct {
+type MaxPQ[T any] struct {
 	pq   []T
 	size int
 }
 
-func NewMaxPQOrd[T I.Ord]() MaxPQOrd[T] {
-	return MaxPQOrd[T]{
+func NewMaxPQ[T any]() MaxPQ[T] {
+	return MaxPQ[T]{
 		pq:   make([]T, 1, 8),
 		size: 0,
 	}
 }
 
-func (max *MaxPQOrd[T]) IsEmpty() bool {
+func (max *MaxPQ[T]) IsEmpty() bool {
 	return max.size == 0
 }
 
-func (max *MaxPQOrd[T]) Size() int {
+func (max *MaxPQ[T]) Size() int {
 	return max.size
 }
 
-func (max *MaxPQOrd[T]) swim(k int) {
-	for (k > 1) && ltOrd(max.pq[k/2], max.pq[k]) {
+func (max *MaxPQ[T]) swim(k int) {
+	for (k > 1) && lt(max.pq[k/2], max.pq[k]) {
 		swap(max.pq, k/2, k)
 		k /= 2
 	}
 }
-func (max *MaxPQOrd[T]) sink(k int) {
+func (max *MaxPQ[T]) sink(k int) {
 	for (2 * k) <= max.size {
 		j := 2 * k
-		if (j < max.size) && ltOrd(max.pq[j], max.pq[j+1]) {
+		if (j < max.size) && lt(max.pq[j], max.pq[j+1]) {
 			j++
 		}
-		if !ltOrd(max.pq[k], max.pq[j]) {
+		if !lt(max.pq[k], max.pq[j]) {
 			break
 		}
 		swap(max.pq, k, j)
@@ -114,7 +110,7 @@ func (max *MaxPQOrd[T]) sink(k int) {
 	}
 }
 
-func (max *MaxPQOrd[T]) Add(val T) {
+func (max *MaxPQ[T]) Add(val T) {
 	max.size++
 	if len(max.pq) > max.size {
 		max.pq[max.size] = val
@@ -124,14 +120,14 @@ func (max *MaxPQOrd[T]) Add(val T) {
 	max.swim(max.size)
 }
 
-func (max *MaxPQOrd[T]) Max() T {
+func (max *MaxPQ[T]) Max() T {
 	if max.size < 1 {
 		panic("algos.array.(MaxPQ).Max(): Queue is empty ")
 	}
 	return max.pq[1]
 }
 
-func (max *MaxPQOrd[T]) GetMax() T {
+func (max *MaxPQ[T]) GetMax() T {
 	if max.size < 1 {
 		panic("algos.array.(MaxPQ).GetMax(): Queue is empty ")
 	}

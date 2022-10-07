@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/array/equal.go (64.7%)</option>
+				<option value="file0">github.com/kselnaag/algos/array/equal.go (51.2%)</option>
 				
 				<option value="file1">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
 				
@@ -100,8 +100,14 @@ import (
 
 func lt[T any](i, j T) bool <span class="cov10" title="6485">{
         switch ii := any(i).(type) </span>{
+        case I.Comp:<span class="cov6" title="196">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) &lt; 0</span>
         case int:<span class="cov8" title="2089">
                 jj := any(j).(int)
+                return ii &lt; jj</span>
+        case uint:<span class="cov0" title="0">
+                jj := any(j).(uint)
                 return ii &lt; jj</span>
         case float64:<span class="cov8" title="2118">
                 jj := any(j).(float64)
@@ -109,19 +115,23 @@ func lt[T any](i, j T) bool <span class="cov10" title="6485">{
         case string:<span class="cov8" title="2082">
                 jj := any(j).(string)
                 return ii &lt; jj</span>
-        case I.Comp:<span class="cov6" title="196">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) &lt; 0</span>
         default:<span class="cov0" title="0">
-                fmt.Printf("i Type is: %T.  ", i)
-                panic("algos.(array).equals.lt[T any](i,j T): Type of args is not Ord or Comp")</span>
+                s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp: "
+                s += fmt.Sprintf("arg Type is: %T", i)
+                panic(s)</span>
         }
 }
 
 func gt[T any](i, j T) bool <span class="cov7" title="712">{
         switch ii := any(i).(type) </span>{
+        case I.Comp:<span class="cov4" title="32">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) &gt; 0</span>
         case int:<span class="cov6" title="230">
                 jj := any(j).(int)
+                return ii &gt; jj</span>
+        case uint:<span class="cov0" title="0">
+                jj := any(j).(uint)
                 return ii &gt; jj</span>
         case float64:<span class="cov6" title="225">
                 jj := any(j).(float64)
@@ -129,19 +139,23 @@ func gt[T any](i, j T) bool <span class="cov7" title="712">{
         case string:<span class="cov6" title="225">
                 jj := any(j).(string)
                 return ii &gt; jj</span>
-        case I.Comp:<span class="cov4" title="32">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) &gt; 0</span>
         default:<span class="cov0" title="0">
-                fmt.Printf("i Type is: %T.  ", i)
-                panic("algos.(array).equals.gt[T any](i,j T): Type of args is not Ord or Comp")</span>
+                s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp: "
+                s += fmt.Sprintf("arg Type is: %T", i)
+                panic(s)</span>
         }
 }
 
 func eq[T any](i, j T) bool <span class="cov3" title="11">{
         switch ii := any(i).(type) </span>{
+        case I.Comp:<span class="cov0" title="0">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) == 0</span>
         case int:<span class="cov3" title="11">
                 jj := any(j).(int)
+                return ii == jj</span>
+        case uint:<span class="cov0" title="0">
+                jj := any(j).(uint)
                 return ii == jj</span>
         case float64:<span class="cov0" title="0">
                 jj := any(j).(float64)
@@ -149,12 +163,10 @@ func eq[T any](i, j T) bool <span class="cov3" title="11">{
         case string:<span class="cov0" title="0">
                 jj := any(j).(string)
                 return ii == jj</span>
-        case I.Comp:<span class="cov0" title="0">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) == 0</span>
         default:<span class="cov0" title="0">
-                fmt.Printf("i Type is: %T.  ", i)
-                panic("algos.(array).equals.eq[T any](i,j T): Type of args is not Ord or Comp")</span>
+                s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp: "
+                s += fmt.Sprintf("arg Type is: %T", i)
+                panic(s)</span>
         }
 }
 

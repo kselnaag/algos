@@ -55,11 +55,11 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/array/equal.go (51.2%)</option>
+				<option value="file0">github.com/kselnaag/algos/array/equal.go (50.0%)</option>
 				
 				<option value="file1">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/sort.go (81.4%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/sort.go (81.6%)</option>
 				
 				<option value="file3">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
@@ -116,7 +116,7 @@ func lt[T any](i, j T) bool <span class="cov10" title="6485">{
                 jj := any(j).(string)
                 return ii &lt; jj</span>
         default:<span class="cov0" title="0">
-                s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp: "
+                s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
@@ -140,7 +140,7 @@ func gt[T any](i, j T) bool <span class="cov7" title="712">{
                 jj := any(j).(string)
                 return ii &gt; jj</span>
         default:<span class="cov0" title="0">
-                s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp: "
+                s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
@@ -164,15 +164,11 @@ func eq[T any](i, j T) bool <span class="cov3" title="11">{
                 jj := any(j).(string)
                 return ii == jj</span>
         default:<span class="cov0" title="0">
-                s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp: "
+                s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
 }
-
-func swap[T any](arr []T, i, j int) <span class="cov9" title="2494">{
-        arr[i], arr[j] = arr[j], arr[i]
-}</span>
 </pre>
 		
 		<pre class="file" id="file1" style="display: none">package array
@@ -314,209 +310,6 @@ func (max *MaxPQ[T]) GetMax() T <span class="cov10" title="24">{
         max.sink(1)
         return ret</span>
 }
-
-/*
-//===========================//
-type MinIdxPQOrd[T I.Ord] struct {
-        pq   []int
-        qp   []int
-        keys []T
-        size int
-}
-
-func NewMinIdxPQOrd[T I.Ord]() MinIdxPQOrd[T] {
-        alen := 1
-        acap := 8
-        return MinIdxPQOrd[T]{
-                pq:   make([]int, alen, acap),
-                qp:   make([]int, alen, acap),
-                keys: make([]T, alen, acap),
-                size: 0,
-        }
-}
-
-func (min *MinIdxPQOrd[T]) gt(i, j int) bool {
-        return min.keys[min.pq[i]] &gt; min.keys[min.pq[j]]
-}
-
-func (min *MinIdxPQOrd[T]) swap(i, j int) {
-        min.pq[i], min.pq[j] = min.pq[j], min.pq[i]
-        min.qp[min.pq[i]], min.qp[min.pq[j]] = i, j
-}
-
-func (min *MinIdxPQOrd[T]) swim(k int) {
-        for (k &gt; 1) &amp;&amp; min.gt(k/2, k) {
-                min.swap(k/2, k)
-                k /= 2
-        }
-}
-
-func (min *MinIdxPQOrd[T]) sink(k int) {
-        for (2 * k) &lt;= min.size {
-                j := 2 * k
-                if (j &lt; min.size) &amp;&amp; min.gt(j, j+1) {
-                        j++
-                }
-                if !min.gt(k, j) {
-                        break
-                }
-                min.swap(k, j)
-                k = j
-        }
-}
-
-func (min *MinIdxPQOrd[T]) IsEmpty() bool {
-        return min.size == 0
-}
-
-func (min *MinIdxPQOrd[T]) Size() int {
-        return min.size
-}
-
-func (min *MinIdxPQOrd[T]) Contains(k int) bool {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).Contains(k): Index 'k' is out of range")
-        }
-        return min.qp[k] != 0
-}
-
-func (min *MinIdxPQOrd[T]) InsertVal(k int, v T) {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).InsertVal(k, v): Index 'k' is out of range ")
-        }
-        if min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).InsertVal(k, v): Index 'k' is already exist ")
-        }
-        min.size++
-        if len(min.pq) &gt; min.size {
-                min.qp[k] = min.size
-                min.pq[min.size] = k
-                min.keys[k] = v
-
-        } else {
-                min.qp = append(min.qp, min.size)
-                min.pq = append(min.pq, k)
-                min.keys = append(min.keys, v)
-        }
-        min.swim(min.size)
-}
-
-func (min *MinIdxPQOrd[T]) MinIndex() int {
-        if min.size &lt; 1 {
-                panic("algos.array.(MinIdxPQ).MinIndex(): No Index to return, zero length queqe")
-        }
-        return min.pq[1]
-}
-
-func (min *MinIdxPQOrd[T]) MinVal() T {
-        if min.size &lt; 1 {
-                panic("algos.array.(MinIdxPQ).MinVal(): No Val to return, zero length queqe")
-        }
-        return min.keys[min.pq[1]]
-}
-
-func (min *MinIdxPQOrd[T]) DelMinIndex() int {
-        if min.size &lt; 1 {
-                panic("algos.array.(MinIdxPQ).DelMinIndex(): No val to return, zero lenght queqe")
-        }
-        ret := min.pq[1]
-        min.swap(1, min.size)
-        min.size--
-        min.sink(1)
-        min.qp[ret] = 0
-        min.pq[min.size+1] = 0
-        return ret
-}
-
-func (min *MinIdxPQOrd[T]) Val(k int) T {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).Val(k): Index 'k' is out of range ")
-        }
-        if !min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).Val(k): Index 'k' is not in queue ")
-        }
-        return min.keys[k]
-}
-
-func (min *MinIdxPQOrd[T]) ChangeVal(k int, v T) {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).ChangeVal(k, v): Index 'k' is out of range ")
-        }
-        if !min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).ChangeVal(k, v): Index 'k' is not in queue ")
-        }
-        min.keys[k] = v
-        min.swim(min.qp[k])
-        min.sink(min.qp[k])
-}
-
-func (min *MinIdxPQOrd[T]) IncreaseIndex(k int, v T) {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).IncreaseIndex(k, v): Index 'k' is out of range ")
-        }
-        if !min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).IncreaseIndex(k, v): Index 'k' is not in queue ")
-        }
-        if min.keys[k] &gt;= v {
-                panic("algos.array.(MinIdxPQ).IncreaseIndex(k, v): With such index 'k' and value 'v' queue would not change anything ")
-        }
-        min.keys[k] = v
-        min.sink(min.qp[k])
-}
-
-func (min *MinIdxPQOrd[T]) DecreaseIndex(k int, v T) {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).DecreaseIndex(k, v): Index 'k' is out of range ")
-        }
-        if !min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).DecreaseIndex(k, v): Index 'k' is not in queue ")
-        }
-        if min.keys[k] &lt;= v {
-                panic("algos.array.(MinIdxPQ).DecreaseIndex(k, v): With such index 'k' and value 'v' queue would not change anything ")
-        }
-        min.keys[k] = v
-        min.swim(min.qp[k])
-}
-
-func (min *MinIdxPQOrd[T]) DeleteIndex(k int) {
-        if (k &lt; 1) || (k &gt; min.size) {
-                panic("algos.array.(MinIdxPQ).DeleteIndex(k): Index 'k' is out of range ")
-        }
-        if !min.Contains(k) {
-                panic("algos.array.(MinIdxPQ).DeleteIndex(k): Index 'k' is not in queue ")
-        }
-        index := min.qp[k]
-        min.swap(index, min.size)
-        min.size--
-        min.swim(index)
-        min.sink(index)
-        min.qp[k] = 0
-}
-
-// ===========================
-type MaxIdxPQOrd[T I.Ord] struct {
-        pq   []T
-        size int
-}
-
-func NewMaxIdxPQOrd[T I.Ord]() MaxIdxPQOrd[T] {
-        return MaxIdxPQOrd[T]{
-                pq:   make([]T, 1, 8),
-                size: 0,
-        }
-}
-
-// IsEmpty
-// Size
-// Insert
-// Change
-// Contains
-// Delete
-// MaxVal
-// DelMaxIndex
-// MaxIndex
-
-*/
 </pre>
 		
 		<pre class="file" id="file2" style="display: none">package array
@@ -527,7 +320,7 @@ import (
 
 func HeapSort[T any](arr []T) <span class="cov5" title="33">{
         alen := len(arr)
-        for k := alen / 2; k &gt; 0; k-- </span><span class="cov6" title="75">{
+        for k := alen / 2; k &gt; 0; k-- </span><span class="cov5" title="75">{
                 sink(arr, k, alen-1)
         }</span>
         <span class="cov5" title="33">for n := alen - 1; n &gt; 1; </span><span class="cov6" title="114">{
@@ -538,15 +331,15 @@ func HeapSort[T any](arr []T) <span class="cov5" title="33">{
 }
 
 func sink[T any](arr []T, k, n int) <span class="cov7" title="189">{
-        for (2 * k) &lt;= n </span><span class="cov8" title="321">{
+        for (2 * k) &lt;= n </span><span class="cov7" title="321">{
                 j := 2 * k
-                if (j &lt; n) &amp;&amp; lt(arr[j], arr[j+1]) </span><span class="cov7" title="135">{
+                if (j &lt; n) &amp;&amp; lt(arr[j], arr[j+1]) </span><span class="cov6" title="135">{
                         j++
                 }</span>
-                <span class="cov8" title="321">if !lt(arr[k], arr[j]) </span><span class="cov3" title="9">{
+                <span class="cov7" title="321">if !lt(arr[k], arr[j]) </span><span class="cov3" title="9">{
                         break</span>
                 }
-                <span class="cov8" title="312">swap(arr, k, j)
+                <span class="cov7" title="312">swap(arr, k, j)
                 k = j</span>
         }
 }
@@ -560,7 +353,7 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="117">{
         if hi &lt;= lo </span><span class="cov5" title="48">{
                 return
         }</span>
-        <span class="cov6" title="69">if (hi - lo + 1) &lt;= 12 </span><span class="cov5" title="27">{
+        <span class="cov5" title="69">if (hi - lo + 1) &lt;= 12 </span><span class="cov4" title="27">{
                 InsertSort(arr)
                 return
         }</span>
@@ -577,7 +370,7 @@ func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="197">for ; lt(arr[v], arr[j]); j-- </span><span class="cov9" title="777">{
+                <span class="cov7" title="197">for ; lt(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
@@ -585,7 +378,7 @@ func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
                 <span class="cov7" title="197">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov7" title="155">swap(arr, i, j)</span>
+                <span class="cov6" title="155">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -684,7 +477,7 @@ func SelectSort[T any](arr []T) <span class="cov5" title="43">{
 func ShellSort[T any](arr []T) <span class="cov5" title="33">{
         alen := len(arr)
         h := 1
-        for h &lt; (alen / 3) </span><span class="cov4" title="12">{
+        for h &lt; (alen / 3) </span><span class="cov3" title="12">{
                 h = 3*h + 1
         }</span>
         <span class="cov5" title="33">for h &gt; 0 </span><span class="cov5" title="45">{
@@ -703,8 +496,8 @@ func ShellSort[T any](arr []T) <span class="cov5" title="33">{
 
 func InsertSort[T any](arr []T) <span class="cov6" title="106">{
         alen := len(arr)
-        for i := 1; i &lt; alen; i++ </span><span class="cov8" title="436">{
-                for j := i; j &gt; 0; j-- </span><span class="cov10" title="1518">{
+        for i := 1; i &lt; alen; i++ </span><span class="cov7" title="436">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1518">{
                         if lt(arr[j], arr[j-1]) </span><span class="cov9" title="1220">{
                                 swap(arr, j, j-1)
                         }</span> else<span class="cov7" title="298"> {
@@ -731,6 +524,22 @@ func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         <span class="cov1" title="2">return -1</span>
 }
 
+func Shuffle[T any](arr []T) <span class="cov5" title="33">{
+        alen := len(arr)
+        for i := 0; i &lt; alen; i++ </span><span class="cov6" title="172">{
+                j := rand.Intn(i + 1)
+                swap(arr, i, j)
+        }</span>
+}
+
+func Reverse[T any](arr []T) <span class="cov2" title="3">{
+        alen := len(arr)
+        mid := alen / 2
+        for i := 0; i &lt; mid; i++ </span><span class="cov3" title="9">{
+                swap(arr, i, alen-i-1)
+        }</span>
+}
+
 func Contained[T any](arr []T, elem T) int <span class="cov2" title="3">{
         for i, el := range arr </span><span class="cov2" title="5">{
                 if eq(el, elem) </span><span class="cov1" title="1">{
@@ -750,21 +559,9 @@ func IsSorted[T any](arr []T) bool <span class="cov7" title="261">{
         <span class="cov7" title="261">return true</span>
 }
 
-func Shuffle[T any](arr []T) <span class="cov5" title="33">{
-        alen := len(arr)
-        for i := 0; i &lt; alen; i++ </span><span class="cov7" title="172">{
-                j := rand.Intn(i + 1)
-                swap(arr, i, j)
-        }</span>
-}
-
-func Reverse[T any](arr []T) <span class="cov2" title="3">{
-        alen := len(arr)
-        mid := alen / 2
-        for i := 0; i &lt; mid; i++ </span><span class="cov3" title="9">{
-                swap(arr, i, alen-i-1)
-        }</span>
-}
+func swap[T any](arr []T, i, j int) <span class="cov10" title="2494">{
+        arr[i], arr[j] = arr[j], arr[i]
+}</span>
 </pre>
 		
 		<pre class="file" id="file3" style="display: none">package array

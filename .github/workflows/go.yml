@@ -18,7 +18,7 @@ jobs:
       with:
         go-version: 1.19
         
-    - name: golangci-lint
+    - name: Set up golangci-lint
       uses: golangci/golangci-lint-action@v3
       with:
           version: v1.49.0
@@ -26,8 +26,8 @@ jobs:
     - name: Formater
       run: go fmt ./...
       
-    - name: Linter
-      run: golangci-lint run ./...
+    #- name: Linter
+    #  run: golangci-lint run ./...
       
-    - name: UnitTest
+    - name: UnitTests
       run: go test -vet=off -count=1 -race -coverprofile=coverage.test ./...

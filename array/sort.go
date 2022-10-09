@@ -210,6 +210,22 @@ func BinarySearch[T any](arr []T, elem T) int {
 	return -1
 }
 
+func Shuffle[T any](arr []T) {
+	alen := len(arr)
+	for i := 0; i < alen; i++ {
+		j := rand.Intn(i + 1)
+		swap(arr, i, j)
+	}
+}
+
+func Reverse[T any](arr []T) {
+	alen := len(arr)
+	mid := alen / 2
+	for i := 0; i < mid; i++ {
+		swap(arr, i, alen-i-1)
+	}
+}
+
 func Contained[T any](arr []T, elem T) int {
 	for i, el := range arr {
 		if eq(el, elem) {
@@ -229,18 +245,6 @@ func IsSorted[T any](arr []T) bool {
 	return true
 }
 
-func Shuffle[T any](arr []T) {
-	alen := len(arr)
-	for i := 0; i < alen; i++ {
-		j := rand.Intn(i + 1)
-		swap(arr, i, j)
-	}
-}
-
-func Reverse[T any](arr []T) {
-	alen := len(arr)
-	mid := alen / 2
-	for i := 0; i < mid; i++ {
-		swap(arr, i, alen-i-1)
-	}
+func swap[T any](arr []T, i, j int) {
+	arr[i], arr[j] = arr[j], arr[i]
 }

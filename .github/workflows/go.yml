@@ -23,11 +23,11 @@ jobs:
       with:
           version: v1.49.0
           
-    - name: Format
+    - name: Formater
       run: go fmt ./...
       
-    - name: Lint
+    - name: Linter
       run: golangci-lint run ./...
       
-    - name: Test
+    - name: UnitTest
       run: go test -vet=off -count=1 -race -coverprofile=coverage.test ./...

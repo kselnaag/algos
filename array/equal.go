@@ -24,7 +24,7 @@ func lt[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii < jj
 	default:
-		s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp: "
+		s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -48,7 +48,7 @@ func gt[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii > jj
 	default:
-		s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp: "
+		s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -72,12 +72,8 @@ func eq[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii == jj
 	default:
-		s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp: "
+		s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
-}
-
-func swap[T any](arr []T, i, j int) {
-	arr[i], arr[j] = arr[j], arr[i]
 }

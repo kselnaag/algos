@@ -1,7 +1,15 @@
+<p align="left">
+	<img src="https://img.shields.io/github/languages/top/kselnaag/algos?style=plastic" title="main language" alt="main language">
+	<img src="https://img.shields.io/github/go-mod/go-version/kselnaag/algos?style=plastic" title="language version" alt="language version">
+	<img src="https://img.shields.io/github/languages/code-size/kselnaag/algos?style=plastic" title="src files size" alt="src files size">
+	<img src="https://img.shields.io/github/repo-size/kselnaag/algos?style=plastic" title="repo size" alt="repo size">
+	<a href="https://github.com/kselnaag/algos/blob/master/LICENSE" title="LICENSE"><img src="https://img.shields.io/github/license/kselnaag/algos?style=plastic" alt="license"></a>
+	<a href="https://github.com/kselnaag/algos/actions" title="Workflows"><img src="https://img.shields.io/github/workflow/status/kselnaag/algos/algoscommit/master?style=plastic" alt="tests checks"></a>
+	<a href="https://kselnaag.github.io/algos" title="coverage"><img src="https://img.shields.io/badge/GHpages-coverage-blueviolet?style=plastic" alt="coverage"></a>
+</p>
+
 ### **ALGOS**
 ----
-
-[Coverage on GHpages](https://kselnaag.github.io/algos/ "ALGOS files coverage percents")
 
 This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
 
@@ -75,13 +83,13 @@ func InsertSort[T any](arr []T) {
 }
 ```
 
-For PDTs:
+For PDTs, value slice:
 ```
 arr := []int{3, 2, 1}
 array.InsertSort(arr)
 ```
 
-For ADTs:
+For ADTs, pointer slice:
 ```
 s1 := &myType{1, 2}
 s2 := &myType{3, 1}

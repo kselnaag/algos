@@ -33,13 +33,51 @@ func TestSort(t *testing.T) {
 	}()
 
 	t.Run("utils", func(t *testing.T) {
-		assert.Equal(array.Contained([]int{32, 45, 26}, 45), 1)
-		assert.Equal(array.Contained([]int{32, 45, 26}, 66), -1)
-		assert.Equal(array.Contained([]int{}, 66), -1)
+		t.Run("Contained", func(t *testing.T) {
+			assert.Equal(array.Contained([]int{32, 45, 26}, 26), 2)
+			assert.Equal(array.Contained([]int{32, 45, 26}, 66), -1)
+			assert.Equal(array.Contained([]int{}, 48), -1)
+		})
+		t.Run("BinarySearch", func(t *testing.T) {
+			assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 8), 7)
+			assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 55), -1)
+			assert.Equal(array.BinarySearch([]int{}, 55), -1)
+		})
+		t.Run("IsSorted", func(t *testing.T) {
+			assert.True(array.IsSorted([]int{24, 32, 54, 65, 67, 87}))
+			assert.True(array.IsSorted([]int{3, 23, 25, 29, 43, 67, 134}))
+			assert.False(array.IsSorted([]int{24, 67, 54, 32, 87, 65}))
+			assert.False(array.IsSorted([]int{134, 25, 67, 43, 29, 03, 23}))
+		})
+		t.Run("Reverse", func(t *testing.T) {
+			arr := []int{24, 67, 54, 32, 87, 65}
+			array.Reverse(arr)
+			assert.Equal(arr, []int{65, 87, 32, 54, 67, 24})
 
-		assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 8), 7)
-		assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 55), -1)
-		assert.Equal(array.BinarySearch([]int{}, 55), -1)
+			arr = []int{134, 25, 67, 43, 29, 03, 23}
+			array.Reverse(arr)
+			assert.Equal(arr, []int{23, 03, 29, 43, 67, 25, 134})
+
+			arr = []int{24, 67, 54, 32, 87, 65}
+			array.Reverse(arr)
+			assert.NotEqual(arr, []int{24, 67, 54, 32, 87, 65})
+
+			arr = []int{24, 67, 54, 32, 87, 65}
+			brr := []int{24, 67, 54, 32, 87, 65}
+			array.Reverse(arr)
+			array.Shuffle(brr)
+			assert.NotEqual(arr, brr)
+
+			arr = []int{134, 25, 67, 43, 29, 03, 23}
+			array.Reverse(arr)
+			assert.NotEqual(arr, []int{134, 25, 67, 43, 29, 03, 23})
+
+			arr = []int{134, 25, 67, 43, 29, 03, 23}
+			brr = []int{134, 25, 67, 43, 29, 03, 23}
+			array.Reverse(arr)
+			array.Shuffle(brr)
+			assert.NotEqual(arr, brr)
+		})
 	})
 
 	t.Run("structs", func(t *testing.T) {
@@ -72,21 +110,48 @@ func TestSort(t *testing.T) {
 			for _, test := range tests {
 				array.InsertSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
+			}
+		})
+		t.Run("ShellSort", func(t *testing.T) {
+			for _, test := range tests {
+				array.ShellSort(test.args)
+				assert.Equal(test.args, test.rets)
 			}
 		})
 		t.Run("SelectSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.SelectSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ReverseSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ReverseSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
+			}
+		})
+		t.Run("MergeSort", func(t *testing.T) {
+			for _, test := range tests {
+				array.MergeSort(test.args)
+				assert.Equal(test.args, test.rets)
+			}
+		})
+		t.Run("QuickSort", func(t *testing.T) {
+			for _, test := range tests {
+				array.QuickSort(test.args)
+				assert.Equal(test.args, test.rets)
+			}
+		})
+		t.Run("HeapSort", func(t *testing.T) {
+			for _, test := range tests {
+				array.HeapSort(test.args)
+				assert.Equal(test.args, test.rets)
+			}
+		})
+		t.Run("Quick3Sort", func(t *testing.T) {
+			for _, test := range tests {
+				array.Quick3Sort(test.args)
+				assert.Equal(test.args, test.rets)
 			}
 		})
 	})
@@ -113,49 +178,48 @@ func TestSort(t *testing.T) {
 			for _, test := range tests {
 				array.InsertSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ShellSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ShellSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("SelectSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.SelectSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ReverseSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ReverseSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("MergeSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.MergeSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("QuickSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.QuickSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("HeapSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.HeapSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
+			}
+		})
+		t.Run("Quick3Sort", func(t *testing.T) {
+			for _, test := range tests {
+				array.Quick3Sort(test.args)
+				assert.Equal(test.args, test.rets)
 			}
 		})
 	})
@@ -182,49 +246,48 @@ func TestSort(t *testing.T) {
 			for _, test := range tests {
 				array.InsertSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ShellSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ShellSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("SelectSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.SelectSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ReverseSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ReverseSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("MergeSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.MergeSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("QuickSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.QuickSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("HeapSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.HeapSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
+			}
+		})
+		t.Run("Quick3Sort", func(t *testing.T) {
+			for _, test := range tests {
+				array.Quick3Sort(test.args)
+				assert.Equal(test.args, test.rets)
 			}
 		})
 	})
@@ -251,49 +314,48 @@ func TestSort(t *testing.T) {
 			for _, test := range tests {
 				array.InsertSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ShellSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ShellSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("SelectSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.SelectSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("ReverseSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.ReverseSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("MergeSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.MergeSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("QuickSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.QuickSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
 			}
 		})
 		t.Run("HeapSort", func(t *testing.T) {
 			for _, test := range tests {
 				array.HeapSort(test.args)
 				assert.Equal(test.args, test.rets)
-				assert.True(array.IsSorted(test.args))
+			}
+		})
+		t.Run("Quick3Sort", func(t *testing.T) {
+			for _, test := range tests {
+				array.Quick3Sort(test.args)
+				assert.Equal(test.args, test.rets)
 			}
 		})
 	})

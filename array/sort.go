@@ -4,6 +4,32 @@ import (
 	"math/rand"
 )
 
+func Quick3Sort[T any](arr []T) {
+	Shuffle(arr)
+	q3sort(arr, 0, len(arr)-1)
+}
+
+func q3sort[T any](arr []T, lo, hi int) {
+	if hi <= lo {
+		return
+	}
+	l, i, v, g := lo, lo+1, arr[lo], hi
+	for i <= g {
+		if lt(arr[i], v) {
+			swap(arr, l, i)
+			l++
+			i++
+		} else if gt(arr[i], v) {
+			swap(arr, i, g)
+			g--
+		} else {
+			i++
+		}
+	}
+	q3sort(arr, lo, l-1)
+	q3sort(arr, g+1, hi)
+}
+
 func HeapSort[T any](arr []T) {
 	alen := len(arr)
 	for k := alen / 2; k > 0; k-- {

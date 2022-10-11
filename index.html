@@ -59,7 +59,7 @@
 				
 				<option value="file1">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/sort.go (81.6%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
 				
 				<option value="file3">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
@@ -98,21 +98,21 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-func lt[T any](i, j T) bool <span class="cov10" title="6485">{
+func lt[T any](i, j T) bool <span class="cov10" title="5984">{
         switch ii := any(i).(type) </span>{
-        case I.Comp:<span class="cov6" title="196">
+        case I.Comp:<span class="cov6" title="289">
                 jj := any(j).(I.Comp)
                 return ii.CompareTo(jj) &lt; 0</span>
-        case int:<span class="cov8" title="2089">
+        case int:<span class="cov8" title="1902">
                 jj := any(j).(int)
                 return ii &lt; jj</span>
         case uint:<span class="cov0" title="0">
                 jj := any(j).(uint)
                 return ii &lt; jj</span>
-        case float64:<span class="cov8" title="2118">
+        case float64:<span class="cov8" title="1933">
                 jj := any(j).(float64)
                 return ii &lt; jj</span>
-        case string:<span class="cov8" title="2082">
+        case string:<span class="cov8" title="1860">
                 jj := any(j).(string)
                 return ii &lt; jj</span>
         default:<span class="cov0" title="0">
@@ -122,21 +122,21 @@ func lt[T any](i, j T) bool <span class="cov10" title="6485">{
         }
 }
 
-func gt[T any](i, j T) bool <span class="cov7" title="712">{
+func gt[T any](i, j T) bool <span class="cov8" title="922">{
         switch ii := any(i).(type) </span>{
-        case I.Comp:<span class="cov4" title="32">
+        case I.Comp:<span class="cov4" title="45">
                 jj := any(j).(I.Comp)
                 return ii.CompareTo(jj) &gt; 0</span>
-        case int:<span class="cov6" title="230">
+        case int:<span class="cov6" title="290">
                 jj := any(j).(int)
                 return ii &gt; jj</span>
         case uint:<span class="cov0" title="0">
                 jj := any(j).(uint)
                 return ii &gt; jj</span>
-        case float64:<span class="cov6" title="225">
+        case float64:<span class="cov6" title="302">
                 jj := any(j).(float64)
                 return ii &gt; jj</span>
-        case string:<span class="cov6" title="225">
+        case string:<span class="cov6" title="285">
                 jj := any(j).(string)
                 return ii &gt; jj</span>
         default:<span class="cov0" title="0">
@@ -146,12 +146,12 @@ func gt[T any](i, j T) bool <span class="cov7" title="712">{
         }
 }
 
-func eq[T any](i, j T) bool <span class="cov3" title="11">{
+func eq[T any](i, j T) bool <span class="cov3" title="12">{
         switch ii := any(i).(type) </span>{
         case I.Comp:<span class="cov0" title="0">
                 jj := any(j).(I.Comp)
                 return ii.CompareTo(jj) == 0</span>
-        case int:<span class="cov3" title="11">
+        case int:<span class="cov3" title="12">
                 jj := any(j).(int)
                 return ii == jj</span>
         case uint:<span class="cov0" title="0">
@@ -318,42 +318,68 @@ import (
         "math/rand"
 )
 
-func HeapSort[T any](arr []T) <span class="cov5" title="33">{
+func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
+        Shuffle(arr)
+        q3sort(arr, 0, len(arr)-1)
+}</span>
+
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="279">{
+        if hi &lt;= lo </span><span class="cov6" title="161">{
+                return
+        }</span>
+        <span class="cov6" title="118">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="427">{
+                if lt(arr[i], v) </span><span class="cov6" title="217">{
+                        swap(arr, l, i)
+                        l++
+                        i++
+                }</span> else<span class="cov6" title="210"> if gt(arr[i], v) </span><span class="cov6" title="210">{
+                        swap(arr, i, g)
+                        g--
+                }</span> else<span class="cov0" title="0"> {
+                        i++
+                }</span>
+        }
+        <span class="cov6" title="118">q3sort(arr, lo, l-1)
+        q3sort(arr, g+1, hi)</span>
+}
+
+func HeapSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
-        for k := alen / 2; k &gt; 0; k-- </span><span class="cov5" title="75">{
+        for k := alen / 2; k &gt; 0; k-- </span><span class="cov5" title="87">{
                 sink(arr, k, alen-1)
         }</span>
-        <span class="cov5" title="33">for n := alen - 1; n &gt; 1; </span><span class="cov6" title="114">{
+        <span class="cov5" title="43">for n := alen - 1; n &gt; 1; </span><span class="cov6" title="128">{
                 swap(arr, 1, n)
                 n--
                 sink(arr, 1, n)
         }</span>
 }
 
-func sink[T any](arr []T, k, n int) <span class="cov7" title="189">{
-        for (2 * k) &lt;= n </span><span class="cov7" title="321">{
+func sink[T any](arr []T, k, n int) <span class="cov6" title="215">{
+        for (2 * k) &lt;= n </span><span class="cov7" title="343">{
                 j := 2 * k
-                if (j &lt; n) &amp;&amp; lt(arr[j], arr[j+1]) </span><span class="cov6" title="135">{
+                if (j &lt; n) &amp;&amp; lt(arr[j], arr[j+1]) </span><span class="cov6" title="140">{
                         j++
                 }</span>
-                <span class="cov7" title="321">if !lt(arr[k], arr[j]) </span><span class="cov3" title="9">{
+                <span class="cov7" title="343">if !lt(arr[k], arr[j]) </span><span class="cov3" title="11">{
                         break</span>
                 }
-                <span class="cov7" title="312">swap(arr, k, j)
+                <span class="cov7" title="332">swap(arr, k, j)
                 k = j</span>
         }
 }
 
-func QuickSort[T any](arr []T) <span class="cov5" title="33">{
+func QuickSort[T any](arr []T) <span class="cov5" title="43">{
         Shuffle(arr)
         qsort(arr, 0, len(arr)-1)
 }</span>
 
-func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="117">{
-        if hi &lt;= lo </span><span class="cov5" title="48">{
+func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
+        if hi &lt;= lo </span><span class="cov5" title="50">{
                 return
         }</span>
-        <span class="cov5" title="69">if (hi - lo + 1) &lt;= 12 </span><span class="cov4" title="27">{
+        <span class="cov5" title="77">if (hi - lo + 1) &lt;= 12 </span><span class="cov4" title="35">{
                 InsertSort(arr)
                 return
         }</span>
@@ -364,38 +390,38 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="117">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov7" title="197">{
+        for </span><span class="cov6" title="183">{
                 for ; lt(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="197">for ; lt(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="183">for ; lt(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="197">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="183">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="155">swap(arr, i, j)</span>
+                <span class="cov6" title="141">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
 }
 
-func MergeSort[T any](arr []T) <span class="cov5" title="33">{
+func MergeSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
         aux := make([]T, alen)
         copy(aux, arr)
         mrgsort(aux, arr, 0, alen-1)
 }</span>
 
-func mrgsort[T any](src []T, dst []T, lo, hi int) <span class="cov5" title="51">{
-        if hi &lt;= lo </span><span class="cov3" title="6">{
+func mrgsort[T any](src []T, dst []T, lo, hi int) <span class="cov5" title="61">{
+        if hi &lt;= lo </span><span class="cov3" title="8">{
                 return
         }</span>
-        <span class="cov5" title="45">if (hi - lo + 1) &lt;= 12 </span><span class="cov5" title="36">{
+        <span class="cov5" title="53">if (hi - lo + 1) &lt;= 12 </span><span class="cov5" title="44">{
                 InsertSort(src[lo : hi+1])
                 copy(dst[lo:hi+1], src[lo:hi+1])
                 return
@@ -436,7 +462,7 @@ func merge[T any](src []T, dst []T, lo, mid, hi int) <span class="cov3" title="9
 func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
         mid := alen / 2
-        for i := 0; i &lt; mid; i++ </span><span class="cov6" title="87">{
+        for i := 0; i &lt; mid; i++ </span><span class="cov5" title="87">{
                 min := i
                 max := i
                 for j := i + 1; j &lt; (alen - i); j++ </span><span class="cov8" title="635">{
@@ -447,14 +473,14 @@ func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
                                 max = j
                         }</span>
                 }
-                <span class="cov6" title="87">if max == i </span><span class="cov0" title="0">{
+                <span class="cov5" title="87">if max == i </span><span class="cov0" title="0">{
                         if min == (alen - i - 1) </span><span class="cov0" title="0">{
                                 swap(arr, max, min)
                         }</span> else<span class="cov0" title="0"> {
                                 swap(arr, (alen - i - 1), max)
                                 swap(arr, i, min)
                         }</span>
-                } else<span class="cov6" title="87"> {
+                } else<span class="cov5" title="87"> {
                         swap(arr, i, min)
                         swap(arr, (alen - i - 1), max)
                 }</span>
@@ -463,44 +489,44 @@ func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
 
 func SelectSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
-        for i := 0; i &lt; alen; i++ </span><span class="cov7" title="203">{
+        for i := 0; i &lt; alen; i++ </span><span class="cov6" title="203">{
                 min := i
-                for j := i + 1; j &lt; alen; j++ </span><span class="cov9" title="1183">{
+                for j := i + 1; j &lt; alen; j++ </span><span class="cov8" title="1183">{
                         if lt(arr[j], arr[min]) </span><span class="cov0" title="0">{
                                 min = j
                         }</span>
                 }
-                <span class="cov7" title="203">swap(arr, i, min)</span>
+                <span class="cov6" title="203">swap(arr, i, min)</span>
         }
 }
 
-func ShellSort[T any](arr []T) <span class="cov5" title="33">{
+func ShellSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
         h := 1
-        for h &lt; (alen / 3) </span><span class="cov3" title="12">{
+        for h &lt; (alen / 3) </span><span class="cov3" title="14">{
                 h = 3*h + 1
         }</span>
-        <span class="cov5" title="33">for h &gt; 0 </span><span class="cov5" title="45">{
-                for i := h; i &lt; alen; i++ </span><span class="cov7" title="261">{
-                        for j := i; j &gt;= h; j -= h </span><span class="cov7" title="261">{
+        <span class="cov5" title="43">for h &gt; 0 </span><span class="cov5" title="57">{
+                for i := h; i &lt; alen; i++ </span><span class="cov7" title="288">{
+                        for j := i; j &gt;= h; j -= h </span><span class="cov7" title="288">{
                                 if lt(arr[j], arr[j-h]) </span><span class="cov0" title="0">{
                                         swap(arr, j, j-h)
-                                }</span> else<span class="cov7" title="261"> {
+                                }</span> else<span class="cov7" title="288"> {
                                         break</span>
                                 }
                         }
                 }
-                <span class="cov5" title="45">h = h / 3</span>
+                <span class="cov5" title="57">h = h / 3</span>
         }
 }
 
-func InsertSort[T any](arr []T) <span class="cov6" title="106">{
+func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
-        for i := 1; i &lt; alen; i++ </span><span class="cov7" title="436">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1518">{
-                        if lt(arr[j], arr[j-1]) </span><span class="cov9" title="1220">{
+        for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1597">{
+                        if lt(arr[j], arr[j-1]) </span><span class="cov8" title="1255">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="298"> {
+                        }</span> else<span class="cov7" title="342"> {
                                 break</span>
                         }
                 }
@@ -510,7 +536,7 @@ func InsertSort[T any](arr []T) <span class="cov6" title="106">{
 func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         low := 0
         high := len(arr)
-        for low &lt; high </span><span class="cov3" title="6">{
+        for low &lt; high </span><span class="cov2" title="6">{
                 mid := (low + ((high - low) / 2))
                 val := arr[mid]
                 if eq(val, elem) </span><span class="cov1" title="1">{
@@ -524,24 +550,24 @@ func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         <span class="cov1" title="2">return -1</span>
 }
 
-func Shuffle[T any](arr []T) <span class="cov5" title="33">{
+func Shuffle[T any](arr []T) <span class="cov5" title="88">{
         alen := len(arr)
-        for i := 0; i &lt; alen; i++ </span><span class="cov6" title="172">{
+        for i := 0; i &lt; alen; i++ </span><span class="cov7" title="419">{
                 j := rand.Intn(i + 1)
                 swap(arr, i, j)
         }</span>
 }
 
-func Reverse[T any](arr []T) <span class="cov2" title="3">{
+func Reverse[T any](arr []T) <span class="cov3" title="9">{
         alen := len(arr)
         mid := alen / 2
-        for i := 0; i &lt; mid; i++ </span><span class="cov3" title="9">{
+        for i := 0; i &lt; mid; i++ </span><span class="cov4" title="27">{
                 swap(arr, i, alen-i-1)
         }</span>
 }
 
 func Contained[T any](arr []T, elem T) int <span class="cov2" title="3">{
-        for i, el := range arr </span><span class="cov2" title="5">{
+        for i, el := range arr </span><span class="cov2" title="6">{
                 if eq(el, elem) </span><span class="cov1" title="1">{
                         return i
                 }</span>
@@ -549,17 +575,17 @@ func Contained[T any](arr []T, elem T) int <span class="cov2" title="3">{
         <span class="cov1" title="2">return -1</span>
 }
 
-func IsSorted[T any](arr []T) bool <span class="cov7" title="261">{
+func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         alen := len(arr)
-        for i := 1; i &lt; alen; i++ </span><span class="cov9" title="1053">{
-                if lt(arr[i], arr[i-1]) </span><span class="cov0" title="0">{
+        for i := 1; i &lt; alen; i++ </span><span class="cov3" title="14">{
+                if lt(arr[i], arr[i-1]) </span><span class="cov1" title="2">{
                         return false
                 }</span>
         }
-        <span class="cov7" title="261">return true</span>
+        <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="2494">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3241">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>

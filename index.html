@@ -57,7 +57,7 @@
 				
 				<option value="file0">github.com/kselnaag/algos/array/equal.go (43.8%)</option>
 				
-				<option value="file1">github.com/kselnaag/algos/array/hmap.go (92.7%)</option>
+				<option value="file1">github.com/kselnaag/algos/array/hmap.go (92.2%)</option>
 				
 				<option value="file2">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
 				
@@ -67,9 +67,11 @@
 				
 				<option value="file5">github.com/kselnaag/algos/graph/uf.go (95.8%)</option>
 				
-				<option value="file6">github.com/kselnaag/algos/list/stack.go (98.7%)</option>
+				<option value="file6">github.com/kselnaag/algos/list/hmap.go (95.6%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/math/math.go (100.0%)</option>
+				<option value="file7">github.com/kselnaag/algos/list/stack.go (98.7%)</option>
+				
+				<option value="file8">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -286,16 +288,11 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
-        fwd := uint16(0)
-        for </span><span class="cov10" title="65536">{
-                if hm.hmarr[int(fwd)] != nil </span><span class="cov2" title="9">{
-                        for _, hnode := range *hm.hmarr[int(fwd)] </span><span class="cov2" title="8">{
-                                res = append(res, hnode.key)
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="65536">{
+                if ptr != nil </span><span class="cov2" title="9">{
+                        for _, kvnode := range *ptr </span><span class="cov2" title="8">{
+                                res = append(res, kvnode.key)
                         }</span>
-                }
-                <span class="cov10" title="65536">fwd++
-                if fwd == 0 </span><span class="cov1" title="1">{
-                        break</span>
                 }
         }
         <span class="cov1" title="1">QuickSort(res)
@@ -959,6 +956,115 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 		
 		<pre class="file" id="file6" style="display: none">package list
 
+import (
+        "math"
+
+        "github.com/kselnaag/algos/array"
+        amath "github.com/kselnaag/algos/math"
+        I "github.com/kselnaag/algos/types"
+)
+
+type kvnode[K I.Ord, V any] struct {
+        key  K
+        val  V
+        next *kvnode[K, V]
+}
+
+type Hmap[K I.Ord, V any] struct {
+        hmarr   [math.MaxUint16 + 1]*kvnode[K, V]
+        keysnum int
+}
+
+func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
+        return Hmap[K, V]{
+                hmarr:   [math.MaxUint16 + 1]*kvnode[K, V]{},
+                keysnum: 0,
+        }
+}</span>
+
+func (hm *Hmap[K, V]) Drop() <span class="cov1" title="1">{
+        hm.hmarr = [math.MaxUint16 + 1]*kvnode[K, V]{}
+        hm.keysnum = 0
+}</span>
+
+func (hm *Hmap[K, V]) Size() int <span class="cov2" title="10">{
+        return hm.keysnum
+}</span>
+
+func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="5">{
+        return hm.Size() == 0
+}</span>
+
+func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        setnode := kvnode[K, V]{key: key, val: val, next: nil}
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="2">{
+                if node.key == key </span><span class="cov1" title="2">{
+                        node.val = val
+                        return
+                }</span>
+        }
+        <span class="cov2" title="9">setnode.next = hm.hmarr[int(hash)]
+        hm.hmarr[int(hash)] = &amp;setnode
+        hm.keysnum++</span>
+}
+
+func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="3">{
+                if node.key == key </span><span class="cov1" title="3">{
+                        return true
+                }</span>
+        }
+        <span class="cov1" title="3">return false</span>
+}
+
+func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="2">{
+                if node.key == key </span><span class="cov1" title="2">{
+                        return node.val
+                }</span>
+        }
+        <span class="cov1" title="2">panic("algos.list.(Hmap).Get(key K): No any key found, check first")</span>
+}
+
+func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        prev := hm.hmarr[int(hash)]
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="1">{
+                if node.key == key </span><span class="cov1" title="1">{
+                        if prev == hm.hmarr[int(hash)] </span><span class="cov1" title="1">{
+                                hm.hmarr[int(hash)] = node.next
+                        }</span> else<span class="cov0" title="0"> {
+                                prev.next = node.next
+                        }</span>
+                        <span class="cov1" title="1">hm.keysnum--
+                        return</span>
+                }
+                <span class="cov0" title="0">prev = node</span>
+        }
+        <span class="cov1" title="1">panic("algos.list.(Hmap).Del(key K): No any key found, check first")</span>
+}
+
+func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
+        res := []K{}
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="65536">{
+                for node := ptr; node != nil; node = node.next </span><span class="cov2" title="8">{
+                        res = append(res, node.key)
+                }</span>
+        }
+        <span class="cov1" title="1">array.QuickSort(res)
+        return res</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package list
+
 type node[T any] struct {
         val  T
         next *node[T]
@@ -1158,7 +1264,7 @@ func (q *Queue[T]) Drop() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package math
+		<pre class="file" id="file8" style="display: none">package math
 
 import (
         "fmt"

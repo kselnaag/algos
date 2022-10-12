@@ -1,9 +1,9 @@
-package array_test
+package list_test
 
 import (
 	"testing"
 
-	"github.com/kselnaag/algos/array"
+	"github.com/kselnaag/algos/list"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,7 +14,7 @@ func TestHmap(t *testing.T) {
 		assert.Nil(err)
 	}()
 
-	hmap := array.NewHmap[int, string]()
+	hmap := list.NewHmap[int, string]()
 	assert.Equal(hmap.IsEmpty(), true)
 	assert.Equal(hmap.Size(), 0)
 	assert.Equal(hmap.IsKey(1), false)
@@ -50,5 +50,4 @@ func TestHmap(t *testing.T) {
 	hmap.Drop()
 	assert.Equal(hmap.IsEmpty(), true)
 	assert.Equal(hmap.Size(), 0)
-
 }

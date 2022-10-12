@@ -102,16 +102,11 @@ func (hm *Hmap[K, V]) Del(key K) {
 
 func (hm *Hmap[K, V]) IterateKeys() []K {
 	res := []K{}
-	fwd := uint16(0)
-	for {
-		if hm.hmarr[int(fwd)] != nil {
-			for _, hnode := range *hm.hmarr[int(fwd)] {
-				res = append(res, hnode.key)
+	for _, ptr := range hm.hmarr {
+		if ptr != nil {
+			for _, kvnode := range *ptr {
+				res = append(res, kvnode.key)
 			}
-		}
-		fwd++
-		if fwd == 0 {
-			break
 		}
 	}
 	QuickSort(res)

@@ -13,9 +13,9 @@ type myType struct {
 	b int
 }
 
-func (s myType) CompareTo(st I.Comp) int {
+func (s myType) CompareTo(obj I.Comp) int {
 	this := s.a + s.b
-	that := (st.(*myType)).a + (st.(*myType)).b
+	that := (obj.(*myType)).a + (obj.(*myType)).b
 	if this < that {
 		return -1
 	}

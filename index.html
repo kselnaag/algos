@@ -55,19 +55,21 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/array/equal.go (50.0%)</option>
+				<option value="file0">github.com/kselnaag/algos/array/equal.go (43.8%)</option>
 				
-				<option value="file1">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
+				<option value="file1">github.com/kselnaag/algos/array/hmap.go (92.7%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
 				
-				<option value="file3">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
+				<option value="file3">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/graph/uf.go (95.8%)</option>
+				<option value="file4">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
-				<option value="file5">github.com/kselnaag/algos/list/stack.go (98.7%)</option>
+				<option value="file5">github.com/kselnaag/algos/graph/uf.go (95.8%)</option>
 				
-				<option value="file6">github.com/kselnaag/algos/math/math.go (100.0%)</option>
+				<option value="file6">github.com/kselnaag/algos/list/stack.go (98.7%)</option>
+				
+				<option value="file7">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -98,22 +100,25 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-func lt[T any](i, j T) bool <span class="cov10" title="5984">{
+func lt[T any](i, j T) bool <span class="cov10" title="6086">{
         switch ii := any(i).(type) </span>{
-        case I.Comp:<span class="cov6" title="289">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) &lt; 0</span>
-        case int:<span class="cov8" title="1902">
+        case int:<span class="cov8" title="1949">
                 jj := any(j).(int)
                 return ii &lt; jj</span>
+        case float64:<span class="cov8" title="1928">
+                jj := any(j).(float64)
+                return ii &lt; jj</span>
+        case string:<span class="cov8" title="1911">
+                jj := any(j).(string)
+                return ii &lt; jj</span>
+        case I.Comp:<span class="cov6" title="298">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) &lt; 0</span>
         case uint:<span class="cov0" title="0">
                 jj := any(j).(uint)
                 return ii &lt; jj</span>
-        case float64:<span class="cov8" title="1933">
-                jj := any(j).(float64)
-                return ii &lt; jj</span>
-        case string:<span class="cov8" title="1860">
-                jj := any(j).(string)
+        case uint32:<span class="cov0" title="0">
+                jj := any(j).(uint32)
                 return ii &lt; jj</span>
         default:<span class="cov0" title="0">
                 s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
@@ -122,22 +127,25 @@ func lt[T any](i, j T) bool <span class="cov10" title="5984">{
         }
 }
 
-func gt[T any](i, j T) bool <span class="cov8" title="922">{
+func gt[T any](i, j T) bool <span class="cov8" title="914">{
         switch ii := any(i).(type) </span>{
-        case I.Comp:<span class="cov4" title="45">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) &gt; 0</span>
-        case int:<span class="cov6" title="290">
+        case int:<span class="cov6" title="287">
                 jj := any(j).(int)
                 return ii &gt; jj</span>
+        case float64:<span class="cov6" title="290">
+                jj := any(j).(float64)
+                return ii &gt; jj</span>
+        case string:<span class="cov6" title="289">
+                jj := any(j).(string)
+                return ii &gt; jj</span>
+        case I.Comp:<span class="cov4" title="48">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) &gt; 0</span>
         case uint:<span class="cov0" title="0">
                 jj := any(j).(uint)
                 return ii &gt; jj</span>
-        case float64:<span class="cov6" title="302">
-                jj := any(j).(float64)
-                return ii &gt; jj</span>
-        case string:<span class="cov6" title="285">
-                jj := any(j).(string)
+        case uint32:<span class="cov0" title="0">
+                jj := any(j).(uint32)
                 return ii &gt; jj</span>
         default:<span class="cov0" title="0">
                 s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp interface: "
@@ -148,20 +156,23 @@ func gt[T any](i, j T) bool <span class="cov8" title="922">{
 
 func eq[T any](i, j T) bool <span class="cov3" title="12">{
         switch ii := any(i).(type) </span>{
-        case I.Comp:<span class="cov0" title="0">
-                jj := any(j).(I.Comp)
-                return ii.CompareTo(jj) == 0</span>
         case int:<span class="cov3" title="12">
                 jj := any(j).(int)
-                return ii == jj</span>
-        case uint:<span class="cov0" title="0">
-                jj := any(j).(uint)
                 return ii == jj</span>
         case float64:<span class="cov0" title="0">
                 jj := any(j).(float64)
                 return ii == jj</span>
         case string:<span class="cov0" title="0">
                 jj := any(j).(string)
+                return ii == jj</span>
+        case I.Comp:<span class="cov0" title="0">
+                jj := any(j).(I.Comp)
+                return ii.CompareTo(jj) == 0</span>
+        case uint:<span class="cov0" title="0">
+                jj := any(j).(uint)
+                return ii == jj</span>
+        case uint32:<span class="cov0" title="0">
+                jj := any(j).(uint32)
                 return ii == jj</span>
         default:<span class="cov0" title="0">
                 s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp interface: "
@@ -172,6 +183,127 @@ func eq[T any](i, j T) bool <span class="cov3" title="12">{
 </pre>
 		
 		<pre class="file" id="file1" style="display: none">package array
+
+import (
+        "math"
+
+        amath "github.com/kselnaag/algos/math"
+        I "github.com/kselnaag/algos/types"
+)
+
+type kvnode[K I.Ord, V any] struct {
+        key K
+        val V
+}
+
+type Hmap[K I.Ord, V any] struct {
+        hmarr   [math.MaxUint16 + 1]*[]kvnode[K, V]
+        keysnum int
+}
+
+func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
+        return Hmap[K, V]{
+                hmarr:   [math.MaxUint16 + 1]*[]kvnode[K, V]{},
+                keysnum: 0,
+        }
+}</span>
+
+func (hm *Hmap[K, V]) Drop() <span class="cov1" title="1">{
+        hm.hmarr = [math.MaxUint16 + 1]*[]kvnode[K, V]{}
+        hm.keysnum = 0
+}</span>
+
+func (hm *Hmap[K, V]) Size() int <span class="cov2" title="10">{
+        return hm.keysnum
+}</span>
+
+func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="5">{
+        return hm.Size() == 0
+}</span>
+
+func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        node := kvnode[K, V]{key: key, val: val}
+        if hm.hmarr[int(hash)] == nil </span><span class="cov2" title="9">{
+                hm.hmarr[int(hash)] = &amp;[]kvnode[K, V]{node}
+                hm.keysnum++
+                return
+        }</span>
+        <span class="cov1" title="2">for i, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="2">{
+                if hnode.key == key </span><span class="cov1" title="2">{
+                        (*hm.hmarr[int(hash)])[i] = node
+                        return
+                }</span>
+        }
+        <span class="cov0" title="0">*hm.hmarr[int(hash)] = append(*hm.hmarr[int(hash)], node)
+        hm.keysnum++</span>
+}
+
+func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
+                return false
+        }</span>
+        <span class="cov2" title="4">for _, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="3">{
+                if hnode.key == key </span><span class="cov1" title="3">{
+                        return true
+                }</span>
+        }
+        <span class="cov1" title="1">return false</span>
+}
+
+func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
+                panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
+        }
+        <span class="cov1" title="2">for _, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="2">{
+                if hnode.key == key </span><span class="cov1" title="2">{
+                        return hnode.val
+                }</span>
+        }
+        <span class="cov0" title="0">panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
+}
+
+func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
+        abytes := amath.ConvToByteArr(key)
+        hash := amath.HashPirson16(abytes)
+        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="1">{
+                panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
+        }
+        <span class="cov1" title="1">for i, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="1">{
+                if hnode.key == key </span><span class="cov1" title="1">{
+                        *hm.hmarr[int(hash)] = append((*hm.hmarr[int(hash)])[:i], (*hm.hmarr[int(hash)])[i+1:]...)
+                        hm.keysnum--
+                        return
+                }</span>
+        }
+        <span class="cov0" title="0">panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
+}
+
+func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
+        res := []K{}
+        fwd := uint16(0)
+        for </span><span class="cov10" title="65536">{
+                if hm.hmarr[int(fwd)] != nil </span><span class="cov2" title="9">{
+                        for _, hnode := range *hm.hmarr[int(fwd)] </span><span class="cov2" title="8">{
+                                res = append(res, hnode.key)
+                        }</span>
+                }
+                <span class="cov10" title="65536">fwd++
+                if fwd == 0 </span><span class="cov1" title="1">{
+                        break</span>
+                }
+        }
+        <span class="cov1" title="1">QuickSort(res)
+        return res</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package array
 
 // ===========================
 type MinPQ[T any] struct {
@@ -312,7 +444,7 @@ func (max *MaxPQ[T]) GetMax() T <span class="cov10" title="24">{
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package array
+		<pre class="file" id="file3" style="display: none">package array
 
 import (
         "math/rand"
@@ -323,24 +455,24 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="279">{
-        if hi &lt;= lo </span><span class="cov6" title="161">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="283">{
+        if hi &lt;= lo </span><span class="cov6" title="163">{
                 return
         }</span>
-        <span class="cov6" title="118">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="427">{
-                if lt(arr[i], v) </span><span class="cov6" title="217">{
+        <span class="cov6" title="120">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="467">{
+                if lt(arr[i], v) </span><span class="cov7" title="265">{
                         swap(arr, l, i)
                         l++
                         i++
-                }</span> else<span class="cov6" title="210"> if gt(arr[i], v) </span><span class="cov6" title="210">{
+                }</span> else<span class="cov6" title="202"> if gt(arr[i], v) </span><span class="cov6" title="202">{
                         swap(arr, i, g)
                         g--
                 }</span> else<span class="cov0" title="0"> {
                         i++
                 }</span>
         }
-        <span class="cov6" title="118">q3sort(arr, lo, l-1)
+        <span class="cov6" title="120">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -370,16 +502,16 @@ func sink[T any](arr []T, k, n int) <span class="cov6" title="215">{
         }
 }
 
-func QuickSort[T any](arr []T) <span class="cov5" title="43">{
+func QuickSort[T any](arr []T) <span class="cov5" title="44">{
         Shuffle(arr)
         qsort(arr, 0, len(arr)-1)
 }</span>
 
-func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
+func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="128">{
         if hi &lt;= lo </span><span class="cov5" title="50">{
                 return
         }</span>
-        <span class="cov5" title="77">if (hi - lo + 1) &lt;= 12 </span><span class="cov4" title="35">{
+        <span class="cov5" title="78">if (hi - lo + 1) &lt;= 12 </span><span class="cov4" title="36">{
                 InsertSort(arr)
                 return
         }</span>
@@ -390,21 +522,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="183">{
+        for </span><span class="cov6" title="208">{
                 for ; lt(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="183">for ; lt(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="208">for ; lt(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="183">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="208">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="141">swap(arr, i, j)</span>
+                <span class="cov6" title="166">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -520,13 +652,13 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
         }
 }
 
-func InsertSort[T any](arr []T) <span class="cov6" title="122">{
+func InsertSort[T any](arr []T) <span class="cov6" title="123">{
         alen := len(arr)
-        for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1597">{
-                        if lt(arr[j], arr[j-1]) </span><span class="cov8" title="1255">{
+        for i := 1; i &lt; alen; i++ </span><span class="cov7" title="487">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1609">{
+                        if lt(arr[j], arr[j-1]) </span><span class="cov8" title="1264">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="342"> {
+                        }</span> else<span class="cov7" title="345"> {
                                 break</span>
                         }
                 }
@@ -550,9 +682,9 @@ func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         <span class="cov1" title="2">return -1</span>
 }
 
-func Shuffle[T any](arr []T) <span class="cov5" title="88">{
+func Shuffle[T any](arr []T) <span class="cov5" title="89">{
         alen := len(arr)
-        for i := 0; i &lt; alen; i++ </span><span class="cov7" title="419">{
+        for i := 0; i &lt; alen; i++ </span><span class="cov7" title="427">{
                 j := rand.Intn(i + 1)
                 swap(arr, i, j)
         }</span>
@@ -585,12 +717,12 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3241">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3323">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package array
+		<pre class="file" id="file4" style="display: none">package array
 
 import (
         _ "github.com/kselnaag/algos/types"
@@ -758,7 +890,7 @@ func (q *Queue[T]) Drop() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package graph
+		<pre class="file" id="file5" style="display: none">package graph
 
 import (
         "github.com/kselnaag/algos/array"
@@ -825,7 +957,7 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package list
+		<pre class="file" id="file6" style="display: none">package list
 
 type node[T any] struct {
         val  T
@@ -1026,11 +1158,70 @@ func (q *Queue[T]) Drop() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package math
+		<pre class="file" id="file7" style="display: none">package math
 
 import (
+        "fmt"
+
         I "github.com/kselnaag/algos/types"
 )
+
+func ConvToByteArr[T I.Ord](mess T) []byte <span class="cov4" title="11">{
+        res := make([]byte, 8)
+        switch m := any(mess).(type) </span>{
+        case int:<span class="cov2" title="3">
+                mi := uint(m)
+                for i := 0; i &lt; 8; i++ </span><span class="cov6" title="24">{
+                        res[i] = byte(mi &gt;&gt; (8 * (7 - i)))
+                }</span>
+        case uint:<span class="cov2" title="3">
+                for i := 0; i &lt; 8; i++ </span><span class="cov6" title="24">{
+                        res[i] = byte(m &gt;&gt; (8 * (7 - i)))
+                }</span>
+        case float64:<span class="cov2" title="3">
+                mi := uint(m)
+                for i := 0; i &lt; 8; i++ </span><span class="cov6" title="24">{
+                        res[i] = byte(mi &gt;&gt; (8 * (7 - i)))
+                }</span>
+        case string:<span class="cov1" title="1">
+                return []byte(m)</span>
+        default:<span class="cov1" title="1">
+                s := "algos.(math).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
+                s += fmt.Sprintf("arg Type is: %T", mess)
+                panic(s)</span>
+        }
+        <span class="cov4" title="9">return res</span>
+}
+
+func HashPirson16(mess []byte) uint16 <span class="cov2" title="3">{
+        T := [256]byte{
+                130, 4, 133, 49, 108, 178, 125, 95, 35, 126, 41, 129, 229, 48, 6, 94, 206,
+                69, 20, 194, 236, 79, 156, 67, 100, 239, 152, 149, 93, 91, 56, 8, 183, 165,
+                42, 148, 114, 59, 57, 5, 112, 151, 54, 97, 109, 145, 228, 196, 250, 104,
+                169, 107, 86, 64, 98, 181, 200, 58, 199, 70, 138, 179, 60, 249, 34, 123,
+                30, 22, 124, 240, 201, 132, 218, 21, 74, 83, 39, 223, 73, 88, 136, 27, 0,
+                10, 89, 51, 215, 251, 255, 3, 235, 241, 19, 102, 71, 38, 166, 220, 110, 23,
+                232, 25, 172, 210, 142, 211, 121, 242, 75, 208, 195, 203, 226, 253, 176, 17,
+                66, 158, 231, 237, 99, 254, 173, 221, 117, 139, 213, 90, 85, 45, 187, 84, 92,
+                44, 164, 247, 122, 32, 127, 177, 170, 155, 111, 185, 171, 61, 76, 184, 234, 192,
+                16, 106, 160, 204, 153, 161, 186, 131, 28, 137, 37, 216, 248, 55, 72, 50, 26,
+                46, 53, 224, 7, 217, 189, 120, 219, 167, 119, 11, 252, 65, 135, 96, 222, 68,
+                144, 214, 227, 101, 207, 103, 212, 175, 157, 141, 168, 82, 163, 47, 52, 15, 113,
+                230, 245, 116, 43, 80, 246, 33, 198, 197, 146, 193, 13, 31, 24, 143, 12, 18, 118,
+                14, 62, 154, 78, 81, 134, 162, 105, 63, 244, 77, 190, 209, 150, 233, 159, 202, 191,
+                40, 87, 180, 188, 36, 238, 9, 140, 128, 147, 174, 1, 2, 182, 243, 29, 115, 205, 225,
+        }
+        result := uint16(0)
+        mlen := len(mess)
+        hash := T[mlen%256]
+        for j := 0; j &lt; 2; j++ </span><span class="cov3" title="6">{
+                for i := 0; i &lt; mlen; i++ </span><span class="cov7" title="48">{
+                        hash = T[int(hash^mess[i])]
+                }</span>
+                <span class="cov3" title="6">result += uint16(hash) &lt;&lt; (8 * j)</span>
+        }
+        <span class="cov2" title="3">return result</span>
+}
 
 func Harmonic(n int) float64 <span class="cov3" title="6">{
         if n &lt; 0 </span><span class="cov2" title="2">{

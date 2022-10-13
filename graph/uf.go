@@ -44,8 +44,9 @@ func (uf *UF) Find(p int) int {
 	}
 	// path compression
 	blen := uf.bag.Size()
+	barr := uf.bag.Iterate()
 	for i := 0; i < blen; i++ {
-		t := uf.bag.Next()
+		t := barr[i]
 		uf.id[t] = p
 	}
 	uf.bag.Drop()

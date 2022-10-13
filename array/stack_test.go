@@ -27,23 +27,14 @@ func TestStack(t *testing.T) {
 		bag.Add(23)
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
-		blen := bag.Size()
-		arr := make([]int, 7)
-		for i := 0; i < blen; i++ {
-			arr[i] = bag.Next()
-		}
-		assert.Equal(arr, []int{134, 25, 67, 43, 29, 3, 23})
+		assert.Equal(bag.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
 		bag.Reverse()
-		for i := 0; i < blen; i++ {
-			arr[i] = bag.Next()
-		}
-		assert.Equal(arr, []int{23, 3, 29, 43, 67, 25, 134})
+		assert.Equal(bag.Iterate(), []int{23, 3, 29, 43, 67, 25, 134})
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
 		bag.Drop()
 		assert.True(bag.IsEmpty())
 		assert.Equal(bag.Size(), 0)
-		assert.Panics(func() { bag.Next() }, "algos.array.(Bag).Next():  the code is not panic when structure is empty")
 	})
 
 	t.Run("stack", func(t *testing.T) {
@@ -59,14 +50,11 @@ func TestStack(t *testing.T) {
 		stack.Push(23)
 		assert.False(stack.IsEmpty())
 		assert.Equal(stack.Size(), 7)
-		slen := stack.Size()
-		arr := make([]int, 7)
-		for i := 0; i < slen; i++ {
-			arr[i] = stack.Next()
-		}
-		assert.Equal(arr, []int{134, 25, 67, 43, 29, 3, 23})
+		assert.Equal(stack.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
 
 		stack.Reverse()
+		slen := stack.Size()
+		arr := make([]int, 7)
 		for i := 0; i < slen; i++ {
 			arr[i] = stack.Pop()
 		}
@@ -86,7 +74,6 @@ func TestStack(t *testing.T) {
 		stack.Drop()
 		assert.True(stack.IsEmpty())
 		assert.Equal(stack.Size(), 0)
-		assert.Panics(func() { stack.Next() }, "algos.array.(Stack).Next():  the code is not panic when structure is empty")
 		assert.Panics(func() { stack.Pop() }, "algos.array.(Stack).Pop():  the code is not panic when structure is empty")
 	})
 
@@ -103,13 +90,10 @@ func TestStack(t *testing.T) {
 		queue.Enq(23)
 		assert.False(queue.IsEmpty())
 		assert.Equal(queue.Size(), 7)
+		assert.Equal(queue.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
+		queue.Reverse()
 		qlen := queue.Size()
 		arr := make([]int, 7)
-		for i := 0; i < qlen; i++ {
-			arr[i] = queue.Next()
-		}
-		assert.Equal(arr, []int{134, 25, 67, 43, 29, 3, 23})
-		queue.Reverse()
 		for i := 0; i < qlen; i++ {
 			arr[i] = queue.Deq()
 		}
@@ -129,7 +113,6 @@ func TestStack(t *testing.T) {
 		queue.Drop()
 		assert.True(queue.IsEmpty())
 		assert.Equal(queue.Size(), 0)
-		assert.Panics(func() { queue.Next() }, "algos.array.(Queue).Next():  the code is not panic when structure is empty")
 		assert.Panics(func() { queue.Deq() }, "algos.array.(Queue).Deq():  the code is not panic when structure is empty")
 	})
 }

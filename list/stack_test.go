@@ -27,23 +27,14 @@ func TestList(t *testing.T) {
 		bag.Add(23)
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
-		blen := bag.Size()
-		arr := make([]int, 7)
-		for i := 0; i < blen; i++ {
-			arr[i] = bag.Next()
-		}
-		assert.Equal(arr, []int{23, 3, 29, 43, 67, 25, 134})
+		assert.Equal(bag.Iterate(), []int{23, 3, 29, 43, 67, 25, 134})
 		bag.Reverse()
-		for i := 0; i < blen; i++ {
-			arr[i] = bag.Next()
-		}
-		assert.Equal(arr, []int{134, 25, 67, 43, 29, 3, 23})
+		assert.Equal(bag.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
 		bag.Drop()
 		assert.True(bag.IsEmpty())
 		assert.Equal(bag.Size(), 0)
-		assert.Panics(func() { bag.Next() }, "The code is not panic")
 	})
 
 	t.Run("stack", func(t *testing.T) {
@@ -59,13 +50,10 @@ func TestList(t *testing.T) {
 		stack.Push(23)
 		assert.False(stack.IsEmpty())
 		assert.Equal(stack.Size(), 7)
+		assert.Equal(stack.Iterate(), []int{23, 3, 29, 43, 67, 25, 134})
+		stack.Reverse()
 		slen := stack.Size()
 		arr := make([]int, 7)
-		for i := 0; i < slen; i++ {
-			arr[i] = stack.Next()
-		}
-		assert.Equal(arr, []int{23, 3, 29, 43, 67, 25, 134})
-		stack.Reverse()
 		for i := 0; i < slen; i++ {
 			arr[i] = stack.Pop()
 		}
@@ -85,7 +73,6 @@ func TestList(t *testing.T) {
 		stack.Drop()
 		assert.True(stack.IsEmpty())
 		assert.Equal(stack.Size(), 0)
-		assert.Panics(func() { stack.Next() }, "The code is not panic")
 		assert.Panics(func() { stack.Pop() }, "The code is not panics")
 	})
 
@@ -102,13 +89,10 @@ func TestList(t *testing.T) {
 		queue.Enq(23)
 		assert.False(queue.IsEmpty())
 		assert.Equal(queue.Size(), 7)
+		assert.Equal(queue.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
+		queue.Reverse()
 		qlen := queue.Size()
 		arr := make([]int, 7)
-		for i := 0; i < qlen; i++ {
-			arr[i] = queue.Next()
-		}
-		assert.Equal(arr, []int{134, 25, 67, 43, 29, 3, 23})
-		queue.Reverse()
 		for i := 0; i < qlen; i++ {
 			arr[i] = queue.Deq()
 		}
@@ -128,7 +112,6 @@ func TestList(t *testing.T) {
 		queue.Drop()
 		assert.True(queue.IsEmpty())
 		assert.Equal(queue.Size(), 0)
-		assert.Panics(func() { queue.Next() }, "The code is not panic")
 		assert.Panics(func() { queue.Deq() }, "The code is not panic")
 	})
 }

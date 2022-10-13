@@ -13,12 +13,17 @@ func NewMinPQ[T any]() MinPQ[T] {
 	}
 }
 
-func (min *MinPQ[T]) IsEmpty() bool {
-	return min.size == 0
+func (min *MinPQ[T]) Drop() {
+	min.pq = make([]T, 1, 8)
+	min.size = 0
 }
 
 func (min *MinPQ[T]) Size() int {
 	return min.size
+}
+
+func (min *MinPQ[T]) IsEmpty() bool {
+	return min.Size() == 0
 }
 
 func (min *MinPQ[T]) swim(k int) {
@@ -69,6 +74,10 @@ func (min *MinPQ[T]) GetMin() T {
 	return ret
 }
 
+func (min *MinPQ[T]) Iterate() []T {
+	return min.pq[1:(min.size + 1)]
+}
+
 // ===========================
 type MaxPQ[T any] struct {
 	pq   []T
@@ -82,12 +91,17 @@ func NewMaxPQ[T any]() MaxPQ[T] {
 	}
 }
 
-func (max *MaxPQ[T]) IsEmpty() bool {
-	return max.size == 0
+func (max *MaxPQ[T]) Drop() {
+	max.pq = make([]T, 1, 8)
+	max.size = 0
 }
 
 func (max *MaxPQ[T]) Size() int {
 	return max.size
+}
+
+func (max *MaxPQ[T]) IsEmpty() bool {
+	return max.Size() == 0
 }
 
 func (max *MaxPQ[T]) swim(k int) {
@@ -136,4 +150,8 @@ func (max *MaxPQ[T]) GetMax() T {
 	max.size--
 	max.sink(1)
 	return ret
+}
+
+func (max *MaxPQ[T]) Iterate() []T {
+	return max.pq[1:(max.size + 1)]
 }

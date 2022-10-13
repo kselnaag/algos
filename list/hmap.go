@@ -15,19 +15,19 @@ type kvnode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-	hmarr   [math.MaxUint16 + 1]*kvnode[K, V]
+	hmarr   [math.MaxUint16]*kvnode[K, V]
 	keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] {
 	return Hmap[K, V]{
-		hmarr:   [math.MaxUint16 + 1]*kvnode[K, V]{},
+		hmarr:   [math.MaxUint16]*kvnode[K, V]{},
 		keysnum: 0,
 	}
 }
 
 func (hm *Hmap[K, V]) Drop() {
-	hm.hmarr = [math.MaxUint16 + 1]*kvnode[K, V]{}
+	hm.hmarr = [math.MaxUint16]*kvnode[K, V]{}
 	hm.keysnum = 0
 }
 

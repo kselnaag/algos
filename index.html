@@ -59,17 +59,17 @@
 				
 				<option value="file1">github.com/kselnaag/algos/array/hmap.go (92.2%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/pq.go (96.6%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/pq.go (100.0%)</option>
 				
 				<option value="file3">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
 				
 				<option value="file4">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
-				<option value="file5">github.com/kselnaag/algos/graph/uf.go (95.8%)</option>
+				<option value="file5">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
 				
 				<option value="file6">github.com/kselnaag/algos/list/hmap.go (95.6%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/list/stack.go (98.7%)</option>
+				<option value="file7">github.com/kselnaag/algos/list/stack.go (98.4%)</option>
 				
 				<option value="file8">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
@@ -102,15 +102,15 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-func lt[T any](i, j T) bool <span class="cov10" title="6086">{
+func lt[T any](i, j T) bool <span class="cov10" title="6107">{
         switch ii := any(i).(type) </span>{
-        case int:<span class="cov8" title="1949">
+        case int:<span class="cov8" title="1956">
                 jj := any(j).(int)
                 return ii &lt; jj</span>
-        case float64:<span class="cov8" title="1928">
+        case float64:<span class="cov8" title="1935">
                 jj := any(j).(float64)
                 return ii &lt; jj</span>
-        case string:<span class="cov8" title="1911">
+        case string:<span class="cov8" title="1918">
                 jj := any(j).(string)
                 return ii &lt; jj</span>
         case I.Comp:<span class="cov6" title="298">
@@ -129,15 +129,15 @@ func lt[T any](i, j T) bool <span class="cov10" title="6086">{
         }
 }
 
-func gt[T any](i, j T) bool <span class="cov8" title="914">{
+func gt[T any](i, j T) bool <span class="cov8" title="944">{
         switch ii := any(i).(type) </span>{
-        case int:<span class="cov6" title="287">
+        case int:<span class="cov6" title="297">
                 jj := any(j).(int)
                 return ii &gt; jj</span>
-        case float64:<span class="cov6" title="290">
+        case float64:<span class="cov6" title="300">
                 jj := any(j).(float64)
                 return ii &gt; jj</span>
-        case string:<span class="cov6" title="289">
+        case string:<span class="cov6" title="299">
                 jj := any(j).(string)
                 return ii &gt; jj</span>
         case I.Comp:<span class="cov4" title="48">
@@ -199,19 +199,19 @@ type kvnode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-        hmarr   [math.MaxUint16 + 1]*[]kvnode[K, V]
+        hmarr   [math.MaxUint16]*[]kvnode[K, V]
         keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
         return Hmap[K, V]{
-                hmarr:   [math.MaxUint16 + 1]*[]kvnode[K, V]{},
+                hmarr:   [math.MaxUint16]*[]kvnode[K, V]{},
                 keysnum: 0,
         }
 }</span>
 
 func (hm *Hmap[K, V]) Drop() <span class="cov1" title="1">{
-        hm.hmarr = [math.MaxUint16 + 1]*[]kvnode[K, V]{}
+        hm.hmarr = [math.MaxUint16]*[]kvnode[K, V]{}
         hm.keysnum = 0
 }</span>
 
@@ -288,7 +288,7 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="65536">{
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="65535">{
                 if ptr != nil </span><span class="cov2" title="9">{
                         for _, kvnode := range *ptr </span><span class="cov2" title="8">{
                                 res = append(res, kvnode.key)
@@ -308,68 +308,77 @@ type MinPQ[T any] struct {
         size int
 }
 
-func NewMinPQ[T any]() MinPQ[T] <span class="cov4" title="3">{
+func NewMinPQ[T any]() MinPQ[T] <span class="cov3" title="3">{
         return MinPQ[T]{
                 pq:   make([]T, 1, 8),
                 size: 0,
         }
 }</span>
 
-func (min *MinPQ[T]) IsEmpty() bool <span class="cov8" title="12">{
-        return min.size == 0
+func (min *MinPQ[T]) Drop() <span class="cov3" title="3">{
+        min.pq = make([]T, 1, 8)
+        min.size = 0
 }</span>
 
-func (min *MinPQ[T]) Size() int <span class="cov8" title="12">{
+func (min *MinPQ[T]) Size() int <span class="cov9" title="36">{
         return min.size
 }</span>
 
-func (min *MinPQ[T]) swim(k int) <span class="cov9" title="21">{
-        for (k &gt; 1) &amp;&amp; gt(min.pq[k/2], min.pq[k]) </span><span class="cov9" title="18">{
+func (min *MinPQ[T]) IsEmpty() bool <span class="cov7" title="18">{
+        return min.Size() == 0
+}</span>
+
+func (min *MinPQ[T]) swim(k int) <span class="cov10" title="42">{
+        for (k &gt; 1) &amp;&amp; gt(min.pq[k/2], min.pq[k]) </span><span class="cov9" title="36">{
                 swap(min.pq, k/2, k)
                 k /= 2
         }</span>
 }
-func (min *MinPQ[T]) sink(k int) <span class="cov9" title="21">{
-        for (2 * k) &lt;= min.size </span><span class="cov9" title="21">{
+func (min *MinPQ[T]) sink(k int) <span class="cov8" title="21">{
+        for (2 * k) &lt;= min.size </span><span class="cov8" title="21">{
                 j := 2 * k
-                if (j &lt; min.size) &amp;&amp; gt(min.pq[j], min.pq[j+1]) </span><span class="cov6" title="6">{
+                if (j &lt; min.size) &amp;&amp; gt(min.pq[j], min.pq[j+1]) </span><span class="cov5" title="6">{
                         j++
                 }</span>
-                <span class="cov9" title="21">if !gt(min.pq[k], min.pq[j]) </span><span class="cov7" title="9">{
+                <span class="cov8" title="21">if !gt(min.pq[k], min.pq[j]) </span><span class="cov6" title="9">{
                         break</span>
                 }
-                <span class="cov8" title="12">swap(min.pq, k, j)
+                <span class="cov6" title="12">swap(min.pq, k, j)
                 k = j</span>
         }
 }
 
-func (min *MinPQ[T]) Add(val T) <span class="cov9" title="21">{
+func (min *MinPQ[T]) Add(val T) <span class="cov10" title="42">{
         min.size++
-        if len(min.pq) &gt; min.size </span><span class="cov0" title="0">{
+        if len(min.pq) &gt; min.size </span><span class="cov8" title="21">{
                 min.pq[min.size] = val
-        }</span> else<span class="cov9" title="21"> {
+        }</span> else<span class="cov8" title="21"> {
                 min.pq = append(min.pq, val)
         }</span>
-        <span class="cov9" title="21">min.swim(min.size)</span>
+        <span class="cov10" title="42">min.swim(min.size)</span>
 }
 
-func (min *MinPQ[T]) Min() T <span class="cov7" title="9">{
-        if min.size &lt; 1 </span><span class="cov4" title="3">{
+func (min *MinPQ[T]) Min() T <span class="cov6" title="9">{
+        if min.size &lt; 1 </span><span class="cov3" title="3">{
                 panic("algos.array.(MinPQ).Min(): Queue is empty ")</span>
         }
-        <span class="cov6" title="6">return min.pq[1]</span>
+        <span class="cov5" title="6">return min.pq[1]</span>
 }
 
-func (min *MinPQ[T]) GetMin() T <span class="cov10" title="24">{
-        if min.size &lt; 1 </span><span class="cov4" title="3">{
+func (min *MinPQ[T]) GetMin() T <span class="cov8" title="24">{
+        if min.size &lt; 1 </span><span class="cov3" title="3">{
                 panic("algos.array.(MinPQ).GetMin(): Queue is empty ")</span>
         }
-        <span class="cov9" title="21">ret := min.pq[1]
+        <span class="cov8" title="21">ret := min.pq[1]
         swap(min.pq, 1, min.size)
         min.size--
         min.sink(1)
         return ret</span>
 }
+
+func (min *MinPQ[T]) Iterate() []T <span class="cov3" title="3">{
+        return min.pq[1:(min.size + 1)]
+}</span>
 
 // ===========================
 type MaxPQ[T any] struct {
@@ -377,68 +386,77 @@ type MaxPQ[T any] struct {
         size int
 }
 
-func NewMaxPQ[T any]() MaxPQ[T] <span class="cov4" title="3">{
+func NewMaxPQ[T any]() MaxPQ[T] <span class="cov3" title="3">{
         return MaxPQ[T]{
                 pq:   make([]T, 1, 8),
                 size: 0,
         }
 }</span>
 
-func (max *MaxPQ[T]) IsEmpty() bool <span class="cov8" title="12">{
-        return max.size == 0
+func (max *MaxPQ[T]) Drop() <span class="cov3" title="3">{
+        max.pq = make([]T, 1, 8)
+        max.size = 0
 }</span>
 
-func (max *MaxPQ[T]) Size() int <span class="cov8" title="12">{
+func (max *MaxPQ[T]) Size() int <span class="cov9" title="36">{
         return max.size
 }</span>
 
-func (max *MaxPQ[T]) swim(k int) <span class="cov9" title="21">{
-        for (k &gt; 1) &amp;&amp; lt(max.pq[k/2], max.pq[k]) </span><span class="cov4" title="3">{
+func (max *MaxPQ[T]) IsEmpty() bool <span class="cov7" title="18">{
+        return max.Size() == 0
+}</span>
+
+func (max *MaxPQ[T]) swim(k int) <span class="cov10" title="42">{
+        for (k &gt; 1) &amp;&amp; lt(max.pq[k/2], max.pq[k]) </span><span class="cov5" title="6">{
                 swap(max.pq, k/2, k)
                 k /= 2
         }</span>
 }
-func (max *MaxPQ[T]) sink(k int) <span class="cov9" title="21">{
-        for (2 * k) &lt;= max.size </span><span class="cov10" title="24">{
+func (max *MaxPQ[T]) sink(k int) <span class="cov8" title="21">{
+        for (2 * k) &lt;= max.size </span><span class="cov8" title="24">{
                 j := 2 * k
-                if (j &lt; max.size) &amp;&amp; lt(max.pq[j], max.pq[j+1]) </span><span class="cov6" title="6">{
+                if (j &lt; max.size) &amp;&amp; lt(max.pq[j], max.pq[j+1]) </span><span class="cov5" title="6">{
                         j++
                 }</span>
-                <span class="cov10" title="24">if !lt(max.pq[k], max.pq[j]) </span><span class="cov6" title="6">{
+                <span class="cov8" title="24">if !lt(max.pq[k], max.pq[j]) </span><span class="cov5" title="6">{
                         break</span>
                 }
-                <span class="cov9" title="18">swap(max.pq, k, j)
+                <span class="cov7" title="18">swap(max.pq, k, j)
                 k = j</span>
         }
 }
 
-func (max *MaxPQ[T]) Add(val T) <span class="cov9" title="21">{
+func (max *MaxPQ[T]) Add(val T) <span class="cov10" title="42">{
         max.size++
-        if len(max.pq) &gt; max.size </span><span class="cov0" title="0">{
+        if len(max.pq) &gt; max.size </span><span class="cov8" title="21">{
                 max.pq[max.size] = val
-        }</span> else<span class="cov9" title="21"> {
+        }</span> else<span class="cov8" title="21"> {
                 max.pq = append(max.pq, val)
         }</span>
-        <span class="cov9" title="21">max.swim(max.size)</span>
+        <span class="cov10" title="42">max.swim(max.size)</span>
 }
 
-func (max *MaxPQ[T]) Max() T <span class="cov7" title="9">{
-        if max.size &lt; 1 </span><span class="cov4" title="3">{
+func (max *MaxPQ[T]) Max() T <span class="cov6" title="9">{
+        if max.size &lt; 1 </span><span class="cov3" title="3">{
                 panic("algos.array.(MaxPQ).Max(): Queue is empty ")</span>
         }
-        <span class="cov6" title="6">return max.pq[1]</span>
+        <span class="cov5" title="6">return max.pq[1]</span>
 }
 
-func (max *MaxPQ[T]) GetMax() T <span class="cov10" title="24">{
-        if max.size &lt; 1 </span><span class="cov4" title="3">{
+func (max *MaxPQ[T]) GetMax() T <span class="cov8" title="24">{
+        if max.size &lt; 1 </span><span class="cov3" title="3">{
                 panic("algos.array.(MaxPQ).GetMax(): Queue is empty ")</span>
         }
-        <span class="cov9" title="21">ret := max.pq[1]
+        <span class="cov8" title="21">ret := max.pq[1]
         swap(max.pq, 1, max.size)
         max.size--
         max.sink(1)
         return ret</span>
 }
+
+func (max *MaxPQ[T]) Iterate() []T <span class="cov3" title="3">{
+        return max.pq[1:(max.size + 1)]
+}</span>
 </pre>
 		
 		<pre class="file" id="file3" style="display: none">package array
@@ -714,7 +732,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3323">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3344">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -729,161 +747,132 @@ import (
 type Bag[T any] struct {
         arr  []T
         size int
-        fwd  int
 }
 
 func NewBag[T any]() Bag[T] <span class="cov1" title="1">{
         return Bag[T]{
                 arr:  make([]T, 0, 8),
                 size: 0,
-                fwd:  -1,
         }
 }</span>
 
-func (b *Bag[T]) IsEmpty() bool <span class="cov5" title="4">{
-        return b.size == 0
+func (b *Bag[T]) Drop() <span class="cov1" title="1">{
+        b.arr = make([]T, 0, 8)
+        b.size = 0
 }</span>
 
-func (b *Bag[T]) Size() int <span class="cov6" title="5">{
+func (b *Bag[T]) Size() int <span class="cov8" title="8">{
         return b.size
+}</span>
+
+func (b *Bag[T]) IsEmpty() bool <span class="cov5" title="4">{
+        return b.Size() == 0
 }</span>
 
 func (b *Bag[T]) Add(val T) <span class="cov7" title="7">{
         b.arr = append(b.arr, val)
         b.size++
-        b.fwd = -1
 }</span>
 
-func (b *Bag[T]) Next() T <span class="cov10" title="15">{
-        b.fwd++
-        if b.fwd == b.size </span><span class="cov1" title="1">{
-                b.fwd = 0
-        }</span>
-        <span class="cov10" title="15">return b.arr[b.fwd]</span>
-}
+func (b *Bag[T]) Iterate() []T <span class="cov3" title="2">{
+        return b.arr
+}</span>
 
 func (b *Bag[T]) Reverse() <span class="cov1" title="1">{
         Reverse(b.arr)
-        b.fwd = -1
-}</span>
-
-func (b *Bag[T]) Drop() <span class="cov1" title="1">{
-        b.arr = b.arr[:0]
-        b.fwd = -1
-        b.size = 0
 }</span>
 
 // ===========================
 type Stack[T any] struct {
         arr  []T
         size int
-        fwd  int
 }
 
 func NewStack[T any]() Stack[T] <span class="cov1" title="1">{
         return Stack[T]{
                 arr:  make([]T, 0, 8),
                 size: 0,
-                fwd:  -1,
         }
 }</span>
 
-func (s *Stack[T]) IsEmpty() bool <span class="cov6" title="5">{
-        return s.size == 0
+func (s *Stack[T]) Drop() <span class="cov1" title="1">{
+        s.arr = make([]T, 0, 8)
+        s.size = 0
 }</span>
 
-func (s *Stack[T]) Size() int <span class="cov6" title="6">{
+func (s *Stack[T]) Size() int <span class="cov9" title="11">{
         return s.size
 }</span>
 
-func (s *Stack[T]) Push(val T) <span class="cov9" title="14">{
-        s.arr = append(s.arr, val)
-        s.size++
-        s.fwd = -1
+func (s *Stack[T]) IsEmpty() bool <span class="cov6" title="5">{
+        return s.Size() == 0
 }</span>
 
-func (s *Stack[T]) Pop() T <span class="cov7" title="8">{
+func (s *Stack[T]) Push(val T) <span class="cov10" title="14">{
+        s.arr = append(s.arr, val)
+        s.size++
+}</span>
+
+func (s *Stack[T]) Pop() T <span class="cov8" title="8">{
         last := len(s.arr) - 1
         ret := s.arr[last]
         s.arr = s.arr[:last]
         s.size--
-        s.fwd = -1
         return ret
 }</span>
 
-func (s *Stack[T]) Next() T <span class="cov7" title="8">{
-        s.fwd++
-        if s.fwd == s.size </span><span class="cov1" title="1">{
-                s.fwd = 0
-        }</span>
-        <span class="cov7" title="8">return s.arr[s.fwd]</span>
-}
+func (s *Stack[T]) Iterate() []T <span class="cov1" title="1">{
+        return s.arr
+}</span>
 
 func (s *Stack[T]) Reverse() <span class="cov1" title="1">{
         Reverse(s.arr)
-        s.fwd = -1
-}</span>
-
-func (s *Stack[T]) Drop() <span class="cov1" title="1">{
-        s.arr = s.arr[:0]
-        s.fwd = -1
-        s.size = 0
 }</span>
 
 // ===========================
 type Queue[T any] struct {
         arr  []T
         size int
-        fwd  int
 }
 
 func NewQueue[T any]() Queue[T] <span class="cov1" title="1">{
         return Queue[T]{
                 arr:  make([]T, 0, 8),
                 size: 0,
-                fwd:  -1,
         }
 }</span>
 
-func (q *Queue[T]) IsEmpty() bool <span class="cov6" title="5">{
-        return q.size == 0
+func (q *Queue[T]) Drop() <span class="cov1" title="1">{
+        q.arr = make([]T, 0, 8)
+        q.size = 0
 }</span>
 
-func (q *Queue[T]) Size() int <span class="cov6" title="6">{
+func (q *Queue[T]) Size() int <span class="cov9" title="11">{
         return q.size
 }</span>
 
-func (q *Queue[T]) Enq(val T) <span class="cov9" title="14">{
-        q.arr = append(q.arr, val)
-        q.size++
-        q.fwd = -1
+func (q *Queue[T]) IsEmpty() bool <span class="cov6" title="5">{
+        return q.Size() == 0
 }</span>
 
-func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
+func (q *Queue[T]) Enq(val T) <span class="cov10" title="14">{
+        q.arr = append(q.arr, val)
+        q.size++
+}</span>
+
+func (q *Queue[T]) Deq() T <span class="cov8" title="8">{
         ret := q.arr[0]
         q.arr = q.arr[1:]
         q.size--
-        q.fwd = -1
         return ret
 }</span>
 
-func (q *Queue[T]) Next() T <span class="cov7" title="8">{
-        q.fwd++
-        if q.fwd == q.size </span><span class="cov1" title="1">{
-                q.fwd = 0
-        }</span>
-        <span class="cov7" title="8">return q.arr[q.fwd]</span>
-}
+func (q *Queue[T]) Iterate() []T <span class="cov1" title="1">{
+        return q.arr
+}</span>
 
 func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
         Reverse(q.arr)
-        q.fwd = -1
-}</span>
-
-func (q *Queue[T]) Drop() <span class="cov1" title="1">{
-        q.arr = q.arr[:0]
-        q.fwd = -1
-        q.size = 0
 }</span>
 </pre>
 		
@@ -933,8 +922,9 @@ func (uf *UF) Find(p int) int <span class="cov10" title="50">{
         }</span>
         // path compression
         <span class="cov10" title="50">blen := uf.bag.Size()
+        barr := uf.bag.Iterate()
         for i := 0; i &lt; blen; i++ </span><span class="cov8" title="29">{
-                t := uf.bag.Next()
+                t := barr[i]
                 uf.id[t] = p
         }</span>
         <span class="cov10" title="50">uf.bag.Drop()
@@ -971,19 +961,19 @@ type kvnode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-        hmarr   [math.MaxUint16 + 1]*kvnode[K, V]
+        hmarr   [math.MaxUint16]*kvnode[K, V]
         keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
         return Hmap[K, V]{
-                hmarr:   [math.MaxUint16 + 1]*kvnode[K, V]{},
+                hmarr:   [math.MaxUint16]*kvnode[K, V]{},
                 keysnum: 0,
         }
 }</span>
 
 func (hm *Hmap[K, V]) Drop() <span class="cov1" title="1">{
-        hm.hmarr = [math.MaxUint16 + 1]*kvnode[K, V]{}
+        hm.hmarr = [math.MaxUint16]*kvnode[K, V]{}
         hm.keysnum = 0
 }</span>
 
@@ -1053,7 +1043,7 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="65536">{
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="65535">{
                 for node := ptr; node != nil; node = node.next </span><span class="cov2" title="8">{
                         res = append(res, node.key)
                 }</span>
@@ -1088,109 +1078,93 @@ func Reverse[T any](first *node[T]) *node[T] <span class="cov10" title="21">{
 type Bag[T any] struct {
         first *node[T]
         size  int
-        fwd   *node[T]
 }
 
 func NewBag[T any]() Bag[T] <span class="cov1" title="1">{
         return Bag[T]{
                 first: nil,
                 size:  0,
-                fwd:   nil,
         }
-}</span>
-
-func (b *Bag[T]) IsEmpty() bool <span class="cov5" title="4">{
-        return b.size == 0
-}</span>
-
-func (b *Bag[T]) Size() int <span class="cov5" title="5">{
-        return b.size
-}</span>
-
-func (b *Bag[T]) Add(val T) <span class="cov6" title="7">{
-        first := b.first
-        b.first = &amp;node[T]{val: val, next: first}
-        b.size++
-        b.fwd = b.first
-}</span>
-
-func (b *Bag[T]) Next() T <span class="cov9" title="15">{
-        ret := b.fwd.val
-        if b.fwd.next == nil </span><span class="cov3" title="2">{
-                b.fwd = b.first
-        }</span> else<span class="cov8" title="12"> {
-                b.fwd = b.fwd.next
-        }</span>
-        <span class="cov8" title="14">return ret</span>
-}
-
-func (b *Bag[T]) Reverse() <span class="cov1" title="1">{
-        b.fwd = Reverse(b.first)
-        b.first = b.fwd
 }</span>
 
 func (b *Bag[T]) Drop() <span class="cov1" title="1">{
         b.first = nil
         b.size = 0
-        b.fwd = nil
+}</span>
+
+func (b *Bag[T]) Size() int <span class="cov7" title="8">{
+        return b.size
+}</span>
+
+func (b *Bag[T]) IsEmpty() bool <span class="cov5" title="4">{
+        return b.Size() == 0
+}</span>
+
+func (b *Bag[T]) Add(val T) <span class="cov6" title="7">{
+        b.first = &amp;node[T]{val: val, next: b.first}
+        b.size++
+}</span>
+
+func (b *Bag[T]) Iterate() []T <span class="cov3" title="2">{
+        res := make([]T, 0, b.size)
+        for node := b.first; node != nil; node = node.next </span><span class="cov8" title="14">{
+                res = append(res, node.val)
+        }</span>
+        <span class="cov3" title="2">return res</span>
+}
+
+func (b *Bag[T]) Reverse() <span class="cov1" title="1">{
+        b.first = Reverse(b.first)
 }</span>
 
 // ===========================
 type Stack[T any] struct {
         first *node[T]
         size  int
-        fwd   *node[T]
 }
 
 func NewStack[T any]() Stack[T] <span class="cov1" title="1">{
         return Stack[T]{
                 first: nil,
                 size:  0,
-                fwd:   nil,
         }
 }</span>
 
-func (s *Stack[T]) IsEmpty() bool <span class="cov5" title="5">{
-        return s.size == 0
+func (s *Stack[T]) Drop() <span class="cov1" title="1">{
+        s.first = nil
+        s.size = 0
 }</span>
 
-func (s *Stack[T]) Size() int <span class="cov6" title="6">{
+func (s *Stack[T]) Size() int <span class="cov8" title="11">{
         return s.size
 }</span>
 
+func (s *Stack[T]) IsEmpty() bool <span class="cov5" title="5">{
+        return s.Size() == 0
+}</span>
+
 func (s *Stack[T]) Push(val T) <span class="cov8" title="14">{
-        first := s.first
-        s.first = &amp;node[T]{val: val, next: first}
+        s.first = &amp;node[T]{val: val, next: s.first}
         s.size++
-        s.fwd = s.first
 }</span>
 
 func (s *Stack[T]) Pop() T <span class="cov7" title="8">{
         ret := s.first.val
         s.first = s.first.next
         s.size--
-        s.fwd = s.first
         return ret
 }</span>
 
-func (s *Stack[T]) Next() T <span class="cov7" title="8">{
-        ret := s.fwd.val
-        if s.fwd.next == nil </span><span class="cov1" title="1">{
-                s.fwd = s.first
-        }</span> else<span class="cov6" title="6"> {
-                s.fwd = s.fwd.next
+func (s *Stack[T]) Iterate() []T <span class="cov1" title="1">{
+        res := make([]T, 0, s.size)
+        for node := s.first; node != nil; node = node.next </span><span class="cov6" title="7">{
+                res = append(res, node.val)
         }</span>
-        <span class="cov6" title="7">return ret</span>
+        <span class="cov1" title="1">return res</span>
 }
 
 func (s *Stack[T]) Reverse() <span class="cov1" title="1">{
-        s.fwd = Reverse(s.first)
-        s.first = s.fwd
-}</span>
-func (s *Stack[T]) Drop() <span class="cov1" title="1">{
-        s.first = nil
-        s.size = 0
-        s.fwd = nil
+        s.first = Reverse(s.first)
 }</span>
 
 // ===========================
@@ -1198,7 +1172,6 @@ type Queue[T any] struct {
         first *node[T]
         last  *node[T]
         size  int
-        fwd   *node[T]
 }
 
 func NewQueue[T any]() Queue[T] <span class="cov1" title="1">{
@@ -1206,16 +1179,21 @@ func NewQueue[T any]() Queue[T] <span class="cov1" title="1">{
                 first: nil,
                 last:  nil,
                 size:  0,
-                fwd:   nil,
         }
 }</span>
 
-func (q *Queue[T]) IsEmpty() bool <span class="cov5" title="5">{
-        return q.size == 0
+func (q *Queue[T]) Drop() <span class="cov1" title="1">{
+        q.first = nil
+        q.last = nil
+        q.size = 0
 }</span>
 
-func (q *Queue[T]) Size() int <span class="cov6" title="6">{
+func (q *Queue[T]) Size() int <span class="cov8" title="11">{
         return q.size
+}</span>
+
+func (q *Queue[T]) IsEmpty() bool <span class="cov5" title="5">{
+        return q.Size() == 0
 }</span>
 
 func (q *Queue[T]) Enq(val T) <span class="cov8" title="14">{
@@ -1226,8 +1204,7 @@ func (q *Queue[T]) Enq(val T) <span class="cov8" title="14">{
                 q.last.next = newnode
         }</span>
         <span class="cov8" title="14">q.last = newnode
-        q.size++
-        q.fwd = q.first</span>
+        q.size++</span>
 }
 
 func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
@@ -1237,30 +1214,20 @@ func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
         if (q.size == 0) || (q.size == 1) </span><span class="cov3" title="2">{
                 q.last = q.first
         }</span>
-        <span class="cov6" title="7">q.fwd = q.first
-        return ret</span>
+        <span class="cov6" title="7">return ret</span>
 }
 
-func (q *Queue[T]) Next() T <span class="cov7" title="8">{
-        ret := q.fwd.val
-        if q.fwd.next == nil </span><span class="cov1" title="1">{
-                q.fwd = q.first
-        }</span> else<span class="cov6" title="6"> {
-                q.fwd = q.fwd.next
+func (q *Queue[T]) Iterate() []T <span class="cov1" title="1">{
+        res := make([]T, 0, q.size)
+        for node := q.first; node != nil; node = node.next </span><span class="cov6" title="7">{
+                res = append(res, node.val)
         }</span>
-        <span class="cov6" title="7">return ret</span>
+        <span class="cov1" title="1">return res</span>
 }
 
 func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
         q.last = q.first
-        q.fwd = Reverse(q.first)
-        q.first = q.fwd
-}</span>
-
-func (q *Queue[T]) Drop() <span class="cov1" title="1">{
-        q.first = nil
-        q.size = 0
-        q.fwd = nil
+        q.first = Reverse(q.first)
 }</span>
 </pre>
 		

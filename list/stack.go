@@ -1,27 +1,38 @@
 package list
 
-type node[T any] struct {
-	val  T
-	next *node[T]
+type Node[T any] struct {
+	Val  T
+	Next *Node[T]
 }
 
-func Reverse[T any](first *node[T]) *node[T] {
+func Reverse[T any](first *Node[T]) *Node[T] {
 	if first == nil {
 		return nil
 	}
-	if first.next == nil {
+	if first.Next == nil {
 		return first
 	}
-	second := first.next
+	second := first.Next
 	root := Reverse(second)
-	second.next = first
-	first.next = nil
+	second.Next = first
+	first.Next = nil
 	return root
+}
+
+func ListSize[T any](root *Node[T]) int {
+	size := 0
+	if root == nil {
+		return size
+	}
+	for node := root; node != nil; node = node.Next {
+		size++
+	}
+	return size
 }
 
 // ===========================
 type Bag[T any] struct {
-	first *node[T]
+	first *Node[T]
 	size  int
 }
 
@@ -46,14 +57,14 @@ func (b *Bag[T]) IsEmpty() bool {
 }
 
 func (b *Bag[T]) Add(val T) {
-	b.first = &node[T]{val: val, next: b.first}
+	b.first = &Node[T]{Val: val, Next: b.first}
 	b.size++
 }
 
 func (b *Bag[T]) Iterate() []T {
 	res := make([]T, 0, b.size)
-	for node := b.first; node != nil; node = node.next {
-		res = append(res, node.val)
+	for node := b.first; node != nil; node = node.Next {
+		res = append(res, node.Val)
 	}
 	return res
 }
@@ -64,7 +75,7 @@ func (b *Bag[T]) Reverse() {
 
 // ===========================
 type Stack[T any] struct {
-	first *node[T]
+	first *Node[T]
 	size  int
 }
 
@@ -89,21 +100,21 @@ func (s *Stack[T]) IsEmpty() bool {
 }
 
 func (s *Stack[T]) Push(val T) {
-	s.first = &node[T]{val: val, next: s.first}
+	s.first = &Node[T]{Val: val, Next: s.first}
 	s.size++
 }
 
 func (s *Stack[T]) Pop() T {
-	ret := s.first.val
-	s.first = s.first.next
+	ret := s.first.Val
+	s.first = s.first.Next
 	s.size--
 	return ret
 }
 
 func (s *Stack[T]) Iterate() []T {
 	res := make([]T, 0, s.size)
-	for node := s.first; node != nil; node = node.next {
-		res = append(res, node.val)
+	for node := s.first; node != nil; node = node.Next {
+		res = append(res, node.Val)
 	}
 	return res
 }
@@ -114,8 +125,8 @@ func (s *Stack[T]) Reverse() {
 
 // ===========================
 type Queue[T any] struct {
-	first *node[T]
-	last  *node[T]
+	first *Node[T]
+	last  *Node[T]
 	size  int
 }
 
@@ -142,19 +153,19 @@ func (q *Queue[T]) IsEmpty() bool {
 }
 
 func (q *Queue[T]) Enq(val T) {
-	newnode := &node[T]{val: val, next: nil}
+	newnode := &Node[T]{Val: val, Next: nil}
 	if q.size == 0 {
 		q.first = newnode
 	} else {
-		q.last.next = newnode
+		q.last.Next = newnode
 	}
 	q.last = newnode
 	q.size++
 }
 
 func (q *Queue[T]) Deq() T {
-	ret := q.first.val
-	q.first = q.first.next
+	ret := q.first.Val
+	q.first = q.first.Next
 	q.size--
 	if (q.size == 0) || (q.size == 1) {
 		q.last = q.first
@@ -164,8 +175,8 @@ func (q *Queue[T]) Deq() T {
 
 func (q *Queue[T]) Iterate() []T {
 	res := make([]T, 0, q.size)
-	for node := q.first; node != nil; node = node.next {
-		res = append(res, node.val)
+	for node := q.first; node != nil; node = node.Next {
+		res = append(res, node.Val)
 	}
 	return res
 }

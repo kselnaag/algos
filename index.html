@@ -57,21 +57,25 @@
 				
 				<option value="file0">github.com/kselnaag/algos/array/equal.go (43.8%)</option>
 				
-				<option value="file1">github.com/kselnaag/algos/array/hmap.go (92.2%)</option>
+				<option value="file1">github.com/kselnaag/algos/array/func.go (100.0%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/pq.go (100.0%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/hmap.go (92.2%)</option>
 				
-				<option value="file3">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
+				<option value="file3">github.com/kselnaag/algos/array/pq.go (100.0%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
+				<option value="file4">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
 				
-				<option value="file5">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
+				<option value="file5">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
-				<option value="file6">github.com/kselnaag/algos/list/hmap.go (95.6%)</option>
+				<option value="file6">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/list/stack.go (98.4%)</option>
+				<option value="file7">github.com/kselnaag/algos/list/func.go (88.9%)</option>
 				
-				<option value="file8">github.com/kselnaag/algos/math/math.go (100.0%)</option>
+				<option value="file8">github.com/kselnaag/algos/list/hmap.go (93.5%)</option>
+				
+				<option value="file9">github.com/kselnaag/algos/list/stack.go (97.0%)</option>
+				
+				<option value="file10">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -185,6 +189,59 @@ func eq[T any](i, j T) bool <span class="cov3" title="12">{
 </pre>
 		
 		<pre class="file" id="file1" style="display: none">package array
+
+func Map[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov1" title="1">{
+        res := make([]T2, 0, len(arr))
+        for _, el := range arr </span><span class="cov7" title="10">{
+                res = append(res, fnc(el))
+        }</span>
+        <span class="cov1" title="1">return res</span>
+}
+
+func MapA[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov1" title="1">{
+        res := make([]T2, 0, len(arr))
+        chans := make(chan chan T2, len(arr))
+        for _, el := range arr </span><span class="cov7" title="10">{
+                elemChan := make(chan T2)
+                chans &lt;- elemChan
+                go func(elemChan chan&lt;- T2, el T1) </span><span class="cov7" title="10">{
+                        elemChan &lt;- fnc(el)
+                }</span>(elemChan, el)
+        }
+        <span class="cov1" title="1">close(chans)
+        for elemChan := range chans </span><span class="cov7" title="10">{
+                res = append(res, &lt;-elemChan)
+        }</span>
+        <span class="cov1" title="1">return res</span>
+}
+
+func Reduce[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov1" title="1">{
+        for _, el := range arr </span><span class="cov7" title="10">{
+                acc = fnc(acc, el)
+        }</span>
+        <span class="cov1" title="1">return acc</span>
+}
+
+func ReduceR[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov1" title="1">{
+        alen := len(arr)
+        for i := alen - 1; i &gt;= 0; i-- </span><span class="cov7" title="10">{
+                acc = fnc(acc, arr[i])
+        }</span>
+        <span class="cov1" title="1">return acc</span>
+}
+
+func Filter[T any](arr []T, fnc func(T) bool) []T <span class="cov3" title="2">{
+        res := make([]T, 0)
+        for _, el := range arr </span><span class="cov10" title="20">{
+                if fnc(el) </span><span class="cov7" title="10">{
+                        res = append(res, el)
+                }</span>
+        }
+        <span class="cov3" title="2">return res</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package array
 
 import (
         "math"
@@ -300,7 +357,7 @@ func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package array
+		<pre class="file" id="file3" style="display: none">package array
 
 // ===========================
 type MinPQ[T any] struct {
@@ -459,7 +516,7 @@ func (max *MaxPQ[T]) Iterate() []T <span class="cov3" title="3">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package array
+		<pre class="file" id="file4" style="display: none">package array
 
 import (
         "math/rand"
@@ -737,7 +794,7 @@ func swap[T any](arr []T, i, j int) <span class="cov10" title="3344">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package array
+		<pre class="file" id="file5" style="display: none">package array
 
 import (
         _ "github.com/kselnaag/algos/types"
@@ -876,7 +933,7 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package graph
+		<pre class="file" id="file6" style="display: none">package graph
 
 import (
         "github.com/kselnaag/algos/array"
@@ -944,7 +1001,86 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package list
+		<pre class="file" id="file7" style="display: none">package list
+
+func Map[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] <span class="cov5" title="5">{
+        if root == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov5" title="5">var res, ptr *Node[T2]
+        for onode := root; onode != nil; onode = onode.Next </span><span class="cov10" title="25">{
+                nnode := &amp;Node[T2]{Val: fnc(onode.Val), Next: nil}
+                if onode == root </span><span class="cov5" title="5">{
+                        res = nnode
+                }</span> else<span class="cov9" title="20"> {
+                        ptr.Next = nnode
+                }</span>
+                <span class="cov10" title="25">ptr = nnode</span>
+        }
+        <span class="cov5" title="5">return res</span>
+}
+
+func MapA[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] <span class="cov1" title="1">{
+        if root == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov1" title="1">llen := ListSize(root)
+        chans := make(chan chan T2, llen)
+        for node := root; node != nil; node = node.Next </span><span class="cov5" title="5">{
+                elemChan := make(chan T2)
+                chans &lt;- elemChan
+                go func(elemChan chan&lt;- T2, el T1) </span><span class="cov5" title="5">{
+                        elemChan &lt;- fnc(el)
+                }</span>(elemChan, node.Val)
+        }
+        <span class="cov1" title="1">close(chans)
+        var res, ptr *Node[T2]
+        i := 0
+        for elemChan := range chans </span><span class="cov5" title="5">{
+                node := &amp;Node[T2]{Val: &lt;-elemChan, Next: nil}
+                if i == 0 </span><span class="cov1" title="1">{
+                        res = node
+                }</span> else<span class="cov4" title="4"> {
+                        ptr.Next = node
+                }</span>
+                <span class="cov5" title="5">ptr = node
+                i++</span>
+        }
+        <span class="cov1" title="1">return res</span>
+}
+
+func Reduce[T1, T2 any](root *Node[T1], fnc func(T2, T1) T2, acc T2) T2 <span class="cov2" title="2">{
+        for node := root; node != nil; node = node.Next </span><span class="cov7" title="10">{
+                acc = fnc(acc, node.Val)
+        }</span>
+        <span class="cov2" title="2">return acc</span>
+}
+
+func ReduceR[T1, T2 any](root *Node[T1], fnc func(T2, T1) T2, acc T2) T2 <span class="cov0" title="0">{
+        if root == nil </span><span class="cov0" title="0">{
+                return acc
+        }</span>
+        <span class="cov0" title="0">return fnc(ReduceR(root.Next, fnc, acc), root.Val)</span>
+}
+
+func Filter[T any](root *Node[T], fnc func(T) bool) *Node[T] <span class="cov2" title="2">{
+        var res, ptr *Node[T]
+        for onode := root; onode != nil; onode = onode.Next </span><span class="cov9" title="20">{
+                node := &amp;Node[T]{Val: onode.Val, Next: nil}
+                if fnc(node.Val) </span><span class="cov7" title="10">{
+                        if res == nil </span><span class="cov2" title="2">{
+                                res = node
+                        }</span> else<span class="cov6" title="8"> {
+                                ptr.Next = node
+                        }</span>
+                        <span class="cov7" title="10">ptr = node</span>
+                }
+        }
+        <span class="cov2" title="2">return res</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package list
 
 import (
         "math"
@@ -954,26 +1090,34 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-type kvnode[K I.Ord, V any] struct {
-        key  K
-        val  V
-        next *kvnode[K, V]
+type KVnode[K I.Ord, V any] struct {
+        Key  K
+        Val  V
+        Next *KVnode[K, V]
 }
 
+func NewKVnode[K I.Ord, V any](key K, val V, next *KVnode[K, V]) KVnode[K, V] <span class="cov0" title="0">{
+        return KVnode[K, V]{
+                Key:  key,
+                Val:  val,
+                Next: next,
+        }
+}</span>
+
 type Hmap[K I.Ord, V any] struct {
-        hmarr   [math.MaxUint16]*kvnode[K, V]
+        hmarr   [math.MaxUint16]*KVnode[K, V]
         keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
         return Hmap[K, V]{
-                hmarr:   [math.MaxUint16]*kvnode[K, V]{},
+                hmarr:   [math.MaxUint16]*KVnode[K, V]{},
                 keysnum: 0,
         }
 }</span>
 
 func (hm *Hmap[K, V]) Drop() <span class="cov1" title="1">{
-        hm.hmarr = [math.MaxUint16]*kvnode[K, V]{}
+        hm.hmarr = [math.MaxUint16]*KVnode[K, V]{}
         hm.keysnum = 0
 }</span>
 
@@ -988,23 +1132,23 @@ func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="5">{
 func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
         abytes := amath.ConvToByteArr(key)
         hash := amath.HashPirson16(abytes)
-        setnode := kvnode[K, V]{key: key, val: val, next: nil}
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="2">{
-                if node.key == key </span><span class="cov1" title="2">{
-                        node.val = val
+        setnode := &amp;KVnode[K, V]{Key: key, Val: val, Next: nil}
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
+                if node.Key == key </span><span class="cov1" title="2">{
+                        node.Val = val
                         return
                 }</span>
         }
-        <span class="cov2" title="9">setnode.next = hm.hmarr[int(hash)]
-        hm.hmarr[int(hash)] = &amp;setnode
+        <span class="cov2" title="9">setnode.Next = hm.hmarr[int(hash)]
+        hm.hmarr[int(hash)] = setnode
         hm.keysnum++</span>
 }
 
 func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
         abytes := amath.ConvToByteArr(key)
         hash := amath.HashPirson16(abytes)
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="3">{
-                if node.key == key </span><span class="cov1" title="3">{
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="3">{
+                if node.Key == key </span><span class="cov1" title="3">{
                         return true
                 }</span>
         }
@@ -1014,9 +1158,9 @@ func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
 func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
         abytes := amath.ConvToByteArr(key)
         hash := amath.HashPirson16(abytes)
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="2">{
-                if node.key == key </span><span class="cov1" title="2">{
-                        return node.val
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
+                if node.Key == key </span><span class="cov1" title="2">{
+                        return node.Val
                 }</span>
         }
         <span class="cov1" title="2">panic("algos.list.(Hmap).Get(key K): No any key found, check first")</span>
@@ -1026,12 +1170,12 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
         abytes := amath.ConvToByteArr(key)
         hash := amath.HashPirson16(abytes)
         prev := hm.hmarr[int(hash)]
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.next </span><span class="cov1" title="1">{
-                if node.key == key </span><span class="cov1" title="1">{
+        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="1">{
+                if node.Key == key </span><span class="cov1" title="1">{
                         if prev == hm.hmarr[int(hash)] </span><span class="cov1" title="1">{
-                                hm.hmarr[int(hash)] = node.next
+                                hm.hmarr[int(hash)] = node.Next
                         }</span> else<span class="cov0" title="0"> {
-                                prev.next = node.next
+                                prev.Next = node.Next
                         }</span>
                         <span class="cov1" title="1">hm.keysnum--
                         return</span>
@@ -1044,8 +1188,8 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
         for _, ptr := range hm.hmarr </span><span class="cov10" title="65535">{
-                for node := ptr; node != nil; node = node.next </span><span class="cov2" title="8">{
-                        res = append(res, node.key)
+                for node := ptr; node != nil; node = node.Next </span><span class="cov2" title="8">{
+                        res = append(res, node.Key)
                 }</span>
         }
         <span class="cov1" title="1">array.QuickSort(res)
@@ -1053,30 +1197,41 @@ func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package list
+		<pre class="file" id="file9" style="display: none">package list
 
-type node[T any] struct {
-        val  T
-        next *node[T]
+type Node[T any] struct {
+        Val  T
+        Next *Node[T]
 }
 
-func Reverse[T any](first *node[T]) *node[T] <span class="cov10" title="21">{
+func Reverse[T any](first *Node[T]) *Node[T] <span class="cov10" title="21">{
         if first == nil </span><span class="cov0" title="0">{
                 return nil
         }</span>
-        <span class="cov10" title="21">if first.next == nil </span><span class="cov4" title="3">{
+        <span class="cov10" title="21">if first.Next == nil </span><span class="cov4" title="3">{
                 return first
         }</span>
-        <span class="cov9" title="18">second := first.next
+        <span class="cov9" title="18">second := first.Next
         root := Reverse(second)
-        second.next = first
-        first.next = nil
+        second.Next = first
+        first.Next = nil
         return root</span>
+}
+
+func ListSize[T any](root *Node[T]) int <span class="cov1" title="1">{
+        size := 0
+        if root == nil </span><span class="cov0" title="0">{
+                return size
+        }</span>
+        <span class="cov1" title="1">for node := root; node != nil; node = node.Next </span><span class="cov5" title="5">{
+                size++
+        }</span>
+        <span class="cov1" title="1">return size</span>
 }
 
 // ===========================
 type Bag[T any] struct {
-        first *node[T]
+        first *Node[T]
         size  int
 }
 
@@ -1101,14 +1256,14 @@ func (b *Bag[T]) IsEmpty() bool <span class="cov5" title="4">{
 }</span>
 
 func (b *Bag[T]) Add(val T) <span class="cov6" title="7">{
-        b.first = &amp;node[T]{val: val, next: b.first}
+        b.first = &amp;Node[T]{Val: val, Next: b.first}
         b.size++
 }</span>
 
 func (b *Bag[T]) Iterate() []T <span class="cov3" title="2">{
         res := make([]T, 0, b.size)
-        for node := b.first; node != nil; node = node.next </span><span class="cov8" title="14">{
-                res = append(res, node.val)
+        for node := b.first; node != nil; node = node.Next </span><span class="cov8" title="14">{
+                res = append(res, node.Val)
         }</span>
         <span class="cov3" title="2">return res</span>
 }
@@ -1119,7 +1274,7 @@ func (b *Bag[T]) Reverse() <span class="cov1" title="1">{
 
 // ===========================
 type Stack[T any] struct {
-        first *node[T]
+        first *Node[T]
         size  int
 }
 
@@ -1144,21 +1299,21 @@ func (s *Stack[T]) IsEmpty() bool <span class="cov5" title="5">{
 }</span>
 
 func (s *Stack[T]) Push(val T) <span class="cov8" title="14">{
-        s.first = &amp;node[T]{val: val, next: s.first}
+        s.first = &amp;Node[T]{Val: val, Next: s.first}
         s.size++
 }</span>
 
 func (s *Stack[T]) Pop() T <span class="cov7" title="8">{
-        ret := s.first.val
-        s.first = s.first.next
+        ret := s.first.Val
+        s.first = s.first.Next
         s.size--
         return ret
 }</span>
 
 func (s *Stack[T]) Iterate() []T <span class="cov1" title="1">{
         res := make([]T, 0, s.size)
-        for node := s.first; node != nil; node = node.next </span><span class="cov6" title="7">{
-                res = append(res, node.val)
+        for node := s.first; node != nil; node = node.Next </span><span class="cov6" title="7">{
+                res = append(res, node.Val)
         }</span>
         <span class="cov1" title="1">return res</span>
 }
@@ -1169,8 +1324,8 @@ func (s *Stack[T]) Reverse() <span class="cov1" title="1">{
 
 // ===========================
 type Queue[T any] struct {
-        first *node[T]
-        last  *node[T]
+        first *Node[T]
+        last  *Node[T]
         size  int
 }
 
@@ -1197,19 +1352,19 @@ func (q *Queue[T]) IsEmpty() bool <span class="cov5" title="5">{
 }</span>
 
 func (q *Queue[T]) Enq(val T) <span class="cov8" title="14">{
-        newnode := &amp;node[T]{val: val, next: nil}
+        newnode := &amp;Node[T]{Val: val, Next: nil}
         if q.size == 0 </span><span class="cov3" title="2">{
                 q.first = newnode
         }</span> else<span class="cov8" title="12"> {
-                q.last.next = newnode
+                q.last.Next = newnode
         }</span>
         <span class="cov8" title="14">q.last = newnode
         q.size++</span>
 }
 
 func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
-        ret := q.first.val
-        q.first = q.first.next
+        ret := q.first.Val
+        q.first = q.first.Next
         q.size--
         if (q.size == 0) || (q.size == 1) </span><span class="cov3" title="2">{
                 q.last = q.first
@@ -1219,8 +1374,8 @@ func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
 
 func (q *Queue[T]) Iterate() []T <span class="cov1" title="1">{
         res := make([]T, 0, q.size)
-        for node := q.first; node != nil; node = node.next </span><span class="cov6" title="7">{
-                res = append(res, node.val)
+        for node := q.first; node != nil; node = node.Next </span><span class="cov6" title="7">{
+                res = append(res, node.Val)
         }</span>
         <span class="cov1" title="1">return res</span>
 }
@@ -1231,7 +1386,7 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package math
+		<pre class="file" id="file10" style="display: none">package math
 
 import (
         "fmt"

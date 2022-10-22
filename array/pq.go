@@ -1,5 +1,9 @@
 package array
 
+import (
+	I "github.com/kselnaag/algos/types"
+)
+
 // ===========================
 type MinPQ[T any] struct {
 	pq   []T
@@ -13,11 +17,6 @@ func NewMinPQ[T any]() MinPQ[T] {
 	}
 }
 
-func (min *MinPQ[T]) Drop() {
-	min.pq = make([]T, 1, 8)
-	min.size = 0
-}
-
 func (min *MinPQ[T]) Size() int {
 	return min.size
 }
@@ -27,7 +26,7 @@ func (min *MinPQ[T]) IsEmpty() bool {
 }
 
 func (min *MinPQ[T]) swim(k int) {
-	for (k > 1) && gt(min.pq[k/2], min.pq[k]) {
+	for (k > 1) && I.GT(min.pq[k/2], min.pq[k]) {
 		swap(min.pq, k/2, k)
 		k /= 2
 	}
@@ -35,10 +34,10 @@ func (min *MinPQ[T]) swim(k int) {
 func (min *MinPQ[T]) sink(k int) {
 	for (2 * k) <= min.size {
 		j := 2 * k
-		if (j < min.size) && gt(min.pq[j], min.pq[j+1]) {
+		if (j < min.size) && I.GT(min.pq[j], min.pq[j+1]) {
 			j++
 		}
-		if !gt(min.pq[k], min.pq[j]) {
+		if !I.GT(min.pq[k], min.pq[j]) {
 			break
 		}
 		swap(min.pq, k, j)
@@ -91,11 +90,6 @@ func NewMaxPQ[T any]() MaxPQ[T] {
 	}
 }
 
-func (max *MaxPQ[T]) Drop() {
-	max.pq = make([]T, 1, 8)
-	max.size = 0
-}
-
 func (max *MaxPQ[T]) Size() int {
 	return max.size
 }
@@ -105,7 +99,7 @@ func (max *MaxPQ[T]) IsEmpty() bool {
 }
 
 func (max *MaxPQ[T]) swim(k int) {
-	for (k > 1) && lt(max.pq[k/2], max.pq[k]) {
+	for (k > 1) && I.LT(max.pq[k/2], max.pq[k]) {
 		swap(max.pq, k/2, k)
 		k /= 2
 	}
@@ -113,10 +107,10 @@ func (max *MaxPQ[T]) swim(k int) {
 func (max *MaxPQ[T]) sink(k int) {
 	for (2 * k) <= max.size {
 		j := 2 * k
-		if (j < max.size) && lt(max.pq[j], max.pq[j+1]) {
+		if (j < max.size) && I.LT(max.pq[j], max.pq[j+1]) {
 			j++
 		}
-		if !lt(max.pq[k], max.pq[j]) {
+		if !I.LT(max.pq[k], max.pq[j]) {
 			break
 		}
 		swap(max.pq, k, j)

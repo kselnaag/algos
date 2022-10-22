@@ -32,9 +32,6 @@ func TestList(t *testing.T) {
 		assert.Equal(bag.Iterate(), []int{134, 25, 67, 43, 29, 3, 23})
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
-		bag.Drop()
-		assert.True(bag.IsEmpty())
-		assert.Equal(bag.Size(), 0)
 	})
 
 	t.Run("stack", func(t *testing.T) {
@@ -70,10 +67,8 @@ func TestList(t *testing.T) {
 		stack.Push(23)
 		assert.False(stack.IsEmpty())
 		assert.Equal(stack.Size(), 7)
-		stack.Drop()
-		assert.True(stack.IsEmpty())
-		assert.Equal(stack.Size(), 0)
-		assert.Panics(func() { stack.Pop() }, "The code is not panics")
+		stack = list.NewStack[int]()
+		assert.Panics(func() { stack.Pop() }, "algos.list.(Queue).Deq():  the code is not panic when structure is empty")
 	})
 
 	t.Run("queue", func(t *testing.T) {
@@ -109,9 +104,7 @@ func TestList(t *testing.T) {
 		queue.Enq(23)
 		assert.False(queue.IsEmpty())
 		assert.Equal(queue.Size(), 7)
-		queue.Drop()
-		assert.True(queue.IsEmpty())
-		assert.Equal(queue.Size(), 0)
-		assert.Panics(func() { queue.Deq() }, "The code is not panic")
+		queue = list.NewQueue[int]()
+		assert.Panics(func() { queue.Deq() }, "algos.list.(Queue).Deq():  the code is not panic when structure is empty")
 	})
 }

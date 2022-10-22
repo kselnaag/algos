@@ -1,11 +1,11 @@
 package list
 
-type Node[T any] struct {
+type Snode[T any] struct {
 	Val  T
-	Next *Node[T]
+	Next *Snode[T]
 }
 
-func Reverse[T any](first *Node[T]) *Node[T] {
+func Reverse[T any](first *Snode[T]) *Snode[T] {
 	if first == nil {
 		return nil
 	}
@@ -19,7 +19,7 @@ func Reverse[T any](first *Node[T]) *Node[T] {
 	return root
 }
 
-func ListSize[T any](root *Node[T]) int {
+func ListSize[T any](root *Snode[T]) int {
 	size := 0
 	if root == nil {
 		return size
@@ -32,7 +32,7 @@ func ListSize[T any](root *Node[T]) int {
 
 // ===========================
 type Bag[T any] struct {
-	first *Node[T]
+	first *Snode[T]
 	size  int
 }
 
@@ -41,11 +41,6 @@ func NewBag[T any]() Bag[T] {
 		first: nil,
 		size:  0,
 	}
-}
-
-func (b *Bag[T]) Drop() {
-	b.first = nil
-	b.size = 0
 }
 
 func (b *Bag[T]) Size() int {
@@ -57,7 +52,7 @@ func (b *Bag[T]) IsEmpty() bool {
 }
 
 func (b *Bag[T]) Add(val T) {
-	b.first = &Node[T]{Val: val, Next: b.first}
+	b.first = &Snode[T]{Val: val, Next: b.first}
 	b.size++
 }
 
@@ -75,7 +70,7 @@ func (b *Bag[T]) Reverse() {
 
 // ===========================
 type Stack[T any] struct {
-	first *Node[T]
+	first *Snode[T]
 	size  int
 }
 
@@ -84,11 +79,6 @@ func NewStack[T any]() Stack[T] {
 		first: nil,
 		size:  0,
 	}
-}
-
-func (s *Stack[T]) Drop() {
-	s.first = nil
-	s.size = 0
 }
 
 func (s *Stack[T]) Size() int {
@@ -100,7 +90,7 @@ func (s *Stack[T]) IsEmpty() bool {
 }
 
 func (s *Stack[T]) Push(val T) {
-	s.first = &Node[T]{Val: val, Next: s.first}
+	s.first = &Snode[T]{Val: val, Next: s.first}
 	s.size++
 }
 
@@ -125,8 +115,8 @@ func (s *Stack[T]) Reverse() {
 
 // ===========================
 type Queue[T any] struct {
-	first *Node[T]
-	last  *Node[T]
+	first *Snode[T]
+	last  *Snode[T]
 	size  int
 }
 
@@ -138,12 +128,6 @@ func NewQueue[T any]() Queue[T] {
 	}
 }
 
-func (q *Queue[T]) Drop() {
-	q.first = nil
-	q.last = nil
-	q.size = 0
-}
-
 func (q *Queue[T]) Size() int {
 	return q.size
 }
@@ -153,7 +137,7 @@ func (q *Queue[T]) IsEmpty() bool {
 }
 
 func (q *Queue[T]) Enq(val T) {
-	newnode := &Node[T]{Val: val, Next: nil}
+	newnode := &Snode[T]{Val: val, Next: nil}
 	if q.size == 0 {
 		q.first = newnode
 	} else {

@@ -1,9 +1,5 @@
 package array
 
-import (
-	_ "github.com/kselnaag/algos/types"
-)
-
 // ===========================
 type Bag[T any] struct {
 	arr  []T
@@ -15,11 +11,6 @@ func NewBag[T any]() Bag[T] {
 		arr:  make([]T, 0, 8),
 		size: 0,
 	}
-}
-
-func (b *Bag[T]) Drop() {
-	b.arr = make([]T, 0, 8)
-	b.size = 0
 }
 
 func (b *Bag[T]) Size() int {
@@ -54,11 +45,6 @@ func NewStack[T any]() Stack[T] {
 		arr:  make([]T, 0, 8),
 		size: 0,
 	}
-}
-
-func (s *Stack[T]) Drop() {
-	s.arr = make([]T, 0, 8)
-	s.size = 0
 }
 
 func (s *Stack[T]) Size() int {
@@ -101,11 +87,6 @@ func NewQueue[T any]() Queue[T] {
 		arr:  make([]T, 0, 8),
 		size: 0,
 	}
-}
-
-func (q *Queue[T]) Drop() {
-	q.arr = make([]T, 0, 8)
-	q.size = 0
 }
 
 func (q *Queue[T]) Size() int {

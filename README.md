@@ -27,7 +27,7 @@ type myType struct {
 	b int
 }
 
-func (s myType) CompareTo(st I.Comp) int {
+func (s myType) CompareTo(st Comp) int {
 	this := s.a + s.b
 	that := (st.(*myType)).a + (st.(*myType)).b
 	if this < that {
@@ -87,6 +87,7 @@ For PDTs, value slice:
 ```
 arr := []int{3, 2, 1}
 array.InsertSort(arr)
+// {1, 2, 3}
 ```
 
 For ADTs, pointer slice:
@@ -96,11 +97,10 @@ s2 := &myType{3, 1}
 s3 := &myType{2, 3}
 arr := []*myType{s3, s2, s1}
 array.InsertSort(arr)
+// {s1, s2, s3}
 ```
 
-This approach used in arrays mostly. Other data types are under construction and use `Ord` or `any` interfaces.
-
-There are some links you may interested in.
+This approach used in arrays. Other data types are under construction and use `Ord` or `any` interfaces.
 
 ----
 

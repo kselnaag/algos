@@ -8,23 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type myType struct {
-	a int
-	b int
-}
-
-func (s myType) CompareTo(obj I.Comp) int {
-	this := s.a + s.b
-	that := (obj.(*myType)).a + (obj.(*myType)).b
-	if this < that {
-		return -1
-	}
-	if this > that {
-		return +1
-	}
-	return 0
-}
-
 func TestSort(t *testing.T) {
 	assert := assert.New(t)
 	defer func() {
@@ -81,30 +64,30 @@ func TestSort(t *testing.T) {
 	})
 
 	t.Run("structs", func(t *testing.T) {
-		s0 := &myType{}
-		s1 := &myType{1, 2}
-		s2 := &myType{3, 1}
-		s3 := &myType{2, 3}
-		s4 := &myType{3, 4}
-		s5 := &myType{6, 7}
-		s6 := &myType{39, 17}
-		s7 := &myType{45, 61}
-		s8 := &myType{-39, 17}
+		s0 := &I.TestStruct{}
+		s1 := &I.TestStruct{A: 1, B: 2}
+		s2 := &I.TestStruct{A: 3, B: 1}
+		s3 := &I.TestStruct{A: 2, B: 3}
+		s4 := &I.TestStruct{A: 3, B: 4}
+		s5 := &I.TestStruct{A: 6, B: 7}
+		s6 := &I.TestStruct{A: 39, B: 17}
+		s7 := &I.TestStruct{A: 45, B: 61}
+		s8 := &I.TestStruct{A: -39, B: 17}
 
 		tests := []struct {
-			args []*myType
-			rets []*myType
+			args []*I.TestStruct
+			rets []*I.TestStruct
 		}{
-			{[]*myType{}, []*myType{}},
-			{[]*myType{s2}, []*myType{s2}},
-			{[]*myType{s2, s1}, []*myType{s1, s2}},
-			{[]*myType{s1, s2, s3}, []*myType{s1, s2, s3}},
-			{[]*myType{s3, s2, s1}, []*myType{s1, s2, s3}},
-			{[]*myType{s3, s1, s2}, []*myType{s1, s2, s3}},
-			{[]*myType{s2, s3, s1}, []*myType{s1, s2, s3}},
-			{[]*myType{s0, s8, s3}, []*myType{s8, s0, s3}},
-			{[]*myType{s6, s2, s1, s4, s5, s3}, []*myType{s1, s2, s3, s4, s5, s6}},
-			{[]*myType{s7, s3, s6, s5, s4, s1, s2}, []*myType{s1, s2, s3, s4, s5, s6, s7}},
+			{[]*I.TestStruct{}, []*I.TestStruct{}},
+			{[]*I.TestStruct{s2}, []*I.TestStruct{s2}},
+			{[]*I.TestStruct{s2, s1}, []*I.TestStruct{s1, s2}},
+			{[]*I.TestStruct{s1, s2, s3}, []*I.TestStruct{s1, s2, s3}},
+			{[]*I.TestStruct{s3, s2, s1}, []*I.TestStruct{s1, s2, s3}},
+			{[]*I.TestStruct{s3, s1, s2}, []*I.TestStruct{s1, s2, s3}},
+			{[]*I.TestStruct{s2, s3, s1}, []*I.TestStruct{s1, s2, s3}},
+			{[]*I.TestStruct{s0, s8, s3}, []*I.TestStruct{s8, s0, s3}},
+			{[]*I.TestStruct{s6, s2, s1, s4, s5, s3}, []*I.TestStruct{s1, s2, s3, s4, s5, s6}},
+			{[]*I.TestStruct{s7, s3, s6, s5, s4, s1, s2}, []*I.TestStruct{s1, s2, s3, s4, s5, s6, s7}},
 		}
 		t.Run("InsertSort", func(t *testing.T) {
 			for _, test := range tests {

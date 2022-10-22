@@ -14,19 +14,6 @@ func TestMath(t *testing.T) {
 		assert.Nil(err)
 	}()
 
-	t.Run("ConvToByteArr", func(t *testing.T) {
-		assert.Equal(amath.ConvToByteArr(int(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr(int(1)), []byte{0, 0, 0, 0, 0, 0, 0, 1})
-		assert.Equal(amath.ConvToByteArr(int(1<<40)), []byte{0, 0, 1, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr(uint(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr(uint(3)), []byte{0, 0, 0, 0, 0, 0, 0, 3})
-		assert.Equal(amath.ConvToByteArr(uint(1<<48)), []byte{0, 1, 0, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr(float64(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr(float64(5)), []byte{0, 0, 0, 0, 0, 0, 0, 5})
-		assert.Equal(amath.ConvToByteArr(float64(1<<56)), []byte{1, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(amath.ConvToByteArr("abcdefgh"), []byte{0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68})
-		assert.Panics(func() { amath.ConvToByteArr(uint8(0)) }, "The code is not panic")
-	})
 	t.Run("HashPirson32", func(t *testing.T) {
 		assert.Equal(amath.HashPirson16([]byte{0, 0, 0, 0, 0, 0, 0, 0}), uint16(0x677c))
 		assert.Equal(amath.HashPirson16([]byte{0, 0, 0, 0, 0, 0, 0, 1}), uint16(0xa2f0))

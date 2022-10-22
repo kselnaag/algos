@@ -49,7 +49,7 @@ func (uf *UF) Find(p int) int {
 		t := barr[i]
 		uf.id[t] = p
 	}
-	uf.bag.Drop()
+	uf.bag = array.NewBag[int]()
 	return p
 }
 

@@ -32,9 +32,6 @@ func TestStack(t *testing.T) {
 		assert.Equal(bag.Iterate(), []int{23, 3, 29, 43, 67, 25, 134})
 		assert.False(bag.IsEmpty())
 		assert.Equal(bag.Size(), 7)
-		bag.Drop()
-		assert.True(bag.IsEmpty())
-		assert.Equal(bag.Size(), 0)
 	})
 
 	t.Run("stack", func(t *testing.T) {
@@ -71,9 +68,8 @@ func TestStack(t *testing.T) {
 		stack.Push(23)
 		assert.False(stack.IsEmpty())
 		assert.Equal(stack.Size(), 7)
-		stack.Drop()
-		assert.True(stack.IsEmpty())
-		assert.Equal(stack.Size(), 0)
+
+		stack = array.NewStack[int]()
 		assert.Panics(func() { stack.Pop() }, "algos.array.(Stack).Pop():  the code is not panic when structure is empty")
 	})
 
@@ -110,9 +106,8 @@ func TestStack(t *testing.T) {
 		queue.Enq(23)
 		assert.False(queue.IsEmpty())
 		assert.Equal(queue.Size(), 7)
-		queue.Drop()
-		assert.True(queue.IsEmpty())
-		assert.Equal(queue.Size(), 0)
+
+		queue = array.NewQueue[int]()
 		assert.Panics(func() { queue.Deq() }, "algos.array.(Queue).Deq():  the code is not panic when structure is empty")
 	})
 }

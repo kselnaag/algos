@@ -1,37 +1,8 @@
 package math
 
 import (
-	"fmt"
-
 	I "github.com/kselnaag/algos/types"
 )
-
-func ConvToByteArr[T I.Ord](mess T) []byte {
-	res := make([]byte, 8)
-	switch m := any(mess).(type) {
-	case int:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case uint:
-		for i := 0; i < 8; i++ {
-			res[i] = byte(m >> (8 * (7 - i)))
-		}
-	case float64:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case string:
-		return []byte(m)
-	default:
-		s := "algos.(math).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
-		s += fmt.Sprintf("arg Type is: %T", mess)
-		panic(s)
-	}
-	return res
-}
 
 func HashPirson16(mess []byte) uint16 {
 	T := [256]byte{

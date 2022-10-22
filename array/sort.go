@@ -2,6 +2,8 @@ package array
 
 import (
 	"math/rand"
+
+	I "github.com/kselnaag/algos/types"
 )
 
 func Quick3Sort[T any](arr []T) {
@@ -15,11 +17,11 @@ func q3sort[T any](arr []T, lo, hi int) {
 	}
 	l, i, v, g := lo, lo+1, arr[lo], hi
 	for i <= g {
-		if lt(arr[i], v) {
+		if I.LT(arr[i], v) {
 			swap(arr, l, i)
 			l++
 			i++
-		} else if gt(arr[i], v) {
+		} else if I.GT(arr[i], v) {
 			swap(arr, i, g)
 			g--
 		} else {
@@ -45,10 +47,10 @@ func HeapSort[T any](arr []T) {
 func sink[T any](arr []T, k, n int) {
 	for (2 * k) <= n {
 		j := 2 * k
-		if (j < n) && lt(arr[j], arr[j+1]) {
+		if (j < n) && I.LT(arr[j], arr[j+1]) {
 			j++
 		}
-		if !lt(arr[k], arr[j]) {
+		if !I.LT(arr[k], arr[j]) {
 			break
 		}
 		swap(arr, k, j)
@@ -77,12 +79,12 @@ func qsort[T any](arr []T, lo, hi int) {
 func pivot[T any](arr []T, lo, hi int) int {
 	i, j, v := lo, hi, lo
 	for {
-		for ; lt(arr[i], arr[v]); i++ {
+		for ; I.LT(arr[i], arr[v]); i++ {
 			if i == hi {
 				break
 			}
 		}
-		for ; lt(arr[v], arr[j]); j-- {
+		for ; I.LT(arr[v], arr[j]); j-- {
 			if j == lo {
 				break
 			}
@@ -119,7 +121,7 @@ func mrgsort[T any](src []T, dst []T, lo, hi int) {
 }
 
 func merge[T any](src []T, dst []T, lo, mid, hi int) {
-	if !gt(src[mid], src[mid+1]) {
+	if !I.GT(src[mid], src[mid+1]) {
 		copy(dst[lo:hi+1], src[lo:hi+1])
 		return
 	}
@@ -135,7 +137,7 @@ func merge[T any](src []T, dst []T, lo, mid, hi int) {
 			i++
 			continue
 		}
-		if lt(src[j], src[i]) {
+		if I.LT(src[j], src[i]) {
 			dst[k] = src[j]
 			j++
 		} else {
@@ -152,10 +154,10 @@ func ReverseSort[T any](arr []T) {
 		min := i
 		max := i
 		for j := i + 1; j < (alen - i); j++ {
-			if lt(arr[j], arr[min]) {
+			if I.LT(arr[j], arr[min]) {
 				min = j
 			}
-			if gt(arr[j], arr[max]) {
+			if I.GT(arr[j], arr[max]) {
 				max = j
 			}
 		}
@@ -178,7 +180,7 @@ func SelectSort[T any](arr []T) {
 	for i := 0; i < alen; i++ {
 		min := i
 		for j := i + 1; j < alen; j++ {
-			if lt(arr[j], arr[min]) {
+			if I.LT(arr[j], arr[min]) {
 				min = j
 			}
 		}
@@ -195,7 +197,7 @@ func ShellSort[T any](arr []T) {
 	for h > 0 {
 		for i := h; i < alen; i++ {
 			for j := i; j >= h; j -= h {
-				if lt(arr[j], arr[j-h]) {
+				if I.LT(arr[j], arr[j-h]) {
 					swap(arr, j, j-h)
 				} else {
 					break
@@ -210,7 +212,7 @@ func InsertSort[T any](arr []T) {
 	alen := len(arr)
 	for i := 1; i < alen; i++ {
 		for j := i; j > 0; j-- {
-			if lt(arr[j], arr[j-1]) {
+			if I.LT(arr[j], arr[j-1]) {
 				swap(arr, j, j-1)
 			} else {
 				break
@@ -225,11 +227,11 @@ func BinarySearch[T any](arr []T, elem T) int {
 	for low < high {
 		mid := (low + ((high - low) / 2))
 		val := arr[mid]
-		if eq(val, elem) {
+		if I.EQ(val, elem) {
 			return mid
-		} else if gt(val, elem) {
+		} else if I.GT(val, elem) {
 			high = mid
-		} else if lt(val, elem) {
+		} else if I.LT(val, elem) {
 			low = mid + 1
 		}
 	}
@@ -254,7 +256,7 @@ func Reverse[T any](arr []T) {
 
 func Contained[T any](arr []T, elem T) int {
 	for i, el := range arr {
-		if eq(el, elem) {
+		if I.EQ(el, elem) {
 			return i
 		}
 	}
@@ -264,7 +266,7 @@ func Contained[T any](arr []T, elem T) int {
 func IsSorted[T any](arr []T) bool {
 	alen := len(arr)
 	for i := 1; i < alen; i++ {
-		if lt(arr[i], arr[i-1]) {
+		if I.LT(arr[i], arr[i-1]) {
 			return false
 		}
 	}

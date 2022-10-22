@@ -1,12 +1,9 @@
 package list
 
-func Map[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] {
-	if root == nil {
-		return nil
-	}
-	var res, ptr *Node[T2]
+func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] {
+	var res, ptr *Snode[T2]
 	for onode := root; onode != nil; onode = onode.Next {
-		nnode := &Node[T2]{Val: fnc(onode.Val), Next: nil}
+		nnode := &Snode[T2]{Val: fnc(onode.Val), Next: nil}
 		if onode == root {
 			res = nnode
 		} else {
@@ -17,10 +14,7 @@ func Map[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] {
 	return res
 }
 
-func MapA[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] {
-	if root == nil {
-		return nil
-	}
+func MapA[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] {
 	llen := ListSize(root)
 	chans := make(chan chan T2, llen)
 	for node := root; node != nil; node = node.Next {
@@ -31,10 +25,10 @@ func MapA[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] {
 		}(elemChan, node.Val)
 	}
 	close(chans)
-	var res, ptr *Node[T2]
+	var res, ptr *Snode[T2]
 	i := 0
 	for elemChan := range chans {
-		node := &Node[T2]{Val: <-elemChan, Next: nil}
+		node := &Snode[T2]{Val: <-elemChan, Next: nil}
 		if i == 0 {
 			res = node
 		} else {
@@ -46,24 +40,24 @@ func MapA[T1, T2 any](root *Node[T1], fnc func(T1) T2) *Node[T2] {
 	return res
 }
 
-func Reduce[T1, T2 any](root *Node[T1], fnc func(T2, T1) T2, acc T2) T2 {
+func Reduce[T1, T2 any](root *Snode[T1], fnc func(T2, T1) T2, acc T2) T2 {
 	for node := root; node != nil; node = node.Next {
 		acc = fnc(acc, node.Val)
 	}
 	return acc
 }
 
-func ReduceR[T1, T2 any](root *Node[T1], fnc func(T2, T1) T2, acc T2) T2 {
+func ReduceR[T1, T2 any](root *Snode[T1], fnc func(T2, T1) T2, acc T2) T2 {
 	if root == nil {
 		return acc
 	}
 	return fnc(ReduceR(root.Next, fnc, acc), root.Val)
 }
 
-func Filter[T any](root *Node[T], fnc func(T) bool) *Node[T] {
-	var res, ptr *Node[T]
+func Filter[T any](root *Snode[T], fnc func(T) bool) *Snode[T] {
+	var res, ptr *Snode[T]
 	for onode := root; onode != nil; onode = onode.Next {
-		node := &Node[T]{Val: onode.Val, Next: nil}
+		node := &Snode[T]{Val: onode.Val, Next: nil}
 		if fnc(node.Val) {
 			if res == nil {
 				res = node

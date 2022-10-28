@@ -75,7 +75,7 @@
 				
 				<option value="file9">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/tree/rbtree.go (0.0%)</option>
+				<option value="file10">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
 				
 				<option value="file11">github.com/kselnaag/algos/types/types.go (100.0%)</option>
 				
@@ -1342,16 +1342,18 @@ func Max[T I.Ord](x, y T) T <span class="cov4" title="9">{
 		<pre class="file" id="file10" style="display: none">package tree
 
 import (
-        // amath "github.com/kselnaag/algos/math"
+        "fmt"
+
+        amath "github.com/kselnaag/algos/math"
         I "github.com/kselnaag/algos/types"
 )
 
-// left-linear red-black tree for mapping
+// left-linear red-black tree with lazy node deletion
 type RBnode[K I.Ord, V any] struct {
-        Key   K
-        Val   V
-        L, R  *RBnode[K, V]
-        IsRed bool
+        Key          K
+        Val          V
+        L, R         *RBnode[K, V]
+        IsRed, IsDel bool
 }
 
 type RBmap[K I.Ord, V any] struct {
@@ -1359,12 +1361,277 @@ type RBmap[K I.Ord, V any] struct {
         size int
 }
 
-func (tm *RBmap[K, V]) NewTmap() RBmap[K, V] <span class="cov0" title="0">{
+func NewRBmap[K I.Ord, V any]() RBmap[K, V] <span class="cov1" title="1">{
         return RBmap[K, V]{
                 root: nil,
                 size: 0,
         }
 }</span>
+
+func (tm *RBmap[K, V]) Size() int <span class="cov7" title="30">{
+        return tm.size
+}</span>
+
+func (tm *RBmap[K, V]) IsEmpty() bool <span class="cov7" title="24">{
+        return tm.Size() == 0
+}</span>
+
+func (tm *RBmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
+        node := tm.root
+        for node != nil </span><span class="cov7" title="33">{
+                if I.LT(key, node.Key) </span><span class="cov6" title="13">{
+                        node = node.L
+                }</span> else<span class="cov6" title="20"> if I.GT(key, node.Key) </span><span class="cov5" title="10">{
+                        node = node.R
+                }</span> else<span class="cov5" title="10"> {
+                        return !node.IsDel
+                }</span>
+        }
+        <span class="cov1" title="1">return false</span>
+}
+
+func (tm *RBmap[K, V]) Get(key K) V <span class="cov5" title="12">{
+        node := tm.root
+        for node != nil </span><span class="cov8" title="36">{
+                if I.LT(key, node.Key) </span><span class="cov6" title="13">{
+                        node = node.L
+                }</span> else<span class="cov7" title="23"> if I.GT(key, node.Key) </span><span class="cov5" title="12">{
+                        node = node.R
+                }</span> else<span class="cov5" title="11"> {
+                        if !node.IsDel </span><span class="cov5" title="10">{
+                                return node.Val
+                        }</span>
+                        <span class="cov1" title="1">node = nil</span>
+                }
+        }
+        <span class="cov2" title="2">panic("algos.tree.(Tmap).Get(key): No any key found, check first")</span>
+}
+
+func (tm *RBmap[K, V]) Del(key K) <span class="cov4" title="6">{
+        if tm.IsEmpty() </span><span class="cov1" title="1">{
+                panic("algos.tree.(Tmap).Del(): No any key found, tree is empty")</span>
+        }
+        <span class="cov4" title="5">node := tm.root
+        for node != nil </span><span class="cov6" title="15">{
+                if I.LT(key, node.Key) </span><span class="cov2" title="2">{
+                        node = node.L
+                }</span> else<span class="cov6" title="13"> if I.GT(key, node.Key) </span><span class="cov5" title="9">{
+                        node = node.R
+                }</span> else<span class="cov3" title="4"> {
+                        node.IsDel = true
+                        if tm.size &gt; 0 </span><span class="cov3" title="4">{
+                                tm.size--
+                        }</span>
+                        <span class="cov3" title="4">return</span>
+                }
+        }
+        <span class="cov1" title="1">panic("algos.tree.(Tmap).Del(key): No any key found, check first")</span>
+}
+
+func (tm *RBmap[K, V]) Put(key K, val V) <span class="cov6" title="14">{
+        tm.root = tm.put(tm.root, key, val)
+        if !tm.IsEmpty() </span><span class="cov6" title="14">{
+                tm.root.IsRed = false
+        }</span>
+}
+
+func (tm *RBmap[K, V]) put(node *RBnode[K, V], key K, val V) *RBnode[K, V] <span class="cov8" title="42">{
+        if node == nil </span><span class="cov5" title="10">{
+                tm.size++
+                node = &amp;RBnode[K, V]{Key: key, Val: val, L: nil, R: nil, IsRed: true, IsDel: false}
+        }</span> else<span class="cov7" title="32"> {
+                if I.LT(key, node.Key) </span><span class="cov6" title="16">{
+                        node.L = tm.put(node.L, key, val)
+                }</span> else<span class="cov6" title="16"> if I.GT(key, node.Key) </span><span class="cov5" title="12">{
+                        node.R = tm.put(node.R, key, val)
+                }</span> else<span class="cov3" title="4"> {
+                        node.Val = val
+                        if node.IsDel </span><span class="cov1" title="1">{
+                                node.IsDel = false
+                                tm.size++
+                        }</span>
+                }
+        }
+        <span class="cov8" title="42">return tm.balance(node)</span>
+}
+
+func (tm *RBmap[K, V]) balance(node *RBnode[K, V]) *RBnode[K, V] <span class="cov8" title="42">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="42">if (node.L == nil || !node.L.IsRed) &amp;&amp; (node.R != nil) &amp;&amp; node.R.IsRed </span><span class="cov4" title="6">{
+                node = tm.rotateLeft(node)
+        }</span>
+        <span class="cov8" title="42">if (node.L != nil) &amp;&amp; node.L.IsRed &amp;&amp; (node.L.L != nil) &amp;&amp; node.L.L.IsRed </span><span class="cov3" title="3">{
+                node = tm.rotateRight(node)
+        }</span>
+        <span class="cov8" title="42">if (node.L != nil) &amp;&amp; node.L.IsRed &amp;&amp; (node.R != nil) &amp;&amp; node.R.IsRed </span><span class="cov3" title="4">{
+                tm.flipColors(node)
+        }</span>
+        <span class="cov8" title="42">return node</span>
+}
+
+func (tm *RBmap[K, V]) rotateLeft(node *RBnode[K, V]) *RBnode[K, V] <span class="cov4" title="6">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov4" title="6">x := node.R
+        node.R = x.L
+        x.L = node
+        x.IsRed = node.IsRed
+        node.IsRed = true
+        return x</span>
+}
+
+func (tm *RBmap[K, V]) rotateRight(node *RBnode[K, V]) *RBnode[K, V] <span class="cov3" title="3">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov3" title="3">x := node.L
+        node.L = x.R
+        x.R = node
+        x.IsRed = node.IsRed
+        node.IsRed = true
+        return x</span>
+}
+
+func (tm *RBmap[K, V]) flipColors(node *RBnode[K, V]) <span class="cov3" title="4">{
+        if node != nil </span><span class="cov3" title="4">{
+                node.IsRed = true
+                if node.L != nil </span><span class="cov3" title="4">{
+                        node.L.IsRed = false
+                }</span>
+                <span class="cov3" title="4">if node.R != nil </span><span class="cov3" title="4">{
+                        node.R.IsRed = false
+                }</span>
+        }
+}
+
+func (tm *RBmap[K, V]) IterateKeys() []K <span class="cov2" title="2">{
+        keysarr := make([]K, 0, tm.Size())
+        return tm.iteratekeys(tm.root, keysarr)
+}</span>
+
+func (tm *RBmap[K, V]) iteratekeys(node *RBnode[K, V], keysarr []K) []K <span class="cov8" title="42">{
+        if node == nil </span><span class="cov7" title="22">{
+                return keysarr
+        }</span>
+        <span class="cov6" title="20">keysarr = tm.iteratekeys(node.L, keysarr)
+        if !node.IsDel </span><span class="cov6" title="17">{
+                keysarr = append(keysarr, node.Key)
+        }</span>
+        <span class="cov6" title="20">keysarr = tm.iteratekeys(node.R, keysarr)
+        return keysarr</span>
+}
+
+func (tm *RBmap[K, V]) IsBSTcheck() bool <span class="cov2" title="2">{
+        return tm.isbst(tm.root, nil, nil)
+}</span>
+
+func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min *K, max *K) bool <span class="cov8" title="42">{
+        if node == nil </span><span class="cov7" title="22">{
+                return true
+        }</span>
+        <span class="cov6" title="20">if (min != nil) &amp;&amp; (node.Key &lt;= *min) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov6" title="20">if (max != nil) &amp;&amp; (node.Key &gt;= *max) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov6" title="20">return tm.isbst(node.L, min, &amp;node.Key) &amp;&amp; tm.isbst(node.R, &amp;node.Key, max)</span>
+}
+
+func (tm *RBmap[K, V]) BSTheightCheck() int <span class="cov2" title="2">{
+        return tm.bstheight(tm.root)
+}</span>
+
+func (tm *RBmap[K, V]) bstheight(node *RBnode[K, V]) int <span class="cov8" title="42">{
+        if node == nil </span><span class="cov7" title="22">{
+                return -1
+        }</span>
+        <span class="cov6" title="20">return 1 + amath.Max(tm.bstheight(node.L), tm.bstheight(node.R))</span>
+}
+
+func (tm *RBmap[K, V]) IsRedBlackCheck() bool <span class="cov2" title="2">{
+        return tm.isredblack(tm.root)
+}</span>
+
+func (tm *RBmap[K, V]) isredblack(node *RBnode[K, V]) bool <span class="cov8" title="42">{
+        if node == nil </span><span class="cov7" title="22">{
+                return true
+        }</span>
+        <span class="cov6" title="20">if (node.R != nil) &amp;&amp; node.R.IsRed </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov6" title="20">if (node != tm.root) &amp;&amp; node.IsRed &amp;&amp; (node.L != nil) &amp;&amp; node.L.IsRed </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov6" title="20">return tm.isredblack(node.L) &amp;&amp; tm.isredblack(node.R)</span>
+}
+
+func (tm *RBmap[K, V]) IsBalancedCheck() bool <span class="cov2" title="2">{
+        blacknum := 0
+        node := tm.root
+        for node != nil </span><span class="cov5" title="8">{
+                if !node.IsRed </span><span class="cov4" title="6">{
+                        blacknum++
+                }</span>
+                <span class="cov5" title="8">node = node.L</span>
+        }
+        <span class="cov2" title="2">return tm.isbalanced(tm.root, blacknum)</span>
+}
+
+func (tm *RBmap[K, V]) isbalanced(node *RBnode[K, V], blacknum int) bool <span class="cov8" title="42">{
+        if node == nil </span><span class="cov7" title="22">{
+                return blacknum == 0
+        }</span>
+        <span class="cov6" title="20">if !node.IsRed </span><span class="cov6" title="14">{
+                blacknum--
+        }</span>
+        <span class="cov6" title="20">return tm.isbalanced(node.L, blacknum) &amp;&amp; tm.isbalanced(node.R, blacknum)</span>
+}
+
+func (tm *RBmap[K, V]) PrintTreeCheck() <span class="cov1" title="1">{
+        fmt.Printf("\n")
+        fmt.Printf("&lt;- left rotated tree pic &lt;-\n")
+        tm.printtree(tm.root, 0)
+        fmt.Printf("(+ Red node, x Del node, * Red and Del node )\n\n")
+}</span>
+
+func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" title="21">{
+        if node != nil </span><span class="cov5" title="10">{
+                tm.printtree(node.R, n+5)
+                for i := 0; i &lt; n; i++ </span><span class="cov10" title="95">{
+                        fmt.Printf(" ")
+                }</span>
+                <span class="cov5" title="10">if node.IsRed &amp;&amp; node.IsDel </span><span class="cov1" title="1">{
+                        fmt.Printf("*")
+                }</span> else<span class="cov5" title="9"> {
+                        if node.IsRed </span><span class="cov2" title="2">{
+                                fmt.Printf("+")
+                        }</span>
+                        <span class="cov5" title="9">if node.IsDel </span><span class="cov2" title="2">{
+                                fmt.Printf("x")
+                        }</span>
+                }
+                <span class="cov5" title="10">fmt.Printf("%v:%v\n", node.Key, node.Val)
+                tm.printtree(node.L, n+5)</span>
+        }
+}
+
+/*
+
+NewRBmap Size IsEmpty IsKey Get Put
+Del IterateKeys
+
+put iteratekeys printtree isbalanced isredblack bstheight isbst
+balance rotateLeft rotateRight flipColors
+
+
+IsBSTcheck IsRedBlackCheck IsBalancedCheck
+BSTheightCheck PrintTreeCheck
+
+*/
 </pre>
 		
 		<pre class="file" id="file11" style="display: none">package types

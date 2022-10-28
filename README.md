@@ -18,7 +18,7 @@ This is the hand-made algorithms and data-structures module with go generics. It
   <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" alt="Types and func scheme"/>
 </p>
 
-The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures) in our code. Now in std go lib we have to wrap PDTs in structs and bind 3 methods (LEN, LESS, SWAP) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method for sorting internal and abstract types more easy way.
+The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures) in our code. Now in std go lib we have to wrap PDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method for sorting internal and abstract types more easy way.
 
 We can build ADTs:
 ```
@@ -42,7 +42,7 @@ func (s myType) CompareTo(st Comp) int {
 
 We can compare data types:
 ```
-func lt[T any](i, j T) bool {
+func LT[T any](i, j T) bool {
 	switch ii := any(i).(type) {
 	case I.Comp:
 		jj := any(j).(I.Comp)

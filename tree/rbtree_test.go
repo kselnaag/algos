@@ -17,7 +17,7 @@ func TestRBtree(t *testing.T) {
 	rbtree := tree.NewRBmap[string, int]()
 	assert.Equal(rbtree.IsEmpty(), true)
 	assert.Equal(rbtree.Size(), 0)
-	assert.Panics(func() { rbtree.Del("A") }, "algos.tree.(rbmap).Del(key): the code is not panic when tree is empty")
+	assert.Panics(func() { rbtree.Del("A") }, "algos.tree.(RBmap).Del(key): the code is not panic when tree is empty")
 
 	arr := []string{"S", "E", "A", "R", "C", "H", "E", "X", "A", "M", "P", "L", "E"} // S E A R C H X M P L
 	for i, el := range arr {
@@ -48,7 +48,7 @@ func TestRBtree(t *testing.T) {
 	assert.Equal(rbtree.Get("M"), 9)
 	assert.Equal(rbtree.Get("P"), 10)
 	assert.Equal(rbtree.Get("L"), 11)
-	assert.Panics(func() { rbtree.Get("J") }, "algos.tree.(rbmap).Get(key): the code is not panic when key is not found")
+	assert.Panics(func() { rbtree.Get("J") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
 
 	assert.Equal(rbtree.IsBSTcheck(), true)
 	assert.Equal(rbtree.BSTheightCheck(), 3)
@@ -64,8 +64,8 @@ func TestRBtree(t *testing.T) {
 	rbtree.Del("X")
 	rbtree.Del("P")
 	rbtree.Put("P", 16)
-	assert.Panics(func() { rbtree.Get("X") }, "algos.tree.(rbmap).Get(key): the code is not panic when key is not found")
-	assert.Panics(func() { rbtree.Del("Z") }, "algos.tree.(rbmap).Del(key): the code is not panic when key is not found")
+	assert.Panics(func() { rbtree.Get("X") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
+	assert.Panics(func() { rbtree.Del("Z") }, "algos.tree.(RBmap).Del(key): the code is not panic when key is not found")
 
 	assert.Equal(rbtree.IterateKeys(), []string{"A", "C", "E", "H", "L", "M", "P"})
 	assert.Equal(rbtree.IsEmpty(), false)
@@ -80,7 +80,6 @@ func TestRBtree(t *testing.T) {
 }
 
 /*
-
 NewRBmap Size IsEmpty IsKey Get Put
 Del IterateKeys
 
@@ -89,5 +88,4 @@ balance rotateLeft rotateRight flipColors
 
 IsBSTcheck IsRedBlackCheck IsBalancedCheck
 BSTheightCheck PrintTreeCheck
-
 */

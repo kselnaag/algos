@@ -63,12 +63,12 @@ func (tm *RBmap[K, V]) Get(key K) V {
 			node = nil
 		}
 	}
-	panic("algos.tree.(Tmap).Get(key): No any key found, check first")
+	panic("algos.tree.(RBmap).Get(key): No any key found, check first")
 }
 
 func (tm *RBmap[K, V]) Del(key K) {
 	if tm.IsEmpty() {
-		panic("algos.tree.(Tmap).Del(): No any key found, tree is empty")
+		panic("algos.tree.(RBmap).Del(): No any key found, tree is empty")
 	}
 	node := tm.root
 	for node != nil {
@@ -84,7 +84,7 @@ func (tm *RBmap[K, V]) Del(key K) {
 			return
 		}
 	}
-	panic("algos.tree.(Tmap).Del(key): No any key found, check first")
+	panic("algos.tree.(RBmap).Del(key): No any key found, check first")
 }
 
 func (tm *RBmap[K, V]) Put(key K, val V) {
@@ -277,17 +277,3 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) {
 		tm.printtree(node.L, n+5)
 	}
 }
-
-/*
-
-NewRBmap Size IsEmpty IsKey Get Put
-Del IterateKeys
-
-put iteratekeys printtree isbalanced isredblack bstheight isbst
-balance rotateLeft rotateRight flipColors
-
-
-IsBSTcheck IsRedBlackCheck IsBalancedCheck
-BSTheightCheck PrintTreeCheck
-
-*/

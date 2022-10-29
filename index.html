@@ -75,9 +75,11 @@
 				
 				<option value="file9">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				<option value="file10">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/types/types.go (100.0%)</option>
+				<option value="file11">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				
+				<option value="file12">github.com/kselnaag/algos/types/types.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -1348,6 +1350,245 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
+// right-linear Arne Andersson tree with intensive node deletion
+type AAnode[K I.Ord, V any] struct {
+        Key  K
+        Val  V
+        L, R *AAnode[K, V]
+        Lvl  byte
+}
+
+type AAmap[K I.Ord, V any] struct {
+        root *AAnode[K, V]
+        size int
+}
+
+func NewAAmap[K I.Ord, V any]() AAmap[K, V] <span class="cov1" title="1">{
+        return AAmap[K, V]{
+                root: nil,
+                size: 0,
+        }
+}</span>
+
+func (tm *AAmap[K, V]) Size() int <span class="cov5" title="10">{
+        return tm.size
+}</span>
+
+func (tm *AAmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
+        return tm.Size() == 0
+}</span>
+
+func (tm *AAmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
+        node := tm.root
+        for node != nil </span><span class="cov7" title="33">{
+                if I.LT(key, node.Key) </span><span class="cov5" title="10">{
+                        node = node.L
+                }</span> else<span class="cov6" title="23"> if I.GT(key, node.Key) </span><span class="cov5" title="13">{
+                        node = node.R
+                }</span> else<span class="cov5" title="10"> {
+                        return true
+                }</span>
+        }
+        <span class="cov1" title="1">return false</span>
+}
+
+func (tm *AAmap[K, V]) Get(key K) V <span class="cov5" title="12">{
+        node := tm.root
+        for node != nil </span><span class="cov7" title="37">{
+                if I.LT(key, node.Key) </span><span class="cov5" title="12">{
+                        node = node.L
+                }</span> else<span class="cov6" title="25"> if I.GT(key, node.Key) </span><span class="cov5" title="15">{
+                        node = node.R
+                }</span> else<span class="cov5" title="10"> {
+                        return node.Val
+                }</span>
+        }
+        <span class="cov2" title="2">panic("algos.tree.(AAmap).Get(key): No any key found, check first")</span>
+}
+
+func (tm *AAmap[K, V]) Put(key K, val V) <span class="cov5" title="14">{
+        tm.root = tm.put(tm.root, key, val)
+}</span>
+
+func (tm *AAmap[K, V]) put(node *AAnode[K, V], key K, val V) *AAnode[K, V] <span class="cov7" title="40">{
+        if node == nil </span><span class="cov5" title="11">{
+                tm.size++
+                node = &amp;AAnode[K, V]{Key: key, Val: val, L: nil, R: nil, Lvl: 1}
+        }</span> else<span class="cov7" title="29"> {
+                if I.LT(key, node.Key) </span><span class="cov5" title="11">{
+                        node.L = tm.put(node.L, key, val)
+                }</span> else<span class="cov6" title="18"> if I.GT(key, node.Key) </span><span class="cov5" title="15">{
+                        node.R = tm.put(node.R, key, val)
+                }</span> else<span class="cov3" title="3"> {
+                        node.Val = val
+                }</span>
+        }
+        <span class="cov7" title="40">return tm.balance(node)</span>
+}
+
+func (tm *AAmap[K, V]) balance(node *AAnode[K, V]) *AAnode[K, V] <span class="cov7" title="40">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov7" title="40">node = tm.skew(node)
+        node = tm.split(node)
+        return node</span>
+}
+
+func (tm *AAmap[K, V]) skew(node *AAnode[K, V]) *AAnode[K, V] <span class="cov8" title="60">{ // rightRotation
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="60">if (node.L != nil) &amp;&amp; (node.L.Lvl == node.Lvl) </span><span class="cov4" title="6">{
+                x := node.L
+                node.L = x.R
+                x.R = node
+                return x
+        }</span>
+        <span class="cov8" title="54">return node</span>
+}
+
+func (tm *AAmap[K, V]) split(node *AAnode[K, V]) *AAnode[K, V] <span class="cov8" title="55">{ // leftRotation
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="55">if (node.R != nil) &amp;&amp; (node.R.R != nil) &amp;&amp; (node.Lvl == node.R.R.Lvl) </span><span class="cov3" title="4">{
+                x := node.R
+                node.R = x.L
+                x.L = node
+                x.Lvl++
+                return x
+        }</span>
+        <span class="cov8" title="51">return node</span>
+}
+
+func (tm *AAmap[K, V]) Del(key K) <span class="cov4" title="7">{
+        tm.root = tm.del(tm.root, key)
+}</span>
+
+func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V] <span class="cov5" title="14">{
+        if node == nil </span><span class="cov2" title="2">{
+                panic("algos.tree.(AAmap).Del(key): No any key found, check first")</span>
+        }
+        <span class="cov5" title="12">if I.LT(key, node.Key) </span><span class="cov1" title="1">{
+                node.L = tm.del(node.L, key)
+        }</span> else<span class="cov5" title="11"> if I.GT(key, node.Key) </span><span class="cov4" title="6">{
+                node.R = tm.del(node.R, key)
+        }</span> else<span class="cov3" title="5"> {
+                if tm.size &gt; 0 </span><span class="cov3" title="5">{
+                        tm.size--
+                }</span>
+                <span class="cov3" title="5">if node.R == nil </span><span class="cov1" title="1">{
+                        return node.L
+                }</span>
+                <span class="cov3" title="4">min := tm.min(node.R)
+                node.Key = min.Key
+                node.Val = min.Val
+                node.R = tm.delmin(node.R)</span>
+        }
+        <span class="cov4" title="8">return tm.balanceDel(node)</span>
+}
+
+func (tm *AAmap[K, V]) min(node *AAnode[K, V]) *AAnode[K, V] <span class="cov4" title="6">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov4" title="6">if node.L == nil </span><span class="cov3" title="4">{
+                return node
+        }</span>
+        <span class="cov2" title="2">return tm.min(node.L)</span>
+}
+
+func (tm *AAmap[K, V]) delmin(node *AAnode[K, V]) *AAnode[K, V] <span class="cov4" title="6">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov4" title="6">if node.L == nil </span><span class="cov3" title="4">{
+                return node.R
+        }</span>
+        <span class="cov2" title="2">node.L = tm.delmin(node.L)
+        return node</span>
+}
+
+func (tm *AAmap[K, V]) balanceDel(node *AAnode[K, V]) *AAnode[K, V] <span class="cov4" title="8">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov4" title="8">node = tm.decrLvl(node)
+        node = tm.skew(node)
+        if node.R != nil </span><span class="cov4" title="7">{
+                node.R = tm.skew(node.R)
+        }</span>
+        <span class="cov4" title="8">if (node.R != nil) &amp;&amp; (node.R.R != nil) </span><span class="cov3" title="5">{
+                node.R.R = tm.skew(node.R.R)
+        }</span>
+        <span class="cov4" title="8">node = tm.split(node)
+        if node.R != nil </span><span class="cov4" title="7">{
+                node.R = tm.split(node.R)
+        }</span>
+        <span class="cov4" title="8">return node</span>
+}
+
+func (tm *AAmap[K, V]) decrLvl(node *AAnode[K, V]) *AAnode[K, V] <span class="cov4" title="8">{
+        if node == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov4" title="8">lvl := byte(1)
+        if (node.L != nil) &amp;&amp; (node.R != nil) </span><span class="cov4" title="6">{
+                lvl = amath.Min(node.L.Lvl, node.R.Lvl) + 1
+        }</span>
+        <span class="cov4" title="8">if lvl &lt; node.Lvl </span><span class="cov2" title="2">{
+                node.Lvl = lvl
+                if (node.R != nil) &amp;&amp; (lvl &lt; node.R.Lvl) </span><span class="cov0" title="0">{
+                        node.R.Lvl = lvl
+                }</span>
+        }
+        <span class="cov4" title="8">return node</span>
+}
+
+func (tm *AAmap[K, V]) IterateKeys() []K <span class="cov2" title="2">{
+        keysarr := make([]K, 0, tm.Size())
+        return tm.iteratekeys(tm.root, keysarr)
+}</span>
+
+func (tm *AAmap[K, V]) iteratekeys(node *AAnode[K, V], keysarr []K) []K <span class="cov7" title="34">{
+        if node == nil </span><span class="cov6" title="18">{
+                return keysarr
+        }</span>
+        <span class="cov6" title="16">keysarr = tm.iteratekeys(node.L, keysarr)
+        keysarr = append(keysarr, node.Key)
+        keysarr = tm.iteratekeys(node.R, keysarr)
+        return keysarr</span>
+}
+
+func (tm *AAmap[K, V]) PrintTreeCheck() <span class="cov2" title="2">{
+        fmt.Printf("\n")
+        fmt.Printf("&lt;- left rotated tree pic &lt;-\n")
+        tm.printtree(tm.root, 0)
+        fmt.Printf("=============================\n\n")
+}</span>
+
+func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int) <span class="cov7" title="34">{
+        if node != nil </span><span class="cov6" title="16">{
+                tm.printtree(node.R, n+5)
+                for i := 0; i &lt; n; i++ </span><span class="cov10" title="140">{
+                        fmt.Printf(" ")
+                }</span>
+                <span class="cov6" title="16">fmt.Printf("%v^%v:%v\n", node.Lvl, node.Key, node.Val)
+                tm.printtree(node.L, n+5)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package tree
+
+import (
+        "fmt"
+
+        amath "github.com/kselnaag/algos/math"
+        I "github.com/kselnaag/algos/types"
+)
+
 // left-linear red-black tree with lazy node deletion
 type RBnode[K I.Ord, V any] struct {
         Key          K
@@ -1404,12 +1645,12 @@ func (tm *RBmap[K, V]) Get(key K) V <span class="cov5" title="12">{
                         <span class="cov1" title="1">node = nil</span>
                 }
         }
-        <span class="cov2" title="2">panic("algos.tree.(Tmap).Get(key): No any key found, check first")</span>
+        <span class="cov2" title="2">panic("algos.tree.(RBmap).Get(key): No any key found, check first")</span>
 }
 
 func (tm *RBmap[K, V]) Del(key K) <span class="cov4" title="6">{
         if tm.IsEmpty() </span><span class="cov1" title="1">{
-                panic("algos.tree.(Tmap).Del(): No any key found, tree is empty")</span>
+                panic("algos.tree.(RBmap).Del(): No any key found, tree is empty")</span>
         }
         <span class="cov4" title="5">node := tm.root
         for node != nil </span><span class="cov6" title="15">{
@@ -1425,7 +1666,7 @@ func (tm *RBmap[K, V]) Del(key K) <span class="cov4" title="6">{
                         <span class="cov3" title="4">return</span>
                 }
         }
-        <span class="cov1" title="1">panic("algos.tree.(Tmap).Del(key): No any key found, check first")</span>
+        <span class="cov1" title="1">panic("algos.tree.(RBmap).Del(key): No any key found, check first")</span>
 }
 
 func (tm *RBmap[K, V]) Put(key K, val V) <span class="cov6" title="14">{
@@ -1618,23 +1859,9 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" t
                 tm.printtree(node.L, n+5)</span>
         }
 }
-
-/*
-
-NewRBmap Size IsEmpty IsKey Get Put
-Del IterateKeys
-
-put iteratekeys printtree isbalanced isredblack bstheight isbst
-balance rotateLeft rotateRight flipColors
-
-
-IsBSTcheck IsRedBlackCheck IsBalancedCheck
-BSTheightCheck PrintTreeCheck
-
-*/
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package types
+		<pre class="file" id="file12" style="display: none">package types
 
 import "fmt"
 

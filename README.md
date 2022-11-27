@@ -1,5 +1,4 @@
 <p align="left">
-	<img src="https://img.shields.io/github/languages/top/kselnaag/algos?style=plastic" title="main language" alt="main language">
 	<img src="https://img.shields.io/github/go-mod/go-version/kselnaag/algos?style=plastic" title="language version" alt="language version">
 	<img src="https://img.shields.io/github/languages/code-size/kselnaag/algos?style=plastic" title="src files size" alt="src files size">
 	<img src="https://img.shields.io/github/repo-size/kselnaag/algos?style=plastic" title="repo size" alt="repo size">
@@ -11,15 +10,21 @@
 ### **ALGOS**
 ----
 
-This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
-
-### **Types and func approximate scheme**
 <p align="center">
-  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" alt="Types and func scheme"/>
+  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/myGophers.jpg" title="#DIY #GENERICS #ERRORS" alt="#DIY #GENERICS #ERRORS"/>
 </p>
 
+This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
+
+### **Types and func scheme:**
+<p align="center">
+  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" title="Types and func scheme" alt="Types and func scheme"/>
+</p>
+
+**Motivation:**
 The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures) in our code. Now in std go lib we have to wrap PDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method for sorting internal and abstract types more easy way.
 
+**The Main Idea:**
 We can build ADTs:
 ```
 type myType struct {
@@ -60,7 +65,7 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii < jj
 	default:
-		s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
+		s := "algos.(types).equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -73,7 +78,7 @@ func InsertSort[T any](arr []T) {
 	alen := len(arr)
 	for i := 1; i < alen; i++ {
 		for j := i; j > 0; j-- {
-			if lt(arr[j], arr[j-1]) {
+			if LT(arr[j], arr[j-1]) {
 				swap(arr, j, j-1)
 			} else {
 				break
@@ -83,6 +88,7 @@ func InsertSort[T any](arr []T) {
 }
 ```
 
+**Result:**
 For PDTs, value slice:
 ```
 arr := []int{3, 2, 1}
@@ -100,7 +106,7 @@ array.InsertSort(arr)
 // {s1, s2, s3}
 ```
 
-This approach used in arrays. Other data types are under construction and use `Ord` or `any` interfaces.
+This approach used in arrays. Other data types are under construction and use `Ord` and `any` interfaces for Keys and Values as well.
 
 ----
 

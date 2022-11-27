@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="StPKS6a9uWxOC8KM271T" name="Page-1">
-        <mxGraphModel dx="927" dy="611" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1091" dy="547" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -19,17 +19,17 @@
                 <mxCell id="JtaezXzCazCUk_wRYMuN-6" value="graph" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=none;strokeColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="490" y="200" width="60" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="JtaezXzCazCUk_wRYMuN-7" value="shuffle&lt;br&gt;reverse&lt;br&gt;isSorted&lt;br&gt;BinarySearch&lt;br&gt;selectSort&lt;br&gt;reverseSort&lt;br&gt;insertSort&lt;br&gt;shellSort&lt;br&gt;mergeSort&lt;br&gt;heapSort&lt;br&gt;quickSort&lt;br&gt;quick3Sort&lt;br&gt;&lt;br&gt;Stack&lt;br&gt;Queue&lt;br&gt;Bag&lt;br&gt;&lt;br&gt;minPQ&lt;br&gt;maxPQ&lt;br&gt;minIdxPQ(-)&lt;br&gt;maxIdxPQ(-)&lt;br&gt;&lt;br&gt;Hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="160" y="240" width="66" height="420" as="geometry"/>
+                <mxCell id="JtaezXzCazCUk_wRYMuN-7" value="shuffle&lt;br&gt;reverse&lt;br&gt;isSorted&lt;br&gt;BinarySearch&lt;br&gt;selectSort&lt;br&gt;reverseSort&lt;br&gt;insertSort&lt;br&gt;shellSort&lt;br&gt;mergeSort&lt;br&gt;heapSort&lt;br&gt;quickSort&lt;br&gt;quick3Sort&lt;br&gt;&lt;br&gt;Stack&lt;br&gt;Queue&lt;br&gt;Bag&lt;br&gt;&lt;br&gt;minPQ&lt;br&gt;maxPQ&lt;br&gt;&lt;br&gt;Hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="240" width="66" height="390" as="geometry"/>
                 </mxCell>
                 <mxCell id="JtaezXzCazCUk_wRYMuN-8" value="Stack&lt;br&gt;Queue&lt;br&gt;Bag&lt;br&gt;&lt;br&gt;Hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="241" y="240" width="66" height="160" as="geometry"/>
                 </mxCell>
                 <mxCell id="JtaezXzCazCUk_wRYMuN-9" value="countSort&lt;br&gt;index-key&lt;br&gt;MSD&lt;br&gt;LSD&lt;br&gt;tries&lt;br&gt;TST&lt;br&gt;regexp&lt;br&gt;substrSearch" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="400" y="240" width="60" height="110" as="geometry"/>
+                    <mxGeometry x="400" y="240" width="80" height="110" as="geometry"/>
                 </mxCell>
                 <mxCell id="JtaezXzCazCUk_wRYMuN-10" value="RBtree&lt;br&gt;AAtree&lt;br&gt;SPLAYtree&lt;br&gt;Btree&lt;br&gt;&lt;br&gt;2Dtree&lt;br&gt;3Dtree" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="320" y="240" width="70" height="100" as="geometry"/>
+                    <mxGeometry x="320" y="240" width="60" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="LgN3h-jakfvl1zkJ5HBP-2" value="types" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="185" y="120" width="40" height="20" as="geometry"/>
@@ -63,9 +63,6 @@
                         <mxPoint x="429.93" y="200" as="sourcePoint"/>
                         <mxPoint x="440" y="190" as="targetPoint"/>
                     </mxGeometry>
-                </mxCell>
-                <mxCell id="LgN3h-jakfvl1zkJ5HBP-10" value="UnionFind" style="text;whiteSpace=wrap;html=1;fontColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="490" y="240" width="60" height="130" as="geometry"/>
                 </mxCell>
                 <mxCell id="Pd7Ac_bHZHMDIVxUI8hd-1" value="I.Ord" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="160" y="150" width="40" height="20" as="geometry"/>
@@ -102,6 +99,9 @@
                         <mxPoint x="520" y="200" as="sourcePoint"/>
                         <mxPoint x="530.0699999999999" y="190" as="targetPoint"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="&lt;font color=&quot;#000000&quot;&gt;UnionFind&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="490" y="240" width="60" height="10" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

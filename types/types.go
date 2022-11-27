@@ -67,7 +67,7 @@ func ConvToByteArr[T Ord](mess T) []byte {
 	case string:
 		return []byte(m)
 	default:
-		s := "algos.(math).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
+		s := "algos.(types).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
 		s += fmt.Sprintf("arg Type is: %T", mess)
 		panic(s)
 	}
@@ -95,7 +95,7 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii < jj
 	default:
-		s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
+		s := "algos.(types).equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -122,7 +122,7 @@ func GT[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii > jj
 	default:
-		s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp interface: "
+		s := "algos.(types).equals.GT[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -149,7 +149,7 @@ func EQ[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii == jj
 	default:
-		s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp interface: "
+		s := "algos.(types).equals.EQ[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}

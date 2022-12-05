@@ -1,97 +1,138 @@
 package types_test
 
 import (
+	"errors"
 	"testing"
 
 	I "github.com/kselnaag/algos/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEquals(t *testing.T) {
+func TestTypes(t *testing.T) {
 	assert := assert.New(t)
 	defer func() {
 		err := recover()
 		assert.Nil(err)
 	}()
 
-	s1 := &I.TestStruct{A: 1, B: 2}
-	s2 := &I.TestStruct{A: 3, B: 1}
-	s3 := &I.TestStruct{A: 2, B: 3}
+	t.Run("Option", func(t *testing.T) {
+		some := I.NewOptionSome(42)
+		none := I.NewOptionNone[int]()
+		assert.Equal(some.IsDefined(), true)
+		assert.Equal(none.IsDefined(), false)
+		assert.Equal(some.Unbox(func() int {
+			panic("algos.types.(Option): Option can not be Unboxed")
+		}), 42)
+		assert.Panics(func() {
+			none.Unbox(func() int {
+				panic("algos.types.(Option): Option can not be Unboxed")
+			})
+		})
+		assert.Equal(some.ToString(), "Some(42)")
+		assert.Equal(none.ToString(), "None")
 
-	t.Run("ConvToByteArr", func(t *testing.T) {
-		assert.Equal(I.ConvToByteArr(int(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr(int(1)), []byte{0, 0, 0, 0, 0, 0, 0, 1})
-		assert.Equal(I.ConvToByteArr(int(1<<40)), []byte{0, 0, 1, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr(uint(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr(uint(3)), []byte{0, 0, 0, 0, 0, 0, 0, 3})
-		assert.Equal(I.ConvToByteArr(uint(1<<48)), []byte{0, 1, 0, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr(float64(0)), []byte{0, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr(float64(5)), []byte{0, 0, 0, 0, 0, 0, 0, 5})
-		assert.Equal(I.ConvToByteArr(float64(1<<56)), []byte{1, 0, 0, 0, 0, 0, 0, 0})
-		assert.Equal(I.ConvToByteArr("abcdefgh"), []byte{0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68})
-		assert.Panics(func() { I.ConvToByteArr(uint8(0)) }, "algos.I.(equals).ConvToByteArr():  Is not panics when args Type is not processed")
 	})
-	t.Run("LT", func(t *testing.T) {
-		assert.True(I.LT(int(-1), int(16)))
-		assert.False(I.LT(int(14), int(0)))
+	t.Run("Either", func(t *testing.T) {
+		left := I.NewEitherLeft[int, string](42)
+		right := I.NewEitherRight[int]("string")
+		wrong := I.Either[int, string]{}
 
-		assert.True(I.LT(uint(0), uint(26)))
-		assert.False(I.LT(uint(5), uint(0)))
+		assert.Equal(left.IsLeft(), true)
+		assert.Equal(left.IsRight(), false)
+		assert.Equal(right.IsLeft(), false)
+		assert.Equal(right.IsRight(), true)
+		assert.Panics(func() { wrong.IsLeft() })
+		assert.Panics(func() { wrong.IsRight() })
 
-		assert.True(I.LT(uint32(0), uint32(36)))
-		assert.False(I.LT(uint32(5), uint32(0)))
+		assert.Equal(left.ValLeft(), I.NewOptionSome(42))
+		assert.Equal(left.ValRight(), I.NewOptionNone[string]())
+		assert.Equal(right.ValLeft(), I.NewOptionNone[int]())
+		assert.Equal(right.ValRight(), I.NewOptionSome("string"))
+		assert.Panics(func() { wrong.ValLeft() })
+		assert.Panics(func() { wrong.ValRight() })
 
-		assert.True(I.LT(float64(15.0), float64(16.0)))
-		assert.False(I.LT(float64(5.0), float64(-1.0)))
+		assert.Equal(left.Left(func() int {
+			panic("algos.types.(Either): Either can not be Lefted")
+		}), 42)
+		assert.Panics(func() {
+			left.Right(func() string {
+				panic("algos.types.(Either): Either can not be Righted")
+			})
+		})
+		assert.Panics(func() {
+			right.Left(func() int {
+				panic("algos.types.(Either): Either can not be Lefted")
+			})
+		})
+		assert.Equal(right.Right(func() string {
+			panic("algos.types.(Either): Either can not be Righted")
+		}), "string")
+		assert.Panics(func() {
+			wrong.Left(func() int {
+				panic("algos.types.(Either): Either can not be Lefted")
+			})
+		})
+		assert.Panics(func() {
+			wrong.Right(func() string {
+				panic("algos.types.(Either): Either can not be Righted")
+			})
+		})
 
-		assert.True(I.LT("a", "aa"))
-		assert.False(I.LT("bb", "b"))
-
-		assert.True(I.LT(s1, s2))
-		assert.False(I.LT(s3, s2))
-
-		assert.Panics(func() { I.LT(float32(5.0), float32(-1.0)) }, "algos.I.(equals).LT():  Is not panics when args Type is not processed")
+		assert.Equal(left.ToString(), "Left(42)")
+		assert.Equal(right.ToString(), "Right(string)")
+		assert.Panics(func() { wrong.ToString() })
 	})
-	t.Run("GT", func(t *testing.T) {
-		assert.True(I.GT(int(16), int(-1)))
-		assert.False(I.GT(int(0), int(14)))
+	t.Run("Result", func(t *testing.T) {
+		testerror := errors.New("test error")
+		result := I.NewResult(42)
+		err := I.NewResultError[int](testerror)
+		wrong := I.Result[int]{}
 
-		assert.True(I.GT(uint(26), uint(0)))
-		assert.False(I.GT(uint(0), uint(5)))
+		assert.Equal(result.IsErr(), false)
+		assert.Equal(result.IsRes(), true)
+		assert.Equal(err.IsErr(), true)
+		assert.Equal(err.IsRes(), false)
+		assert.Panics(func() { wrong.IsErr() })
+		assert.Panics(func() { wrong.IsRes() })
 
-		assert.True(I.GT(uint32(36), uint32(0)))
-		assert.False(I.GT(uint32(0), uint32(5)))
+		assert.Equal(result.ValErr(), I.NewOptionNone[error]())
+		assert.Equal(result.ValRes(), I.NewOptionSome(42))
+		assert.Equal(err.ValErr(), I.NewOptionSome(testerror))
+		assert.Equal(err.ValRes(), I.NewOptionNone[int]())
+		assert.Panics(func() { wrong.ValErr() })
+		assert.Panics(func() { wrong.ValRes() })
 
-		assert.True(I.GT(float64(16.0), float64(14.0)))
-		assert.False(I.GT(float64(-1.0), float64(5.0)))
+		assert.Equal(result.Res(func() int { panic("algos.types.(Result): Result can not be Resed") }), 42)
+		assert.Panics(func() {
+			e := result.Err(func() error { panic("algos.types.(Result): Result can not be Erred") })
+			if e != nil {
+				panic("algos.types.(Result): Result can not be Erred")
+			}
+		})
+		assert.Panics(func() {
+			err.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
+		})
+		assert.Equal(err.Err(func() error { panic("algos.types.(Result): Result can not be Erred") }), testerror)
+		assert.Panics(func() {
+			wrong.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
+		})
+		assert.Panics(func() {
+			e := wrong.Err(func() error { panic("algos.types.(Result): Result can not be Erred") })
+			if e != nil {
+				panic("algos.types.(Result): Result can not be Erred")
+			}
+		})
 
-		assert.True(I.GT("aa", "a"))
-		assert.False(I.GT("b", "cc"))
+		assert.Equal(result.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") }), 42)
+		assert.Panics(func() {
+			err.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") })
+		})
+		assert.Panics(func() {
+			wrong.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") })
+		})
 
-		assert.True(I.GT(s2, s1))
-		assert.False(I.GT(s2, s3))
-
-		assert.Panics(func() { I.GT(float32(5.0), float32(-1.0)) }, "algos.I.(equals).LT():  Is not panics when args Type is not processed")
-	})
-	t.Run("EQ", func(t *testing.T) {
-		assert.True(I.EQ(int(16), int(16)))
-		assert.False(I.EQ(int(0), int(14)))
-
-		assert.True(I.EQ(uint(26), uint(26)))
-		assert.False(I.EQ(uint(0), uint(5)))
-
-		assert.True(I.EQ(uint32(0), uint32(0)))
-		assert.False(I.EQ(uint32(0), uint32(5)))
-
-		assert.True(I.EQ(float64(16.0), float64(16.0)))
-		assert.False(I.EQ(float64(-1.0), float64(5.0)))
-
-		assert.True(I.EQ("aa", "aa"))
-		assert.False(I.EQ("b", "cc"))
-
-		assert.True(I.EQ(s1, s1))
-		assert.False(I.EQ(s2, s3))
-
-		assert.Panics(func() { I.EQ(float32(5.0), float32(-1.0)) }, "algos.I.(equals).LT():  Is not panics when args Type is not processed")
+		assert.Equal(result.ToString(), "Result(42)")
+		assert.Equal(err.ToString(), "Error(test error)")
+		assert.Panics(func() { wrong.ToString() })
 	})
 }

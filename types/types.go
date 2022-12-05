@@ -1,10 +1,8 @@
 package types
 
-import "fmt"
-
-type Comp interface {
-	CompareTo(Comp) int
-}
+import (
+	"fmt"
+)
 
 type Ord interface {
 	Integer | Float | ~string
@@ -30,127 +28,178 @@ type Signed interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64
 }
 
-type TestStruct struct {
-	A int
-	B int
+// ====================
+type Option[O any] struct {
+	val O
+	def bool
 }
 
-func (s TestStruct) CompareTo(obj Comp) int {
-	this := s.A + s.B
-	that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
-	if this < that {
-		return -1
-	}
-	if this > that {
-		return +1
-	}
-	return 0
-}
-
-func ConvToByteArr[T Ord](mess T) []byte {
-	res := make([]byte, 8)
-	switch m := any(mess).(type) {
-	case int:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case uint:
-		for i := 0; i < 8; i++ {
-			res[i] = byte(m >> (8 * (7 - i)))
-		}
-	case float64:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case string:
-		return []byte(m)
-	default:
-		s := "algos.(types).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
-		s += fmt.Sprintf("arg Type is: %T", mess)
-		panic(s)
-	}
-	return res
-}
-
-func LT[T any](i, j T) bool {
-	switch ii := any(i).(type) {
-	case int:
-		jj := any(j).(int)
-		return ii < jj
-	case float64:
-		jj := any(j).(float64)
-		return ii < jj
-	case string:
-		jj := any(j).(string)
-		return ii < jj
-	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) < 0
-	case uint:
-		jj := any(j).(uint)
-		return ii < jj
-	case uint32:
-		jj := any(j).(uint32)
-		return ii < jj
-	default:
-		s := "algos.(types).equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
-		s += fmt.Sprintf("arg Type is: %T", i)
-		panic(s)
+func NewOptionSome[O any](val O) Option[O] {
+	return Option[O]{
+		val: val,
+		def: true,
 	}
 }
 
-func GT[T any](i, j T) bool {
-	switch ii := any(i).(type) {
-	case int:
-		jj := any(j).(int)
-		return ii > jj
-	case float64:
-		jj := any(j).(float64)
-		return ii > jj
-	case string:
-		jj := any(j).(string)
-		return ii > jj
-	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) > 0
-	case uint:
-		jj := any(j).(uint)
-		return ii > jj
-	case uint32:
-		jj := any(j).(uint32)
-		return ii > jj
-	default:
-		s := "algos.(types).equals.GT[T any](i, j T): Type of args is not Ord or Comp interface: "
-		s += fmt.Sprintf("arg Type is: %T", i)
-		panic(s)
+func NewOptionNone[O any]() Option[O] {
+	return Option[O]{}
+}
+
+func (opt Option[O]) IsDefined() bool {
+	return opt.def
+}
+
+func (opt Option[O]) Unbox(catch func() O) O {
+	if opt.IsDefined() {
+		return opt.val
+	}
+	return catch()
+}
+
+func (opt Option[O]) ToString() string {
+	if opt.IsDefined() {
+		return fmt.Sprintf("Some(%v)", opt.val)
+	}
+	return "None"
+}
+
+// ====================
+type Either[L, R any] struct { // Either[L,R]{} - WRONG CONSTRUCTOR !  APPROPRIATE INIT REQUIRED
+	l Option[L]
+	r Option[R]
+}
+
+func NewEitherLeft[L, R any](left L) Either[L, R] {
+	return Either[L, R]{
+		l: NewOptionSome(left),
+		r: NewOptionNone[R](),
 	}
 }
 
-func EQ[T any](i, j T) bool {
-	switch ii := any(i).(type) {
-	case int:
-		jj := any(j).(int)
-		return ii == jj
-	case float64:
-		jj := any(j).(float64)
-		return ii == jj
-	case string:
-		jj := any(j).(string)
-		return ii == jj
-	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) == 0
-	case uint:
-		jj := any(j).(uint)
-		return ii == jj
-	case uint32:
-		jj := any(j).(uint32)
-		return ii == jj
-	default:
-		s := "algos.(types).equals.EQ[T any](i, j T): Type of args is not Ord or Comp interface: "
-		s += fmt.Sprintf("arg Type is: %T", i)
-		panic(s)
+func NewEitherRight[L, R any](right R) Either[L, R] {
+	return Either[L, R]{
+		l: NewOptionNone[L](),
+		r: NewOptionSome(right),
 	}
+}
+
+func (eit Either[L, R]) isvalid() {
+	bothNone := !eit.l.IsDefined() && !eit.r.IsDefined()
+	bothSome := eit.l.IsDefined() && eit.r.IsDefined()
+	if bothNone || bothSome {
+		panic("algos.types.(Either[L,R]).isvalid() fails: There is a bad structure inside Either type")
+	}
+}
+
+func (eit Either[L, R]) IsLeft() bool {
+	eit.isvalid()
+	return eit.l.IsDefined()
+}
+
+func (eit Either[L, R]) IsRight() bool {
+	eit.isvalid()
+	return eit.r.IsDefined()
+}
+
+func (eit Either[L, R]) ValLeft() Option[L] {
+	eit.isvalid()
+	return eit.l
+}
+
+func (eit Either[L, R]) ValRight() Option[R] {
+	eit.isvalid()
+	return eit.r
+}
+
+func (eit Either[L, R]) Left(catch func() L) L {
+	eit.isvalid()
+	if eit.IsLeft() {
+		return eit.l.Unbox(catch)
+	}
+	return catch()
+}
+
+func (eit Either[L, R]) Right(catch func() R) R {
+	eit.isvalid()
+	if eit.IsRight() {
+		return eit.r.Unbox(catch)
+	}
+	return catch()
+}
+
+func (eit Either[L, R]) ToString() string {
+	eit.isvalid()
+	if eit.IsLeft() {
+		return fmt.Sprintf("Left(%v)", eit.Left(func() L {
+			panic("algos.types.(Either[L,R]): cannot get L value")
+		}))
+	}
+	return fmt.Sprintf("Right(%v)", eit.Right(func() R {
+		panic("algos.types.(Either[L,R]): cannot get R value")
+	}))
+}
+
+// ====================
+type Result[T any] struct { // Result[T]]{} - WRONG CONSTRUCTOR ! APPROPRIATE INIT REQUIRED
+	Either[error, T]
+}
+
+func NewResultError[T any](err error) Result[T] {
+	return Result[T]{
+		Either: NewEitherLeft[error, T](err),
+	}
+}
+
+func NewResult[T any](res T) Result[T] {
+	return Result[T]{
+		Either: NewEitherRight[error](res),
+	}
+}
+
+func (res Result[T]) IsErr() bool {
+	return res.IsLeft()
+}
+
+func (res Result[T]) IsRes() bool {
+	return res.IsRight()
+}
+
+func (res Result[T]) ValErr() Option[error] {
+	return res.ValLeft()
+}
+
+func (res Result[T]) ValRes() Option[T] {
+	return res.ValRight()
+}
+
+func (res Result[T]) Err(catch func() error) error {
+	if res.IsErr() {
+		return res.ValErr().Unbox(catch)
+	}
+	return catch()
+}
+
+func (res Result[T]) Res(catch func() T) T {
+	if res.IsRes() {
+		return res.ValRes().Unbox(catch)
+	}
+	return catch()
+}
+
+func (res Result[T]) Unbox(catch func() T) T {
+	if res.IsRes() {
+		return res.Res(catch)
+	}
+	return catch()
+}
+
+func (res Result[T]) ToString() string {
+	if res.IsErr() {
+		return fmt.Sprintf("Error(%v)", res.Err(func() error {
+			panic("algos.types.(Result): cannot get Error value")
+		}).Error())
+	}
+	return fmt.Sprintf("Result(%v)", res.Res(func() T {
+		panic("algos.types.(Result): cannot get Result value")
+	}))
 }

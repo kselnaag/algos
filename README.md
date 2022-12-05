@@ -22,7 +22,7 @@ This is the hand-made algorithms and data-structures module with go generics. It
 </p>
 
 **Motivation:**
-The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures) in our code. Now in std go lib we have to wrap PDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method for sorting internal and abstract types more easy way.
+The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures). Now in GOLANG stdlib we have to wrap PDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method and `(+1, 0, -1)` values as the result for sorting internal and abstract types more easily.
 
 **The Main Idea:**
 We can build ADTs:
@@ -49,7 +49,7 @@ We can compare data types:
 ```
 func LT[T any](i, j T) bool {
 	switch ii := any(i).(type) {
-	case I.Comp:
+	case Comp:
 		jj := any(j).(I.Comp)
 		return ii.CompareTo(jj) < 0
 	case int:
@@ -65,7 +65,7 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii < jj
 	default:
-		s := "algos.(types).equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
+		s := "algos.types.equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
 		s += fmt.Sprintf("arg Type is: %T", i)
 		panic(s)
 	}
@@ -106,7 +106,7 @@ array.InsertSort(arr)
 // {s1, s2, s3}
 ```
 
-This approach used in arrays. Other data types are under construction and use `Ord` and `any` interfaces for Keys and Values as well.
+This approach used in arrays. Other data types are under construction and use `Ord` and `any` interfaces for Keys and Values.
 
 ----
 

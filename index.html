@@ -75,11 +75,17 @@
 				
 				<option value="file9">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
+				<option value="file10">github.com/kselnaag/algos/sync/sync.go (0.0%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
 				
-				<option value="file12">github.com/kselnaag/algos/types/types.go (100.0%)</option>
+				<option value="file12">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
+				
+				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				
+				<option value="file14">github.com/kselnaag/algos/types/equals.go (100.0%)</option>
+				
+				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
 				
 				</select>
 			</div>
@@ -1341,7 +1347,93 @@ func Max[T I.Ord](x, y T) T <span class="cov4" title="9">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package tree
+		<pre class="file" id="file10" style="display: none">package sync
+
+import (
+        "errors"
+        "sync"
+        "time"
+
+        I "github.com/kselnaag/algos/types"
+)
+
+// ====================
+type Future[F any] struct {
+        val  I.Result[F]
+        ch   chan I.Result[F]
+        once *sync.Once
+}
+
+func NewFuture[F any](fn func() I.Result[F]) Future[F] <span class="cov0" title="0">{
+        future := Future[F]{
+                val:  I.NewResultError[F](errors.New("algos.types.(Future[F]): callback is timed out")),
+                ch:   make(chan I.Result[F]),
+                once: new(sync.Once),
+        }
+        go func() </span><span class="cov0" title="0">{
+                future.ch &lt;- fn()
+        }</span>()
+        <span class="cov0" title="0">return future</span>
+}
+
+func (fut Future[F]) IsCompleted() bool <span class="cov0" title="0">{
+        return fut.val.IsRes()
+}</span>
+
+func (fut Future[F]) Value() I.Result[F] <span class="cov0" title="0">{ // Lock until result
+        fut.once.Do(func() </span><span class="cov0" title="0">{
+                fut.val = &lt;-fut.ch
+                close(fut.ch)
+        }</span>)
+        <span class="cov0" title="0">return fut.val</span>
+}
+
+func (fut Future[F]) OnComplete(fn func(I.Result[F])) <span class="cov0" title="0">{
+        go func() </span><span class="cov0" title="0">{
+                fn(fut.Value())
+        }</span>()
+}
+
+func (fut Future[F]) ToString() string <span class="cov0" title="0">{
+        return fut.val.ToString()
+}</span>
+
+// ====================
+type Promise[P any] struct {
+        Future[P]
+        timeout time.Duration
+}
+
+func NewPromise[P any](ms int, fn func() I.Result[P]) Promise[P] <span class="cov0" title="0">{
+        return Promise[P]{
+                Future:  NewFuture(fn),
+                timeout: time.Duration(ms) * time.Millisecond,
+        }
+}</span>
+
+func (pro Promise[P]) Value() I.Result[P] <span class="cov0" title="0">{
+        pro.once.Do(func() </span><span class="cov0" title="0">{
+        label:
+                for </span><span class="cov0" title="0">{
+                        select </span>{
+                        case pro.val = &lt;-pro.ch:<span class="cov0" title="0">
+                                break label</span>
+                        case &lt;-time.After(pro.timeout):<span class="cov0" title="0">
+                                break label</span>
+                        }
+                }
+        })
+        <span class="cov0" title="0">return pro.val</span>
+}
+
+func (pro Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov0" title="0">{
+        go func() </span><span class="cov0" title="0">{
+                fn(pro.Value())
+        }</span>()
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package tree
 
 import (
         "fmt"
@@ -1580,7 +1672,263 @@ func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int) <span class="cov7" t
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package tree
+		<pre class="file" id="file12" style="display: none">package tree
+
+import (
+        "fmt"
+        "math"
+
+        I "github.com/kselnaag/algos/types"
+)
+
+// tree based Priority Queue
+type PQnode[K I.Ord, V any] struct {
+        Key     K
+        Val     V
+        P, L, R *PQnode[K, V]
+}
+
+// ===========================
+type MinPQ[K I.Ord, V any] struct {
+        root *PQnode[K, V]
+        size int
+}
+
+func NewMinPQ[K I.Ord, V any]() MinPQ[K, V] <span class="cov0" title="0">{
+        return MinPQ[K, V]{
+                root: nil,
+                size: 0,
+        }
+}</span>
+
+func (min *MinPQ[K, V]) Size() int <span class="cov0" title="0">{
+        return min.size
+}</span>
+
+func (min *MinPQ[K, V]) IsEmpty() bool <span class="cov0" title="0">{
+        return min.Size() == 0
+}</span>
+
+func (min *MinPQ[K, V]) Add(key K, val V) <span class="cov0" title="0">{
+        if min.IsEmpty() </span><span class="cov0" title="0">{
+                min.root = &amp;PQnode[K, V]{Key: key, Val: val, P: nil, L: nil, R: nil}
+                min.root.P = min.root
+        }</span> else<span class="cov0" title="0"> {
+                nodePar := min.lastRightNodePar(min.root.P)
+                node := &amp;PQnode[K, V]{Key: key, Val: val, P: nodePar, L: nil, R: nil}
+                if nodePar.L == nil </span><span class="cov0" title="0">{
+                        nodePar.L = node
+                }</span> else<span class="cov0" title="0"> {
+                        nodePar.R = node
+                }</span>
+                <span class="cov0" title="0">min.root.P = node
+                min.swimNode(node)</span>
+        }
+        <span class="cov0" title="0">min.size++</span>
+}
+
+func (min *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
+        if lastnode == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">if lastnode == min.root </span><span class="cov0" title="0">{
+                return min.root
+        }</span>
+        <span class="cov0" title="0">node := lastnode.P
+        if lastnode == node.R </span><span class="cov0" title="0">{
+                for (node != min.root) &amp;&amp; (lastnode == node.R) </span><span class="cov0" title="0">{
+                        lastnode = node
+                        node = node.P
+                }</span>
+                <span class="cov0" title="0">if lastnode != node.R </span><span class="cov0" title="0">{
+                        node = node.R
+                }</span>
+                <span class="cov0" title="0">for node.L != nil </span><span class="cov0" title="0">{
+                        node = node.L
+                }</span>
+        }
+        <span class="cov0" title="0">return node</span>
+}
+
+func (min *MinPQ[K, V]) swapNode(i, j *PQnode[K, V]) <span class="cov0" title="0">{
+        i.Key, i.Val, j.Key, j.Val = j.Key, j.Val, i.Key, i.Val
+}</span>
+
+func (min *MinPQ[K, V]) swimNode(node *PQnode[K, V]) <span class="cov0" title="0">{
+        if (node == nil) || (node.P == nil) </span><span class="cov0" title="0">{
+                return
+        }</span>
+        <span class="cov0" title="0">for (node != min.root) &amp;&amp; I.LT(node.Key, node.P.Key) </span><span class="cov0" title="0">{
+                min.swapNode(node, node.P)
+                node = node.P
+        }</span>
+}
+
+func (min *MinPQ[K, V]) Min() (K, V) <span class="cov0" title="0">{
+        return min.root.Key, min.root.Val
+}</span>
+
+func (min *MinPQ[K, V]) DelMin() (K, V) <span class="cov0" title="0">{
+        if min.IsEmpty() </span><span class="cov0" title="0">{
+                panic("algos.tree.(MinPQ).DelMin(): No any node found, tree is empty")</span>
+        }
+        <span class="cov0" title="0">key, val := min.root.Key, min.root.Val
+        if min.size == 1 </span><span class="cov0" title="0">{
+                min.root = nil
+                min.size--
+                return key, val
+        }</span>
+        <span class="cov0" title="0">node := min.lastLeftNode(min.root.P)
+        min.swapNode(min.root.P, min.root)
+        if min.root.P.P.R == nil </span><span class="cov0" title="0">{
+                min.root.P.P.L = nil
+        }</span> else<span class="cov0" title="0"> {
+                min.root.P.P.R = nil
+        }</span>
+        <span class="cov0" title="0">min.root.P = node
+        min.sinkNode(min.root)
+        min.size--
+        return key, val</span>
+}
+
+func (min *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
+        if lastnode == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">if lastnode == min.root </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">node := lastnode.P
+        if lastnode != node.L </span><span class="cov0" title="0">{
+                return node.L
+        }</span> else<span class="cov0" title="0"> {
+                for (node != min.root) &amp;&amp; (lastnode == node.L) </span><span class="cov0" title="0">{
+                        lastnode = node
+                        node = node.P
+                }</span>
+                <span class="cov0" title="0">if lastnode != node.L </span><span class="cov0" title="0">{
+                        node = node.L
+                }</span>
+                <span class="cov0" title="0">for node.R != nil </span><span class="cov0" title="0">{
+                        node = node.R
+                }</span>
+        }
+        <span class="cov0" title="0">return node</span>
+}
+
+func (min *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) <span class="cov0" title="0">{
+        for </span><span class="cov0" title="0">{
+                if (node == nil) || ((node.L == nil) &amp;&amp; (node.R == nil)) </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov0" title="0">if (node.R == nil) &amp;&amp; (node.L != nil) &amp;&amp; I.GT(node.Key, node.L.Key) </span><span class="cov0" title="0">{
+                        min.swapNode(node, node.L)
+                        node = node.L
+                        continue</span>
+                }
+                <span class="cov0" title="0">if (node.L == nil) &amp;&amp; (node.R != nil) &amp;&amp; I.GT(node.Key, node.R.Key) </span><span class="cov0" title="0">{
+                        min.swapNode(node, node.R)
+                        node = node.R
+                        continue</span>
+                }
+                <span class="cov0" title="0">if I.GT(node.L.Key, node.R.Key) </span><span class="cov0" title="0">{
+                        min.swapNode(node.L, node.R)
+                }</span>
+                <span class="cov0" title="0">if I.GT(node.Key, node.L.Key) </span><span class="cov0" title="0">{
+                        min.swapNode(node, node.L)
+                        node = node.L
+                        continue</span>
+                } else<span class="cov0" title="0"> if I.GT(node.Key, node.R.Key) </span><span class="cov0" title="0">{
+                        min.swapNode(node, node.R)
+                        node = node.R
+                        continue</span>
+                }
+                <span class="cov0" title="0">break</span>
+        }
+}
+
+func (min *MinPQ[K, V]) Iterate() []K <span class="cov0" title="0">{
+        keysarr := make([]K, 0, min.Size())
+        return min.iterate(min.root, keysarr)
+}</span>
+
+func (min *MinPQ[K, V]) iterate(node *PQnode[K, V], keysarr []K) []K <span class="cov0" title="0">{
+        if node == nil </span><span class="cov0" title="0">{
+                return keysarr
+        }</span>
+        <span class="cov0" title="0">keysarr = append(keysarr, node.Key)
+        keysarr = min.iterate(node.L, keysarr)
+        keysarr = min.iterate(node.R, keysarr)
+        return keysarr</span>
+}
+
+func (min *MinPQ[K, V]) HeightTreeCheck() int <span class="cov0" title="0">{
+        if min.IsEmpty() </span><span class="cov0" title="0">{
+                return 0
+        }</span>
+        <span class="cov0" title="0">sqrt := math.Sqrt(float64(min.size))
+        return int(math.Ceil(sqrt))</span>
+}
+
+func (min *MinPQ[K, V]) IsCompleteBTcheck() bool <span class="cov0" title="0">{
+        return min.iscompleteBTcheck(min.root, min.Size())
+}</span>
+
+func (min *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool <span class="cov0" title="0">{
+        if node == nil </span><span class="cov0" title="0">{
+                return true
+        }</span>
+        <span class="cov0" title="0">sqrt := math.Sqrt(float64(size))
+        CBTlvl := math.Ceil(sqrt)
+        maxCBTsize := int(math.Pow(2, CBTlvl))
+        arr := make([]*PQnode[K, V], maxCBTsize)
+        arr[1] = node
+        for i := 1; i &lt; maxCBTsize; i++ </span><span class="cov0" title="0">{
+                if arr[i].L != nil </span><span class="cov0" title="0">{
+                        arr[2*i] = arr[i].L
+                }</span>
+                <span class="cov0" title="0">if arr[i].R != nil </span><span class="cov0" title="0">{
+                        arr[2*i+1] = arr[i].R
+                }</span>
+        }
+        <span class="cov0" title="0">for i := 1; i &lt;= size; i++ </span><span class="cov0" title="0">{
+                if arr[i] == nil </span><span class="cov0" title="0">{
+                        return false
+                }</span>
+        }
+        <span class="cov0" title="0">return true</span>
+}
+
+func (min *MinPQ[K, V]) PrintTreeCheck() <span class="cov0" title="0">{
+        fmt.Printf("\n")
+        fmt.Printf("&lt;- left rotated tree pic &lt;-\n")
+        min.printtree(min.root, 0)
+        fmt.Printf("=============================\n\n")
+}</span>
+
+func (min *MinPQ[K, V]) printtree(node *PQnode[K, V], n int) <span class="cov0" title="0">{
+        if node != nil </span><span class="cov0" title="0">{
+                min.printtree(node.R, n+5)
+                for i := 0; i &lt; n; i++ </span><span class="cov0" title="0">{
+                        fmt.Printf(" ")
+                }</span>
+                <span class="cov0" title="0">fmt.Printf("%v:%v\n", node.Key, node.Val)
+                min.printtree(node.L, n+5)</span>
+        }
+}
+
+/*
+NewMinPQ Size IsEmpty HeightTree Add swimNode swapNode
+Min DelMin sinkNode Iterate iterate
+lastRightNodePar lastLeftNode
+
+CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
+*/
+
+//===========================
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package tree
 
 import (
         "fmt"
@@ -1861,36 +2209,12 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" t
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package types
+		<pre class="file" id="file14" style="display: none">package types
 
 import "fmt"
 
 type Comp interface {
         CompareTo(Comp) int
-}
-
-type Ord interface {
-        Integer | Float | ~string
-}
-
-type Integer interface {
-        Signed | Unsigned
-}
-
-type Ptr interface {
-        ~uintptr
-}
-
-type Float interface {
-        ~float32 | ~float64
-}
-
-type Unsigned interface {
-        ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
-}
-
-type Signed interface {
-        ~int | ~int8 | ~int16 | ~int32 | ~int64
 }
 
 type TestStruct struct {
@@ -1930,7 +2254,7 @@ func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{
         case string:<span class="cov1" title="1">
                 return []byte(m)</span>
         default:<span class="cov1" title="1">
-                s := "algos.(math).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
+                s := "algos.(types).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
                 s += fmt.Sprintf("arg Type is: %T", mess)
                 panic(s)</span>
         }
@@ -1958,7 +2282,7 @@ func LT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &lt; jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(array).equals.lt[T any](i, j T): Type of args is not Ord or Comp interface: "
+                s := "algos.(types).LT[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
@@ -1985,7 +2309,7 @@ func GT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &gt; jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(array).equals.gt[T any](i, j T): Type of args is not Ord or Comp interface: "
+                s := "algos.(types).GT[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
@@ -2012,10 +2336,217 @@ func EQ[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii == jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(array).equals.eq[T any](i, j T): Type of args is not Ord or Comp interface: "
+                s := "algos.(types).EQ[T any](i, j T): Type of args is not Ord or Comp interface: "
                 s += fmt.Sprintf("arg Type is: %T", i)
                 panic(s)</span>
         }
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package types
+
+import (
+        "fmt"
+)
+
+type Ord interface {
+        Integer | Float | ~string
+}
+
+type Integer interface {
+        Signed | Unsigned
+}
+
+type Ptr interface {
+        ~uintptr
+}
+
+type Float interface {
+        ~float32 | ~float64
+}
+
+type Unsigned interface {
+        ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64
+}
+
+type Signed interface {
+        ~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+// ====================
+type Option[O any] struct {
+        val O
+        def bool
+}
+
+func NewOptionSome[O any](val O) Option[O] <span class="cov4" title="9">{
+        return Option[O]{
+                val: val,
+                def: true,
+        }
+}</span>
+
+func NewOptionNone[O any]() Option[O] <span class="cov4" title="9">{
+        return Option[O]{}
+}</span>
+
+func (opt Option[O]) IsDefined() bool <span class="cov10" title="231">{
+        return opt.def
+}</span>
+
+func (opt Option[O]) Unbox(catch func() O) O <span class="cov4" title="11">{
+        if opt.IsDefined() </span><span class="cov4" title="10">{
+                return opt.val
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (opt Option[O]) ToString() string <span class="cov2" title="2">{
+        if opt.IsDefined() </span><span class="cov1" title="1">{
+                return fmt.Sprintf("Some(%v)", opt.val)
+        }</span>
+        <span class="cov1" title="1">return "None"</span>
+}
+
+// ====================
+type Either[L, R any] struct { // Either[L,R]{} - WRONG CONSTRUCTOR !  APPROPRIATE INIT REQUIRED
+        l Option[L]
+        r Option[R]
+}
+
+func NewEitherLeft[L, R any](left L) Either[L, R] <span class="cov2" title="2">{
+        return Either[L, R]{
+                l: NewOptionSome(left),
+                r: NewOptionNone[R](),
+        }
+}</span>
+
+func NewEitherRight[L, R any](right R) Either[L, R] <span class="cov2" title="2">{
+        return Either[L, R]{
+                l: NewOptionNone[L](),
+                r: NewOptionSome(right),
+        }
+}</span>
+
+func (eit Either[L, R]) isvalid() <span class="cov7" title="63">{
+        bothNone := !eit.l.IsDefined() &amp;&amp; !eit.r.IsDefined()
+        bothSome := eit.l.IsDefined() &amp;&amp; eit.r.IsDefined()
+        if bothNone || bothSome </span><span class="cov5" title="15">{
+                panic("algos.types.(Either[L,R]).isvalid() fails: There is a bad structure inside Either type")</span>
+        }
+}
+
+func (eit Either[L, R]) IsLeft() bool <span class="cov5" title="18">{
+        eit.isvalid()
+        return eit.l.IsDefined()
+}</span>
+
+func (eit Either[L, R]) IsRight() bool <span class="cov5" title="17">{
+        eit.isvalid()
+        return eit.r.IsDefined()
+}</span>
+
+func (eit Either[L, R]) ValLeft() Option[L] <span class="cov4" title="8">{
+        eit.isvalid()
+        return eit.l
+}</span>
+
+func (eit Either[L, R]) ValRight() Option[R] <span class="cov4" title="9">{
+        eit.isvalid()
+        return eit.r
+}</span>
+
+func (eit Either[L, R]) Left(catch func() L) L <span class="cov3" title="4">{
+        eit.isvalid()
+        if eit.IsLeft() </span><span class="cov2" title="2">{
+                return eit.l.Unbox(catch)
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (eit Either[L, R]) Right(catch func() R) R <span class="cov3" title="4">{
+        eit.isvalid()
+        if eit.IsRight() </span><span class="cov2" title="2">{
+                return eit.r.Unbox(catch)
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (eit Either[L, R]) ToString() string <span class="cov2" title="3">{
+        eit.isvalid()
+        if eit.IsLeft() </span><span class="cov1" title="1">{
+                return fmt.Sprintf("Left(%v)", eit.Left(func() L </span><span class="cov0" title="0">{
+                        panic("algos.types.(Either[L,R]): cannot get L value")</span>
+                }))
+        }
+        <span class="cov1" title="1">return fmt.Sprintf("Right(%v)", eit.Right(func() R </span><span class="cov0" title="0">{
+                panic("algos.types.(Either[L,R]): cannot get R value")</span>
+        }))
+}
+
+// ====================
+type Result[T any] struct { // Result[T]]{} - WRONG CONSTRUCTOR ! APPROPRIATE INIT REQUIRED
+        Either[error, T]
+}
+
+func NewResultError[T any](err error) Result[T] <span class="cov1" title="1">{
+        return Result[T]{
+                Either: NewEitherLeft[error, T](err),
+        }
+}</span>
+
+func NewResult[T any](res T) Result[T] <span class="cov1" title="1">{
+        return Result[T]{
+                Either: NewEitherRight[error](res),
+        }
+}</span>
+
+func (res Result[T]) IsErr() bool <span class="cov4" title="10">{
+        return res.IsLeft()
+}</span>
+
+func (res Result[T]) IsRes() bool <span class="cov4" title="11">{
+        return res.IsRight()
+}</span>
+
+func (res Result[T]) ValErr() Option[error] <span class="cov3" title="5">{
+        return res.ValLeft()
+}</span>
+
+func (res Result[T]) ValRes() Option[T] <span class="cov3" title="6">{
+        return res.ValRight()
+}</span>
+
+func (res Result[T]) Err(catch func() error) error <span class="cov3" title="4">{
+        if res.IsErr() </span><span class="cov2" title="2">{
+                return res.ValErr().Unbox(catch)
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (res Result[T]) Res(catch func() T) T <span class="cov3" title="5">{
+        if res.IsRes() </span><span class="cov2" title="3">{
+                return res.ValRes().Unbox(catch)
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (res Result[T]) Unbox(catch func() T) T <span class="cov2" title="3">{
+        if res.IsRes() </span><span class="cov1" title="1">{
+                return res.Res(catch)
+        }</span>
+        <span class="cov1" title="1">return catch()</span>
+}
+
+func (res Result[T]) ToString() string <span class="cov2" title="3">{
+        if res.IsErr() </span><span class="cov1" title="1">{
+                return fmt.Sprintf("Error(%v)", res.Err(func() error </span><span class="cov0" title="0">{
+                        panic("algos.types.(Result): cannot get Error value")</span>
+                }).Error())
+        }
+        <span class="cov1" title="1">return fmt.Sprintf("Result(%v)", res.Res(func() T </span><span class="cov0" title="0">{
+                panic("algos.types.(Result): cannot get Result value")</span>
+        }))
 }
 </pre>
 		

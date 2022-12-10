@@ -10,16 +10,15 @@ func Map[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 {
 
 func MapA[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 {
 	res := make([]T2, 0, len(arr))
-	chans := make(chan chan T2, len(arr))
-	for _, el := range arr {
+	chans := make([]chan T2, len(arr))
+	for i, el := range arr {
 		elemChan := make(chan T2)
-		chans <- elemChan
+		chans[i] = elemChan
 		go func(elemChan chan<- T2, el T1) {
 			elemChan <- fnc(el)
 		}(elemChan, el)
 	}
-	close(chans)
-	for elemChan := range chans {
+	for _, elemChan := range chans {
 		res = append(res, <-elemChan)
 	}
 	return res

@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="StPKS6a9uWxOC8KM271T" name="Page-1">
-        <mxGraphModel dx="927" dy="624" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="927" dy="584" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -28,12 +28,7 @@
                 <mxCell id="JtaezXzCazCUk_wRYMuN-9" value="countSort&lt;br&gt;index-key&lt;br&gt;MSD&lt;br&gt;LSD&lt;br&gt;tries&lt;br&gt;TST&lt;br&gt;substrSearch&lt;br&gt;regexp&lt;br&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="400" y="240" width="80" height="110" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="" style="edgeStyle=none;html=1;fontColor=#000000;" edge="1" parent="1" source="JtaezXzCazCUk_wRYMuN-10">
-                    <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="350" y="490" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="JtaezXzCazCUk_wRYMuN-10" value="RBtree&lt;br&gt;AAtree&lt;br&gt;SPLAYtree&lt;br&gt;Btree&lt;br&gt;&lt;br&gt;2Dtree&lt;br&gt;3Dtree&lt;br&gt;Rtree&lt;br&gt;R*tree&lt;br&gt;BSPtree" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="JtaezXzCazCUk_wRYMuN-10" value="RBtree&lt;br&gt;AAtree&lt;br&gt;splaytree&lt;br&gt;Btree&lt;br&gt;&lt;br&gt;2Dtree&lt;br&gt;3Dtree&lt;br&gt;Rtree&lt;br&gt;R*tree&lt;br&gt;BSPtree" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="320" y="240" width="60" height="140" as="geometry"/>
                 </mxCell>
                 <mxCell id="LgN3h-jakfvl1zkJ5HBP-2" value="types" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;fontColor=#000000;" parent="1" vertex="1">
@@ -105,7 +100,7 @@
                         <mxPoint x="530.0699999999999" y="190" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="2" value="&lt;font color=&quot;#000000&quot;&gt;UnionFind&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                <mxCell id="2" value="&lt;font color=&quot;#000000&quot;&gt;UnionFind&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="490" y="240" width="60" height="10" as="geometry"/>
                 </mxCell>
             </root>

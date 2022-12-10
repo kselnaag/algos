@@ -16,18 +16,18 @@ func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] {
 
 func MapA[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] {
 	llen := ListSize(root)
-	chans := make(chan chan T2, llen)
+	chans := make([]chan T2, llen)
+	i := 0
 	for node := root; node != nil; node = node.Next {
 		elemChan := make(chan T2)
-		chans <- elemChan
+		chans[i] = elemChan
+		i++
 		go func(elemChan chan<- T2, el T1) {
 			elemChan <- fnc(el)
 		}(elemChan, node.Val)
 	}
-	close(chans)
 	var res, ptr *Snode[T2]
-	i := 0
-	for elemChan := range chans {
+	for i, elemChan := range chans {
 		node := &Snode[T2]{Val: <-elemChan, Next: nil}
 		if i == 0 {
 			res = node
@@ -35,7 +35,6 @@ func MapA[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] {
 			ptr.Next = node
 		}
 		ptr = node
-		i++
 	}
 	return res
 }

@@ -75,7 +75,7 @@
 				
 				<option value="file9">github.com/kselnaag/algos/math/math.go (100.0%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/sync/sync.go (0.0%)</option>
+				<option value="file10">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
 				
 				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
 				
@@ -120,16 +120,15 @@ func Map[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov3" title="2
 
 func MapA[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov3" title="2">{
         res := make([]T2, 0, len(arr))
-        chans := make(chan chan T2, len(arr))
-        for _, el := range arr </span><span class="cov7" title="10">{
+        chans := make([]chan T2, len(arr))
+        for i, el := range arr </span><span class="cov7" title="10">{
                 elemChan := make(chan T2)
-                chans &lt;- elemChan
+                chans[i] = elemChan
                 go func(elemChan chan&lt;- T2, el T1) </span><span class="cov7" title="10">{
                         elemChan &lt;- fnc(el)
                 }</span>(elemChan, el)
         }
-        <span class="cov3" title="2">close(chans)
-        for elemChan := range chans </span><span class="cov7" title="10">{
+        <span class="cov3" title="2">for _, elemChan := range chans </span><span class="cov7" title="10">{
                 res = append(res, &lt;-elemChan)
         }</span>
         <span class="cov3" title="2">return res</span>
@@ -910,26 +909,25 @@ func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] <span class="c
 
 func MapA[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] <span class="cov2" title="2">{
         llen := ListSize(root)
-        chans := make(chan chan T2, llen)
+        chans := make([]chan T2, llen)
+        i := 0
         for node := root; node != nil; node = node.Next </span><span class="cov6" title="10">{
                 elemChan := make(chan T2)
-                chans &lt;- elemChan
+                chans[i] = elemChan
+                i++
                 go func(elemChan chan&lt;- T2, el T1) </span><span class="cov6" title="10">{
                         elemChan &lt;- fnc(el)
                 }</span>(elemChan, node.Val)
         }
-        <span class="cov2" title="2">close(chans)
-        var res, ptr *Snode[T2]
-        i := 0
-        for elemChan := range chans </span><span class="cov6" title="10">{
+        <span class="cov2" title="2">var res, ptr *Snode[T2]
+        for i, elemChan := range chans </span><span class="cov6" title="10">{
                 node := &amp;Snode[T2]{Val: &lt;-elemChan, Next: nil}
                 if i == 0 </span><span class="cov1" title="1">{
                         res = node
                 }</span> else<span class="cov6" title="9"> {
                         ptr.Next = node
                 }</span>
-                <span class="cov6" title="10">ptr = node
-                i++</span>
+                <span class="cov6" title="10">ptr = node</span>
         }
         <span class="cov2" title="2">return res</span>
 }
@@ -1362,39 +1360,44 @@ type Future[F any] struct {
         val  I.Result[F]
         ch   chan I.Result[F]
         once *sync.Once
+        cpl  bool
 }
 
-func NewFuture[F any](fn func() I.Result[F]) Future[F] <span class="cov0" title="0">{
+func NewFuture[F any](fn func() I.Result[F]) Future[F] <span class="cov7" title="5">{
         future := Future[F]{
-                val:  I.NewResultError[F](errors.New("algos.types.(Future[F]): callback is timed out")),
+                val:  I.NewResultError[F](errors.New("algos.types.(Future): callback is timed out")),
                 ch:   make(chan I.Result[F]),
                 once: new(sync.Once),
+                cpl:  false,
         }
-        go func() </span><span class="cov0" title="0">{
+        go func() </span><span class="cov7" title="5">{
                 future.ch &lt;- fn()
         }</span>()
-        <span class="cov0" title="0">return future</span>
+        <span class="cov7" title="5">return future</span>
 }
 
-func (fut Future[F]) IsCompleted() bool <span class="cov0" title="0">{
-        return fut.val.IsRes()
-}</span>
+func (fut *Future[F]) IsCompleted() bool <span class="cov10" title="10">{
+        if len(fut.ch) &gt; 0 </span><span class="cov0" title="0">{
+                fut.cpl = true
+        }</span>
+        <span class="cov10" title="10">return fut.cpl</span>
+}
 
-func (fut Future[F]) Value() I.Result[F] <span class="cov0" title="0">{ // Lock until result
-        fut.once.Do(func() </span><span class="cov0" title="0">{
+func (fut *Future[F]) Value() I.Result[F] <span class="cov8" title="6">{ // Lock until result
+        fut.once.Do(func() </span><span class="cov5" title="3">{
                 fut.val = &lt;-fut.ch
-                close(fut.ch)
+                fut.cpl = true
         }</span>)
-        <span class="cov0" title="0">return fut.val</span>
+        <span class="cov8" title="6">return fut.val</span>
 }
 
-func (fut Future[F]) OnComplete(fn func(I.Result[F])) <span class="cov0" title="0">{
-        go func() </span><span class="cov0" title="0">{
+func (fut *Future[F]) OnComplete(fn func(I.Result[F])) <span class="cov5" title="3">{
+        go func() </span><span class="cov5" title="3">{
                 fn(fut.Value())
         }</span>()
 }
 
-func (fut Future[F]) ToString() string <span class="cov0" title="0">{
+func (fut *Future[F]) ToString() string <span class="cov7" title="5">{
         return fut.val.ToString()
 }</span>
 
@@ -1404,30 +1407,31 @@ type Promise[P any] struct {
         timeout time.Duration
 }
 
-func NewPromise[P any](ms int, fn func() I.Result[P]) Promise[P] <span class="cov0" title="0">{
+func NewPromise[P any](ms int, fn func() I.Result[P]) Promise[P] <span class="cov3" title="2">{
         return Promise[P]{
                 Future:  NewFuture(fn),
                 timeout: time.Duration(ms) * time.Millisecond,
         }
 }</span>
 
-func (pro Promise[P]) Value() I.Result[P] <span class="cov0" title="0">{
-        pro.once.Do(func() </span><span class="cov0" title="0">{
+func (pro *Promise[P]) Value() I.Result[P] <span class="cov6" title="4">{
+        pro.once.Do(func() </span><span class="cov3" title="2">{
         label:
-                for </span><span class="cov0" title="0">{
+                for </span><span class="cov3" title="2">{
                         select </span>{
-                        case pro.val = &lt;-pro.ch:<span class="cov0" title="0">
+                        case pro.val = &lt;-pro.ch:<span class="cov1" title="1">
                                 break label</span>
-                        case &lt;-time.After(pro.timeout):<span class="cov0" title="0">
+                        case &lt;-time.After(pro.timeout):<span class="cov1" title="1">
                                 break label</span>
                         }
                 }
+                <span class="cov3" title="2">pro.cpl = true</span>
         })
-        <span class="cov0" title="0">return pro.val</span>
+        <span class="cov6" title="4">return pro.val</span>
 }
 
-func (pro Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov0" title="0">{
-        go func() </span><span class="cov0" title="0">{
+func (pro *Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov3" title="2">{
+        go func() </span><span class="cov3" title="2">{
                 fn(pro.Value())
         }</span>()
 }

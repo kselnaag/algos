@@ -3,7 +3,7 @@
 	<img src="https://img.shields.io/github/languages/code-size/kselnaag/algos?style=plastic" title="src files size" alt="src files size">
 	<img src="https://img.shields.io/github/repo-size/kselnaag/algos?style=plastic" title="repo size" alt="repo size">
 	<a href="https://github.com/kselnaag/algos/blob/master/LICENSE" title="LICENSE"><img src="https://img.shields.io/github/license/kselnaag/algos?style=plastic" alt="license"></a>
-	<a href="https://github.com/kselnaag/algos/actions" title="Workflows"><img src="https://img.shields.io/github/workflow/status/kselnaag/algos/algoscommit/master?style=plastic" alt="tests checks"></a>
+	<a href="https://github.com/kselnaag/algos/actions" title="Workflows"><img src="https://img.shields.io/github/actions/workflow/status/kselnaag/algos/go.yml?branch=master&style=plastic" alt="tests checks"></a>
 	<a href="https://kselnaag.github.io/algos" title="coverage"><img src="https://img.shields.io/badge/GHpages-coverage-blueviolet?style=plastic" alt="coverage"></a>
 </p>
 

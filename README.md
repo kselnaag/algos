@@ -1,10 +1,13 @@
 <p align="left">
-	<img src="https://img.shields.io/github/go-mod/go-version/kselnaag/algos?style=plastic" title="language version" alt="language version">
 	<img src="https://img.shields.io/github/languages/code-size/kselnaag/algos?style=plastic" title="src files size" alt="src files size">
 	<img src="https://img.shields.io/github/repo-size/kselnaag/algos?style=plastic" title="repo size" alt="repo size">
 	<a href="https://github.com/kselnaag/algos/blob/master/LICENSE" title="LICENSE"><img src="https://img.shields.io/github/license/kselnaag/algos?style=plastic" alt="license"></a>
 	<a href="https://github.com/kselnaag/algos/actions" title="Workflows"><img src="https://img.shields.io/github/actions/workflow/status/kselnaag/algos/go.yml?branch=master&style=plastic" alt="tests checks"></a>
 	<a href="https://kselnaag.github.io/algos" title="coverage"><img src="https://img.shields.io/badge/GHpages-coverage-blueviolet?style=plastic" alt="coverage"></a>
+</p>
+<p align="left">
+	<img src="https://img.shields.io/static/v1?label=build%20by&message=Go&color=ffa757&style=plastic" alt="build by Go">
+	<img src="https://img.shields.io/static/v1?label=make%20with&message=%F0%9F%8E%89%E2%9C%A8&color=ffa757&style=plastic" alt="make with fun">
 </p>
 
 ### **ALGOS**
@@ -27,14 +30,24 @@ The main idea of this module is to suggest more convenient way for sorting slice
 **The Main Idea:**
 We can build ADTs:
 ```
-type myType struct {
-	a int
-	b int
+type Comp interface {
+	CompareTo(Comp) int
 }
 
-func (s myType) CompareTo(st Comp) int {
-	this := s.a + s.b
-	that := (st.(*myType)).a + (st.(*myType)).b
+type TestStruct struct {
+	A int
+	B int
+}
+
+func (s TestStruct) CompareTo(obj Comp) int {
+	switch obj.(type) {
+	case *TestStruct:
+		break
+	default:
+		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
+	}
+	this := s.A + s.B
+	that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
 	if this < that {
 		return -1
 	}
@@ -65,9 +78,7 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii < jj
 	default:
-		s := "algos.types.equals.LT[T any](i, j T): Type of args is not Ord or Comp interface: "
-		s += fmt.Sprintf("arg Type is: %T", i)
-		panic(s)
+		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))
 	}
 }
 ```
@@ -98,10 +109,10 @@ array.InsertSort(arr)
 
 For ADTs, pointer slice:
 ```
-s1 := &myType{1, 2}
-s2 := &myType{3, 1}
-s3 := &myType{2, 3}
-arr := []*myType{s3, s2, s1}
+s1 := &TestStruct{1, 2}
+s2 := &TestStruct{3, 1}
+s3 := &TestStruct{2, 3}
+arr := []*TestStruct{s3, s2, s1}
 array.InsertSort(arr)
 // {s1, s2, s3}
 ```
@@ -112,7 +123,3 @@ This approach used in arrays. Other data types are under construction and use `O
 
 ### **Links**: 
 | [samber/lo](https://github.com/samber/lo "Lodash-style Go library") | [samber/do](https://github.com/samber/do "Dependency injection toolkit based on Go 1.18+ generics") | [samber/mo](https://github.com/samber/mo "Monads based on Go 1.18+ generics") | [ialekseev/go4fun](https://github.com/ialekseev/go4fun "Functional primitives and patterns in go") |
-
-
-
-

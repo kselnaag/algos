@@ -83,7 +83,7 @@
 				
 				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
 				
-				<option value="file14">github.com/kselnaag/algos/types/equals.go (100.0%)</option>
+				<option value="file14">github.com/kselnaag/algos/types/equals.go (98.5%)</option>
 				
 				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
 				
@@ -2227,7 +2227,13 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int <span class="cov6" title="6">{
-        this := s.A + s.B
+        switch obj.(type) </span>{
+        case *TestStruct:<span class="cov6" title="6">
+                break</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
+        }
+        <span class="cov6" title="6">this := s.A + s.B
         that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
         if this &lt; that </span><span class="cov4" title="3">{
                 return -1
@@ -2258,9 +2264,7 @@ func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{
         case string:<span class="cov1" title="1">
                 return []byte(m)</span>
         default:<span class="cov1" title="1">
-                s := "algos.(types).ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: "
-                s += fmt.Sprintf("arg Type is: %T", mess)
-                panic(s)</span>
+                panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: arg Type is: %T", mess))</span>
         }
         <span class="cov7" title="9">return res</span>
 }
@@ -2286,9 +2290,7 @@ func LT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &lt; jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(types).LT[T any](i, j T): Type of args is not Ord or Comp interface: "
-                s += fmt.Sprintf("arg Type is: %T", i)
-                panic(s)</span>
+                panic(fmt.Sprintf("algos.types.LT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
         }
 }
 
@@ -2313,9 +2315,7 @@ func GT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &gt; jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(types).GT[T any](i, j T): Type of args is not Ord or Comp interface: "
-                s += fmt.Sprintf("arg Type is: %T", i)
-                panic(s)</span>
+                panic(fmt.Sprintf("algos.types.GT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
         }
 }
 
@@ -2340,9 +2340,7 @@ func EQ[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii == jj</span>
         default:<span class="cov1" title="1">
-                s := "algos.(types).EQ[T any](i, j T): Type of args is not Ord or Comp interface: "
-                s += fmt.Sprintf("arg Type is: %T", i)
-                panic(s)</span>
+                panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
         }
 }
 </pre>

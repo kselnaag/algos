@@ -29,7 +29,7 @@ func TestEquals(t *testing.T) {
 		assert.Equal(I.ConvToByteArr(float64(5)), []byte{0, 0, 0, 0, 0, 0, 0, 5})
 		assert.Equal(I.ConvToByteArr(float64(1<<56)), []byte{1, 0, 0, 0, 0, 0, 0, 0})
 		assert.Equal(I.ConvToByteArr("abcdefgh"), []byte{0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68})
-		assert.Panics(func() { I.ConvToByteArr(uint8(0)) }, "algos.types.(equals).ConvToByteArr():  Is not panics when args Type is not processed")
+		assert.Panics(func() { I.ConvToByteArr(uint8(0)) }, "algos.types.ConvToByteArr():  Is not panics when args Type is not processed")
 	})
 	t.Run("LT", func(t *testing.T) {
 		assert.True(I.LT(int(-1), int(16)))
@@ -50,7 +50,7 @@ func TestEquals(t *testing.T) {
 		assert.True(I.LT(s1, s2))
 		assert.False(I.LT(s3, s2))
 
-		assert.Panics(func() { I.LT(float32(5.0), float32(-1.0)) }, "algos.types.(equals).LT():  Is not panics when args Type is not processed")
+		assert.Panics(func() { I.LT(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 	t.Run("GT", func(t *testing.T) {
 		assert.True(I.GT(int(16), int(-1)))
@@ -71,7 +71,7 @@ func TestEquals(t *testing.T) {
 		assert.True(I.GT(s2, s1))
 		assert.False(I.GT(s2, s3))
 
-		assert.Panics(func() { I.GT(float32(5.0), float32(-1.0)) }, "algos.types.(equals).LT():  Is not panics when args Type is not processed")
+		assert.Panics(func() { I.GT(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 	t.Run("EQ", func(t *testing.T) {
 		assert.True(I.EQ(int(16), int(16)))
@@ -92,6 +92,6 @@ func TestEquals(t *testing.T) {
 		assert.True(I.EQ(s1, s1))
 		assert.False(I.EQ(s2, s3))
 
-		assert.Panics(func() { I.EQ(float32(5.0), float32(-1.0)) }, "algos.types.(equals).LT():  Is not panics when args Type is not processed")
+		assert.Panics(func() { I.EQ(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 }

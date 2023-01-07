@@ -16,7 +16,8 @@ func (s TestStruct) CompareTo(obj Comp) int {
 	case *TestStruct:
 		break
 	default:
-		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
+		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
+			"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
 	this := s.A + s.B
 	that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
@@ -49,7 +50,8 @@ func ConvToByteArr[T Ord](mess T) []byte {
 	case string:
 		return []byte(m)
 	default:
-		panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: arg Type is: %T", mess))
+		panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): "+
+			"Type of arg is Ord interface, but not processed: arg Type is %T", mess))
 	}
 	return res
 }
@@ -75,7 +77,8 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii < jj
 	default:
-		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))
+		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
+			"Type of args is not processed: arg Type is %T", i))
 	}
 }
 
@@ -100,7 +103,8 @@ func GT[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii > jj
 	default:
-		panic(fmt.Sprintf("algos.types.GT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))
+		panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
+			"Type of args is not processed: arg Type is %T", i))
 	}
 }
 
@@ -125,6 +129,7 @@ func EQ[T any](i, j T) bool {
 		jj := any(j).(uint32)
 		return ii == jj
 	default:
-		panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): Type of args is not processed: arg Type is: %T", i))
+		panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
+			"Type of args is not processed: arg Type is %T", i))
 	}
 }

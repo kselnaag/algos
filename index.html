@@ -2231,7 +2231,8 @@ func (s TestStruct) CompareTo(obj Comp) int <span class="cov6" title="6">{
         case *TestStruct:<span class="cov6" title="6">
                 break</span>
         default:<span class="cov0" title="0">
-                panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
+                panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
+                        "Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
         }
         <span class="cov6" title="6">this := s.A + s.B
         that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
@@ -2264,7 +2265,8 @@ func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{
         case string:<span class="cov1" title="1">
                 return []byte(m)</span>
         default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): Type of arg is Ord interface, but not processed: arg Type is: %T", mess))</span>
+                panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): "+
+                        "Type of arg is Ord interface, but not processed: arg Type is %T", mess))</span>
         }
         <span class="cov7" title="9">return res</span>
 }
@@ -2290,7 +2292,8 @@ func LT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &lt; jj</span>
         default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.LT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
+                panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
+                        "Type of args is not processed: arg Type is %T", i))</span>
         }
 }
 
@@ -2315,7 +2318,8 @@ func GT[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii &gt; jj</span>
         default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.GT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
+                panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
+                        "Type of args is not processed: arg Type is %T", i))</span>
         }
 }
 
@@ -2340,7 +2344,8 @@ func EQ[T any](i, j T) bool <span class="cov8" title="13">{
                 jj := any(j).(uint32)
                 return ii == jj</span>
         default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): Type of args is not processed: arg Type is: %T", i))</span>
+                panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
+                        "Type of args is not processed: arg Type is %T", i))</span>
         }
 }
 </pre>

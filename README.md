@@ -25,10 +25,10 @@ This is the hand-made algorithms and data-structures module with go generics. It
 </p>
 
 **Motivation:**
-The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Pre-defined Data Types (PDTs: ints, floats, strings) and Abstract Data Types (ADTs: self-made structures). Now in GOLANG stdlib we have to wrap PDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with ADTs. This module dedicates `Ord` interface for PDTs with `>`, `==`, `<` operators and `Comp` interface for ADTs with `CompareTo` method and `(+1, 0, -1)` values as the result for sorting internal and abstract types more easily.
+The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). Now in Golang stdlib we have to wrap BDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with CDTs. This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `Comp` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
 
 **The Main Idea:**
-We can build ADTs:
+We can build CDTs:
 ```
 type Comp interface {
 	CompareTo(Comp) int
@@ -44,7 +44,8 @@ func (s TestStruct) CompareTo(obj Comp) int {
 	case *TestStruct:
 		break
 	default:
-		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
+		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): " +
+				"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
 	this := s.A + s.B
 	that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
@@ -78,7 +79,8 @@ func LT[T any](i, j T) bool {
 		jj := any(j).(string)
 		return ii < jj
 	default:
-		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): Type of args is not processed: arg Type is: %T", i))
+		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): " +
+			"Type of args is not processed: arg Type is: %T", i))
 	}
 }
 ```
@@ -100,14 +102,14 @@ func InsertSort[T any](arr []T) {
 ```
 
 **Result:**
-For PDTs, value slice:
+For BDTs, value slice:
 ```
 arr := []int{3, 2, 1}
 array.InsertSort(arr)
 // {1, 2, 3}
 ```
 
-For ADTs, pointer slice:
+For CDTs, pointer slice:
 ```
 s1 := &TestStruct{1, 2}
 s2 := &TestStruct{3, 1}

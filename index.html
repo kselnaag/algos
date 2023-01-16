@@ -59,9 +59,9 @@
 				
 				<option value="file1">github.com/kselnaag/algos/array/hmap.go (91.7%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/pq.go (100.0%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
 				
-				<option value="file3">github.com/kselnaag/algos/array/sort.go (83.4%)</option>
+				<option value="file3">github.com/kselnaag/algos/array/sort.go (81.9%)</option>
 				
 				<option value="file4">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
@@ -276,76 +276,106 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
+func swimLT[T any](arr []T, k int) <span class="cov6" title="42">{
+        for (k &gt; 1) &amp;&amp; I.GT(arr[k/2], arr[k]) </span><span class="cov6" title="36">{
+                swap(arr, k/2, k)
+                k /= 2
+        }</span>
+}
+
+func sinkLT[T any](arr []T, k int, size int) <span class="cov5" title="21">{
+        for (2 * k) &lt;= size </span><span class="cov5" title="21">{
+                j := 2 * k
+                if (j &lt; size) &amp;&amp; I.GT(arr[j], arr[j+1]) </span><span class="cov3" title="6">{
+                        j++
+                }</span>
+                <span class="cov5" title="21">if !I.GT(arr[k], arr[j]) </span><span class="cov4" title="9">{
+                        break</span>
+                }
+                <span class="cov4" title="12">swap(arr, k, j)
+                k = j</span>
+        }
+}
+
+func swimGT[T any](arr []T, k int) <span class="cov6" title="42">{
+        for (k &gt; 1) &amp;&amp; I.LT(arr[k/2], arr[k]) </span><span class="cov3" title="6">{
+                swap(arr, k/2, k)
+                k /= 2
+        }</span>
+}
+
+func sinkGT[T any](arr []T, k int, size int) <span class="cov9" title="236">{
+        for (2 * k) &lt;= size </span><span class="cov10" title="367">{
+                j := 2 * k
+                if (j &lt; size) &amp;&amp; I.LT(arr[j], arr[j+1]) </span><span class="cov8" title="146">{
+                        j++
+                }</span>
+                <span class="cov10" title="367">if !I.LT(arr[k], arr[j]) </span><span class="cov5" title="17">{
+                        break</span>
+                }
+                <span class="cov9" title="350">swap(arr, k, j)
+                k = j</span>
+        }
+}
+
 // ===========================
 type MinPQ[T any] struct {
         pq   []T
         size int
 }
 
-func NewMinPQ[T any]() MinPQ[T] <span class="cov5" title="6">{
+func NewMinPQ[T any]() MinPQ[T] <span class="cov3" title="6">{
         return MinPQ[T]{
                 pq:   make([]T, 1, 8),
                 size: 0,
         }
 }</span>
 
-func (min *MinPQ[T]) Size() int <span class="cov9" title="30">{
+func (min *MinPQ[T]) Size() int <span class="cov6" title="30">{
         return min.size
 }</span>
 
-func (min *MinPQ[T]) IsEmpty() bool <span class="cov7" title="15">{
+func (min *MinPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
         return min.Size() == 0
 }</span>
 
-func (min *MinPQ[T]) swim(k int) <span class="cov10" title="42">{
-        for (k &gt; 1) &amp;&amp; I.GT(min.pq[k/2], min.pq[k]) </span><span class="cov9" title="36">{
-                swap(min.pq, k/2, k)
-                k /= 2
-        }</span>
-}
-func (min *MinPQ[T]) sink(k int) <span class="cov8" title="21">{
-        for (2 * k) &lt;= min.size </span><span class="cov8" title="21">{
-                j := 2 * k
-                if (j &lt; min.size) &amp;&amp; I.GT(min.pq[j], min.pq[j+1]) </span><span class="cov5" title="6">{
-                        j++
-                }</span>
-                <span class="cov8" title="21">if !I.GT(min.pq[k], min.pq[j]) </span><span class="cov6" title="9">{
-                        break</span>
-                }
-                <span class="cov6" title="12">swap(min.pq, k, j)
-                k = j</span>
-        }
-}
+func (min *MinPQ[T]) swim(k int) <span class="cov6" title="42">{
+        swimLT(min.pq, k)
+}</span>
 
-func (min *MinPQ[T]) Add(val T) <span class="cov10" title="42">{
+func (min *MinPQ[T]) sink(k int) <span class="cov5" title="21">{
+        sinkLT(min.pq, k, min.size)
+}</span>
+
+func (min *MinPQ[T]) Add(val T) <span class="cov6" title="42">{
         min.size++
-        if len(min.pq) &gt; min.size </span><span class="cov8" title="21">{
+        if len(min.pq) &gt; min.size </span><span class="cov5" title="21">{
                 min.pq[min.size] = val
-        }</span> else<span class="cov8" title="21"> {
+        }</span> else<span class="cov5" title="21"> {
                 min.pq = append(min.pq, val)
         }</span>
-        <span class="cov10" title="42">min.swim(min.size)</span>
+        <span class="cov6" title="42">min.swim(min.size)</span>
 }
 
-func (min *MinPQ[T]) Min() T <span class="cov6" title="9">{
-        if min.size &lt; 1 </span><span class="cov3" title="3">{
+func (min *MinPQ[T]) Min() T <span class="cov4" title="9">{
+        if min.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MinPQ).Min(): Queue is empty ")</span>
         }
-        <span class="cov5" title="6">return min.pq[1]</span>
+        <span class="cov3" title="6">return min.pq[1]</span>
 }
 
-func (min *MinPQ[T]) GetMin() T <span class="cov8" title="24">{
-        if min.size &lt; 1 </span><span class="cov3" title="3">{
+func (min *MinPQ[T]) GetMin() T <span class="cov5" title="24">{
+        if min.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MinPQ).GetMin(): Queue is empty ")</span>
         }
-        <span class="cov8" title="21">ret := min.pq[1]
+        <span class="cov5" title="21">ret := min.pq[1]
         swap(min.pq, 1, min.size)
         min.size--
         min.sink(1)
         return ret</span>
 }
 
-func (min *MinPQ[T]) Iterate() []T <span class="cov3" title="3">{
+func (min *MinPQ[T]) Iterate() []T <span class="cov2" title="3">{
         return min.pq[1:(min.size + 1)]
 }</span>
 
@@ -355,72 +385,206 @@ type MaxPQ[T any] struct {
         size int
 }
 
-func NewMaxPQ[T any]() MaxPQ[T] <span class="cov5" title="6">{
+func NewMaxPQ[T any]() MaxPQ[T] <span class="cov3" title="6">{
         return MaxPQ[T]{
                 pq:   make([]T, 1, 8),
                 size: 0,
         }
 }</span>
 
-func (max *MaxPQ[T]) Size() int <span class="cov9" title="30">{
+func (max *MaxPQ[T]) Size() int <span class="cov6" title="30">{
         return max.size
 }</span>
 
-func (max *MaxPQ[T]) IsEmpty() bool <span class="cov7" title="15">{
+func (max *MaxPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
         return max.Size() == 0
 }</span>
 
-func (max *MaxPQ[T]) swim(k int) <span class="cov10" title="42">{
-        for (k &gt; 1) &amp;&amp; I.LT(max.pq[k/2], max.pq[k]) </span><span class="cov5" title="6">{
-                swap(max.pq, k/2, k)
-                k /= 2
-        }</span>
-}
-func (max *MaxPQ[T]) sink(k int) <span class="cov8" title="21">{
-        for (2 * k) &lt;= max.size </span><span class="cov8" title="24">{
-                j := 2 * k
-                if (j &lt; max.size) &amp;&amp; I.LT(max.pq[j], max.pq[j+1]) </span><span class="cov5" title="6">{
-                        j++
-                }</span>
-                <span class="cov8" title="24">if !I.LT(max.pq[k], max.pq[j]) </span><span class="cov5" title="6">{
-                        break</span>
-                }
-                <span class="cov7" title="18">swap(max.pq, k, j)
-                k = j</span>
-        }
-}
+func (max *MaxPQ[T]) swim(k int) <span class="cov6" title="42">{
+        swimGT(max.pq, k)
+}</span>
 
-func (max *MaxPQ[T]) Add(val T) <span class="cov10" title="42">{
+func (max *MaxPQ[T]) sink(k int) <span class="cov5" title="21">{
+        sinkGT(max.pq, k, max.size)
+}</span>
+
+func (max *MaxPQ[T]) Add(val T) <span class="cov6" title="42">{
         max.size++
-        if len(max.pq) &gt; max.size </span><span class="cov8" title="21">{
+        if len(max.pq) &gt; max.size </span><span class="cov5" title="21">{
                 max.pq[max.size] = val
-        }</span> else<span class="cov8" title="21"> {
+        }</span> else<span class="cov5" title="21"> {
                 max.pq = append(max.pq, val)
         }</span>
-        <span class="cov10" title="42">max.swim(max.size)</span>
+        <span class="cov6" title="42">max.swim(max.size)</span>
 }
 
-func (max *MaxPQ[T]) Max() T <span class="cov6" title="9">{
-        if max.size &lt; 1 </span><span class="cov3" title="3">{
+func (max *MaxPQ[T]) Max() T <span class="cov4" title="9">{
+        if max.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MaxPQ).Max(): Queue is empty ")</span>
         }
-        <span class="cov5" title="6">return max.pq[1]</span>
+        <span class="cov3" title="6">return max.pq[1]</span>
 }
 
-func (max *MaxPQ[T]) GetMax() T <span class="cov8" title="24">{
-        if max.size &lt; 1 </span><span class="cov3" title="3">{
+func (max *MaxPQ[T]) GetMax() T <span class="cov5" title="24">{
+        if max.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MaxPQ).GetMax(): Queue is empty ")</span>
         }
-        <span class="cov8" title="21">ret := max.pq[1]
+        <span class="cov5" title="21">ret := max.pq[1]
         swap(max.pq, 1, max.size)
         max.size--
         max.sink(1)
         return ret</span>
 }
 
-func (max *MaxPQ[T]) Iterate() []T <span class="cov3" title="3">{
+func (max *MaxPQ[T]) Iterate() []T <span class="cov2" title="3">{
         return max.pq[1:(max.size + 1)]
 }</span>
+
+// ===========================
+type LRU[T any] struct {
+        arr []T
+}
+
+func NewLRU[T any](cap int) LRU[T] <span class="cov1" title="1">{
+        return LRU[T]{
+                arr: make([]T, 0, cap),
+        }
+}</span>
+
+func (lru *LRU[T]) Cap() int <span class="cov4" title="9">{
+        return cap(lru.arr)
+}</span>
+
+func (lru *LRU[T]) Size() int <span class="cov6" title="34">{
+        return len(lru.arr)
+}</span>
+
+func (lru *LRU[T]) IsEmpty() bool <span class="cov2" title="3">{
+        return lru.Size() == 0
+}</span>
+
+func (lru *LRU[T]) Iterate() []T <span class="cov3" title="4">{
+        return lru.arr
+}</span>
+
+func (lru *LRU[T]) binsrchLT(arr []T, pidx int) int <span class="cov4" title="8">{
+        low := 0
+        high := len(arr) - 1
+        elem := arr[pidx]
+        mid := 0
+        for low &lt; high </span><span class="cov5" title="16">{
+                mid = (low + ((high - low) / 2))
+                val := arr[mid]
+                switch </span>{
+                case I.EQ(val, elem):<span class="cov0" title="0">
+                        return mid</span>
+                case I.GT(val, elem):<span class="cov4" title="10">
+                        high = mid</span>
+                case I.LT(val, elem):<span class="cov3" title="6">
+                        low = mid + 1</span>
+                default:<span class="cov0" title="0">
+                        panic("algos.array.(LRU).binsrchLT(arr, pidx): comparison failed")</span>
+                }
+        }
+        <span class="cov4" title="8">return mid</span>
+}
+
+func (lru *LRU[T]) sortpoint(pidx int) <span class="cov4" title="8">{
+        val := lru.arr[pidx]
+        inspos := lru.binsrchLT(lru.arr, pidx)
+        if I.LT(lru.arr[inspos], val) </span><span class="cov3" title="5">{
+                inspos++
+        }</span>
+        <span class="cov4" title="8">for i := lru.Size() - 2; i &gt;= inspos; i-- </span><span class="cov5" title="17">{
+                lru.arr[i+1] = lru.arr[i]
+        }</span>
+        <span class="cov4" title="8">lru.arr[inspos] = val</span>
+}
+
+func (lru *LRU[T]) Set(val T) <span class="cov4" title="9">{
+        if lru.Size() == lru.Cap() </span><span class="cov2" title="2">{
+                if !I.LT(val, lru.arr[lru.Size()-1]) </span><span class="cov1" title="1">{
+                        return
+                }</span>
+                <span class="cov1" title="1">lru.arr[lru.Size()-1] = val</span>
+        } else<span class="cov3" title="7"> {
+                lru.arr = append(lru.arr, val)
+        }</span>
+        <span class="cov4" title="8">lru.sortpoint(lru.Size() - 1)</span>
+}
+
+// ===========================
+type MRU[T any] struct {
+        arr []T
+}
+
+func NewMRU[T any](cap int) MRU[T] <span class="cov1" title="1">{
+        return MRU[T]{
+                arr: make([]T, 0, cap),
+        }
+}</span>
+
+func (mru *MRU[T]) Cap() int <span class="cov4" title="9">{
+        return cap(mru.arr)
+}</span>
+
+func (mru *MRU[T]) Size() int <span class="cov6" title="34">{
+        return len(mru.arr)
+}</span>
+
+func (mru *MRU[T]) IsEmpty() bool <span class="cov2" title="3">{
+        return mru.Size() == 0
+}</span>
+
+func (mru *MRU[T]) Iterate() []T <span class="cov3" title="4">{
+        return mru.arr
+}</span>
+
+func (mru *MRU[T]) binsrchGT(arr []T, pidx int) int <span class="cov4" title="8">{
+        low := 0
+        high := len(arr) - 1
+        elem := arr[pidx]
+        mid := 0
+        for low &lt; high </span><span class="cov5" title="16">{
+                mid = (low + ((high - low) / 2))
+                val := arr[mid]
+                switch </span>{
+                case I.EQ(val, elem):<span class="cov0" title="0">
+                        return mid</span>
+                case I.LT(val, elem):<span class="cov3" title="7">
+                        high = mid</span>
+                case I.GT(val, elem):<span class="cov4" title="9">
+                        low = mid + 1</span>
+                default:<span class="cov0" title="0">
+                        panic("algos.array.(LRU).binsrchLT(arr, pidx): comparison failed")</span>
+                }
+        }
+        <span class="cov4" title="8">return mid</span>
+}
+
+func (mru *MRU[T]) sortpoint(pidx int) <span class="cov4" title="8">{
+        val := mru.arr[pidx]
+        inspos := mru.binsrchGT(mru.arr, pidx)
+        if I.GT(mru.arr[inspos], val) </span><span class="cov3" title="5">{
+                inspos++
+        }</span>
+        <span class="cov4" title="8">for i := mru.Size() - 2; i &gt;= inspos; i-- </span><span class="cov4" title="10">{
+                mru.arr[i+1] = mru.arr[i]
+        }</span>
+        <span class="cov4" title="8">mru.arr[inspos] = val</span>
+}
+
+func (mru *MRU[T]) Set(val T) <span class="cov4" title="9">{
+        if mru.Size() == mru.Cap() </span><span class="cov2" title="2">{
+                if !I.GT(val, mru.arr[mru.Size()-1]) </span><span class="cov1" title="1">{
+                        return
+                }</span>
+                <span class="cov1" title="1">mru.arr[mru.Size()-1] = val</span>
+        } else<span class="cov3" title="7"> {
+                mru.arr = append(mru.arr, val)
+        }</span>
+        <span class="cov4" title="8">mru.sortpoint(mru.Size() - 1)</span>
+}
 </pre>
 		
 		<pre class="file" id="file3" style="display: none">package array
@@ -460,27 +624,13 @@ func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="279">{
 func HeapSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
         for k := alen / 2; k &gt; 0; k-- </span><span class="cov5" title="87">{
-                sink(arr, k, alen-1)
+                sinkGT(arr, k, alen-1)
         }</span>
         <span class="cov5" title="43">for n := alen - 1; n &gt; 1; </span><span class="cov6" title="128">{
                 swap(arr, 1, n)
                 n--
-                sink(arr, 1, n)
+                sinkGT(arr, 1, n)
         }</span>
-}
-
-func sink[T any](arr []T, k, n int) <span class="cov6" title="215">{
-        for (2 * k) &lt;= n </span><span class="cov7" title="343">{
-                j := 2 * k
-                if (j &lt; n) &amp;&amp; I.LT(arr[j], arr[j+1]) </span><span class="cov6" title="140">{
-                        j++
-                }</span>
-                <span class="cov7" title="343">if !I.LT(arr[k], arr[j]) </span><span class="cov3" title="11">{
-                        break</span>
-                }
-                <span class="cov7" title="332">swap(arr, k, j)
-                k = j</span>
-        }
 }
 
 func QuickSort[T any](arr []T) <span class="cov5" title="43">{
@@ -648,13 +798,13 @@ func InsertSort[T any](arr []T) <span class="cov6" title="122">{
 
 func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         low := 0
-        high := len(arr)
-        for low &lt; high </span><span class="cov2" title="6">{
+        high := len(arr) - 1
+        for low &lt; high </span><span class="cov2" title="5">{
                 mid := (low + ((high - low) / 2))
                 val := arr[mid]
                 if I.EQ(val, elem) </span><span class="cov1" title="1">{
                         return mid
-                }</span> else<span class="cov2" title="5"> if I.GT(val, elem) </span><span class="cov1" title="1">{
+                }</span> else<span class="cov2" title="4"> if I.GT(val, elem) </span><span class="cov0" title="0">{
                         high = mid
                 }</span> else<span class="cov2" title="4"> if I.LT(val, elem) </span><span class="cov2" title="4">{
                         low = mid + 1

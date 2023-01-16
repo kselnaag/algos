@@ -35,26 +35,12 @@ func q3sort[T any](arr []T, lo, hi int) {
 func HeapSort[T any](arr []T) {
 	alen := len(arr)
 	for k := alen / 2; k > 0; k-- {
-		sink(arr, k, alen-1)
+		sinkGT(arr, k, alen-1)
 	}
 	for n := alen - 1; n > 1; {
 		swap(arr, 1, n)
 		n--
-		sink(arr, 1, n)
-	}
-}
-
-func sink[T any](arr []T, k, n int) {
-	for (2 * k) <= n {
-		j := 2 * k
-		if (j < n) && I.LT(arr[j], arr[j+1]) {
-			j++
-		}
-		if !I.LT(arr[k], arr[j]) {
-			break
-		}
-		swap(arr, k, j)
-		k = j
+		sinkGT(arr, 1, n)
 	}
 }
 
@@ -223,7 +209,7 @@ func InsertSort[T any](arr []T) {
 
 func BinarySearch[T any](arr []T, elem T) int {
 	low := 0
-	high := len(arr)
+	high := len(arr) - 1
 	for low < high {
 		mid := (low + ((high - low) / 2))
 		val := arr[mid]

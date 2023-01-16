@@ -1,6 +1,7 @@
 package array_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/kselnaag/algos/array"
@@ -13,6 +14,56 @@ func TestPQ(t *testing.T) {
 		err := recover()
 		assert.Nil(err)
 	}()
+
+	t.Run("LRU", func(t *testing.T) {
+		t.Run("integers", func(t *testing.T) {
+			lru := array.NewLRU[int](7)
+			assert.True(lru.IsEmpty())
+			assert.Equal(0, lru.Size())
+			lru.Set(134)
+			lru.Set(25)
+			lru.Set(67)
+			lru.Set(43)
+			fmt.Println(lru.Iterate())
+			assert.Equal([]int{25, 43, 67, 134}, lru.Iterate())
+			assert.False(lru.IsEmpty())
+			assert.Equal(4, lru.Size())
+			lru.Set(29)
+			lru.Set(3)
+			lru.Set(23)
+			lru.Set(86)
+			lru.Set(200)
+			fmt.Println(lru.Iterate())
+			assert.Equal([]int{3, 23, 25, 29, 43, 67, 86}, lru.Iterate())
+			assert.False(lru.IsEmpty())
+			assert.Equal(7, lru.Size())
+		})
+	})
+
+	t.Run("MRU", func(t *testing.T) {
+		t.Run("integers", func(t *testing.T) {
+			mru := array.NewMRU[int](7)
+			assert.True(mru.IsEmpty())
+			assert.Equal(0, mru.Size())
+			mru.Set(134)
+			mru.Set(3)
+			mru.Set(67)
+			mru.Set(43)
+			fmt.Println(mru.Iterate())
+			assert.Equal([]int{134, 67, 43, 3}, mru.Iterate())
+			assert.False(mru.IsEmpty())
+			assert.Equal(4, mru.Size())
+			mru.Set(29)
+			mru.Set(25)
+			mru.Set(23)
+			mru.Set(86)
+			mru.Set(1)
+			fmt.Println(mru.Iterate())
+			assert.Equal([]int{134, 86, 67, 43, 29, 25, 23}, mru.Iterate())
+			assert.False(mru.IsEmpty())
+			assert.Equal(7, mru.Size())
+		})
+	})
 
 	t.Run("minPQ", func(t *testing.T) {
 		t.Run("integers", func(t *testing.T) {

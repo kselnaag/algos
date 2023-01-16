@@ -22,9 +22,9 @@ func TestSort(t *testing.T) {
 			assert.Equal(array.Contained([]int{}, 48), -1)
 		})
 		t.Run("BinarySearch", func(t *testing.T) {
-			assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 8), 7)
-			assert.Equal(array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 55), -1)
-			assert.Equal(array.BinarySearch([]int{}, 55), -1)
+			assert.Equal(7, array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 8))
+			assert.Equal(-1, array.BinarySearch([]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 55))
+			assert.Equal(-1, array.BinarySearch([]int{}, 55))
 		})
 		t.Run("IsSorted", func(t *testing.T) {
 			assert.True(array.IsSorted([]int{24, 32, 54, 65, 67, 87}))

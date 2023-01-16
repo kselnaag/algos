@@ -4,6 +4,48 @@ import (
 	I "github.com/kselnaag/algos/types"
 )
 
+func swimLT[T any](arr []T, k int) {
+	for (k > 1) && I.GT(arr[k/2], arr[k]) {
+		swap(arr, k/2, k)
+		k /= 2
+	}
+}
+
+func sinkLT[T any](arr []T, k int, size int) {
+	for (2 * k) <= size {
+		j := 2 * k
+		if (j < size) && I.GT(arr[j], arr[j+1]) {
+			j++
+		}
+		if !I.GT(arr[k], arr[j]) {
+			break
+		}
+		swap(arr, k, j)
+		k = j
+	}
+}
+
+func swimGT[T any](arr []T, k int) {
+	for (k > 1) && I.LT(arr[k/2], arr[k]) {
+		swap(arr, k/2, k)
+		k /= 2
+	}
+}
+
+func sinkGT[T any](arr []T, k int, size int) {
+	for (2 * k) <= size {
+		j := 2 * k
+		if (j < size) && I.LT(arr[j], arr[j+1]) {
+			j++
+		}
+		if !I.LT(arr[k], arr[j]) {
+			break
+		}
+		swap(arr, k, j)
+		k = j
+	}
+}
+
 // ===========================
 type MinPQ[T any] struct {
 	pq   []T
@@ -26,23 +68,11 @@ func (min *MinPQ[T]) IsEmpty() bool {
 }
 
 func (min *MinPQ[T]) swim(k int) {
-	for (k > 1) && I.GT(min.pq[k/2], min.pq[k]) {
-		swap(min.pq, k/2, k)
-		k /= 2
-	}
+	swimLT(min.pq, k)
 }
+
 func (min *MinPQ[T]) sink(k int) {
-	for (2 * k) <= min.size {
-		j := 2 * k
-		if (j < min.size) && I.GT(min.pq[j], min.pq[j+1]) {
-			j++
-		}
-		if !I.GT(min.pq[k], min.pq[j]) {
-			break
-		}
-		swap(min.pq, k, j)
-		k = j
-	}
+	sinkLT(min.pq, k, min.size)
 }
 
 func (min *MinPQ[T]) Add(val T) {
@@ -99,23 +129,11 @@ func (max *MaxPQ[T]) IsEmpty() bool {
 }
 
 func (max *MaxPQ[T]) swim(k int) {
-	for (k > 1) && I.LT(max.pq[k/2], max.pq[k]) {
-		swap(max.pq, k/2, k)
-		k /= 2
-	}
+	swimGT(max.pq, k)
 }
+
 func (max *MaxPQ[T]) sink(k int) {
-	for (2 * k) <= max.size {
-		j := 2 * k
-		if (j < max.size) && I.LT(max.pq[j], max.pq[j+1]) {
-			j++
-		}
-		if !I.LT(max.pq[k], max.pq[j]) {
-			break
-		}
-		swap(max.pq, k, j)
-		k = j
-	}
+	sinkGT(max.pq, k, max.size)
 }
 
 func (max *MaxPQ[T]) Add(val T) {
@@ -148,4 +166,150 @@ func (max *MaxPQ[T]) GetMax() T {
 
 func (max *MaxPQ[T]) Iterate() []T {
 	return max.pq[1:(max.size + 1)]
+}
+
+// ===========================
+type LRU[T any] struct {
+	arr []T
+}
+
+func NewLRU[T any](cap int) LRU[T] {
+	return LRU[T]{
+		arr: make([]T, 0, cap),
+	}
+}
+
+func (lru *LRU[T]) Cap() int {
+	return cap(lru.arr)
+}
+
+func (lru *LRU[T]) Size() int {
+	return len(lru.arr)
+}
+
+func (lru *LRU[T]) IsEmpty() bool {
+	return lru.Size() == 0
+}
+
+func (lru *LRU[T]) Iterate() []T {
+	return lru.arr
+}
+
+func (lru *LRU[T]) binsrchLT(arr []T, pidx int) int {
+	low := 0
+	high := len(arr) - 1
+	elem := arr[pidx]
+	mid := 0
+	for low < high {
+		mid = (low + ((high - low) / 2))
+		val := arr[mid]
+		switch {
+		case I.EQ(val, elem):
+			return mid
+		case I.GT(val, elem):
+			high = mid
+		case I.LT(val, elem):
+			low = mid + 1
+		default:
+			panic("algos.array.(LRU).binsrchLT(arr, pidx): comparison failed")
+		}
+	}
+	return mid
+}
+
+func (lru *LRU[T]) sortpoint(pidx int) {
+	val := lru.arr[pidx]
+	inspos := lru.binsrchLT(lru.arr, pidx)
+	if I.LT(lru.arr[inspos], val) {
+		inspos++
+	}
+	for i := lru.Size() - 2; i >= inspos; i-- {
+		lru.arr[i+1] = lru.arr[i]
+	}
+	lru.arr[inspos] = val
+}
+
+func (lru *LRU[T]) Set(val T) {
+	if lru.Size() == lru.Cap() {
+		if !I.LT(val, lru.arr[lru.Size()-1]) {
+			return
+		}
+		lru.arr[lru.Size()-1] = val
+	} else {
+		lru.arr = append(lru.arr, val)
+	}
+	lru.sortpoint(lru.Size() - 1)
+}
+
+// ===========================
+type MRU[T any] struct {
+	arr []T
+}
+
+func NewMRU[T any](cap int) MRU[T] {
+	return MRU[T]{
+		arr: make([]T, 0, cap),
+	}
+}
+
+func (mru *MRU[T]) Cap() int {
+	return cap(mru.arr)
+}
+
+func (mru *MRU[T]) Size() int {
+	return len(mru.arr)
+}
+
+func (mru *MRU[T]) IsEmpty() bool {
+	return mru.Size() == 0
+}
+
+func (mru *MRU[T]) Iterate() []T {
+	return mru.arr
+}
+
+func (mru *MRU[T]) binsrchGT(arr []T, pidx int) int {
+	low := 0
+	high := len(arr) - 1
+	elem := arr[pidx]
+	mid := 0
+	for low < high {
+		mid = (low + ((high - low) / 2))
+		val := arr[mid]
+		switch {
+		case I.EQ(val, elem):
+			return mid
+		case I.LT(val, elem):
+			high = mid
+		case I.GT(val, elem):
+			low = mid + 1
+		default:
+			panic("algos.array.(LRU).binsrchLT(arr, pidx): comparison failed")
+		}
+	}
+	return mid
+}
+
+func (mru *MRU[T]) sortpoint(pidx int) {
+	val := mru.arr[pidx]
+	inspos := mru.binsrchGT(mru.arr, pidx)
+	if I.GT(mru.arr[inspos], val) {
+		inspos++
+	}
+	for i := mru.Size() - 2; i >= inspos; i-- {
+		mru.arr[i+1] = mru.arr[i]
+	}
+	mru.arr[inspos] = val
+}
+
+func (mru *MRU[T]) Set(val T) {
+	if mru.Size() == mru.Cap() {
+		if !I.GT(val, mru.arr[mru.Size()-1]) {
+			return
+		}
+		mru.arr[mru.Size()-1] = val
+	} else {
+		mru.arr = append(mru.arr, val)
+	}
+	mru.sortpoint(mru.Size() - 1)
 }

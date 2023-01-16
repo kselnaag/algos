@@ -19,15 +19,15 @@
 
 This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
 
-### **Types and func scheme:**
+## **Types and func scheme**
 <p align="center">
   <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" title="Types and func scheme" alt="Types and func scheme"/>
 </p>
 
-**Motivation:**
+## **Motivation:**
 The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). Now in Golang stdlib we have to wrap BDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with CDTs. This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `Comp` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
 
-**The Main Idea:**
+## **The Main Idea**
 We can build CDTs:
 ```
 type Comp interface {
@@ -101,7 +101,7 @@ func InsertSort[T any](arr []T) {
 }
 ```
 
-**Result:**
+## **Result**
 For BDTs, value slice:
 ```
 arr := []int{3, 2, 1}
@@ -123,5 +123,5 @@ This approach used in arrays. Other data types are under construction and use `O
 
 ----
 
-### **Links**: 
+### **LINKS**
 | [samber/lo](https://github.com/samber/lo "Lodash-style Go library") | [samber/do](https://github.com/samber/do "Dependency injection toolkit based on Go 1.18+ generics") | [samber/mo](https://github.com/samber/mo "Monads based on Go 1.18+ generics") | [ialekseev/go4fun](https://github.com/ialekseev/go4fun "Functional primitives and patterns in go") |

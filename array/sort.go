@@ -3,7 +3,7 @@ package array
 import (
 	"math/rand"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 func Quick3Sort[T any](arr []T) {

@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"github.com/kselnaag/algos/array"
-	"github.com/kselnaag/algos/math"
+	"algos/array"
+	"algos/math"
 )
 
 type UF struct {

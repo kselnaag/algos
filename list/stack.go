@@ -5,31 +5,6 @@ type Snode[T any] struct {
 	Next *Snode[T]
 }
 
-func Reverse[T any](first *Snode[T]) *Snode[T] {
-	if first == nil {
-		return nil
-	}
-	if first.Next == nil {
-		return first
-	}
-	second := first.Next
-	root := Reverse(second)
-	second.Next = first
-	first.Next = nil
-	return root
-}
-
-func ListSize[T any](root *Snode[T]) int {
-	size := 0
-	if root == nil {
-		return size
-	}
-	for node := root; node != nil; node = node.Next {
-		size++
-	}
-	return size
-}
-
 // ===========================
 type Bag[T any] struct {
 	first *Snode[T]

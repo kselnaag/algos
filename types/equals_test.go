@@ -3,7 +3,8 @@ package types_test
 import (
 	"testing"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
+
 	"github.com/stretchr/testify/assert"
 )
 

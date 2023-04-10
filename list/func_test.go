@@ -3,8 +3,9 @@ package list_test
 import (
 	"testing"
 
-	"github.com/kselnaag/algos/array"
-	"github.com/kselnaag/algos/list"
+	"algos/array"
+	"algos/list"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -25,6 +26,18 @@ func TestFunc(t *testing.T) {
 	n2 := &list.Snode[int]{2, n3}
 	n1 := &list.Snode[int]{1, n2}
 	root := &list.Snode[int]{0, n1}
+
+	t.Run("Reverse", func(t *testing.T) {
+		root1 := list.Reverse(root)
+		assert.Equal(root, list.Reverse(root1))
+		assert.Equal((*list.Snode[int])(nil), list.Reverse[int](nil))
+	})
+
+	t.Run("ReverseRec", func(t *testing.T) {
+		root1 := list.ReverseRec(root)
+		assert.Equal(root, list.ReverseRec(root1))
+		assert.Equal((*list.Snode[int])(nil), list.ReverseRec[int](nil))
+	})
 
 	t.Run("Map", func(t *testing.T) {
 		bag := array.NewBag[int]()

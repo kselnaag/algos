@@ -68,3 +68,39 @@ func Filter[T any](root *Snode[T], fnc func(T) bool) *Snode[T] {
 	}
 	return res
 }
+
+func ListSize[T any](root *Snode[T]) int {
+	size := 0
+	if root == nil {
+		return size
+	}
+	for node := root; node != nil; node = node.Next {
+		size++
+	}
+	return size
+}
+
+func ReverseRec[T any](first *Snode[T]) *Snode[T] {
+	if first == nil {
+		return nil
+	}
+	if first.Next == nil {
+		return first
+	}
+	second := first.Next
+	root := ReverseRec(second)
+	second.Next = first
+	first.Next = nil
+	return root
+}
+
+func Reverse[T any](first *Snode[T]) *Snode[T] {
+	var zero, second *Snode[T]
+	for first != nil {
+		second = first.Next
+		first.Next = zero
+		zero = first
+		first = second
+	}
+	return zero
+}

@@ -1,7 +1,7 @@
 package array
 
 import (
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 func swimLT[T any](arr []T, k int) {

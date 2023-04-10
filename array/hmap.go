@@ -3,8 +3,8 @@ package array
 import (
 	"math"
 
-	amath "github.com/kselnaag/algos/math"
-	I "github.com/kselnaag/algos/types"
+	amath "algos/math"
+	I "algos/types"
 )
 
 type Anode[K I.Ord, V any] struct {
@@ -34,7 +34,7 @@ func (hm *Hmap[K, V]) IsEmpty() bool {
 
 func (hm *Hmap[K, V]) Set(key K, val V) {
 	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson16(abytes)
+	hash := amath.HashPirson[uint16](abytes)
 	node := Anode[K, V]{Key: key, Val: val}
 	if hm.hmarr[int(hash)] == nil {
 		hm.hmarr[int(hash)] = &[]Anode[K, V]{node}
@@ -53,7 +53,7 @@ func (hm *Hmap[K, V]) Set(key K, val V) {
 
 func (hm *Hmap[K, V]) IsKey(key K) bool {
 	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson16(abytes)
+	hash := amath.HashPirson[uint16](abytes)
 	if hm.hmarr[int(hash)] == nil {
 		return false
 	}
@@ -67,7 +67,7 @@ func (hm *Hmap[K, V]) IsKey(key K) bool {
 
 func (hm *Hmap[K, V]) Get(key K) V {
 	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson16(abytes)
+	hash := amath.HashPirson[uint16](abytes)
 	if hm.hmarr[int(hash)] == nil {
 		panic("algos.array.(Hmap).Get(key K): No any key found, check first")
 	}
@@ -81,7 +81,7 @@ func (hm *Hmap[K, V]) Get(key K) V {
 
 func (hm *Hmap[K, V]) Del(key K) {
 	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson16(abytes)
+	hash := amath.HashPirson[uint16](abytes)
 	if hm.hmarr[int(hash)] == nil {
 		panic("algos.array.(Hmap).Del(key K): No any key found, check first")
 	}

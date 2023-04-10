@@ -3,8 +3,9 @@ package math_test
 import (
 	"testing"
 
-	amath "github.com/kselnaag/algos/math"
 	"github.com/stretchr/testify/assert"
+
+	amath "algos/math"
 )
 
 func TestMath(t *testing.T) {
@@ -14,10 +15,11 @@ func TestMath(t *testing.T) {
 		assert.Nil(err)
 	}()
 
-	t.Run("HashPirson32", func(t *testing.T) {
-		assert.Equal(amath.HashPirson16([]byte{0, 0, 0, 0, 0, 0, 0, 0}), uint16(0x677c))
-		assert.Equal(amath.HashPirson16([]byte{0, 0, 0, 0, 0, 0, 0, 1}), uint16(0xa2f0))
-		assert.Equal(amath.HashPirson16([]byte{1, 0, 0, 0, 0, 0, 0, 0}), uint16(0xcb82))
+	t.Run("HashPirson", func(t *testing.T) {
+		assert.Equal(uint8(0x7c), amath.HashPirson[uint8]([]byte{0, 0, 0, 0, 0, 0, 0, 0}))
+		assert.Equal(uint16(0xa2f0), amath.HashPirson[uint16]([]byte{0, 0, 0, 0, 0, 0, 0, 1}))
+		assert.Equal(uint32(0x9657cb82), amath.HashPirson[uint32]([]byte{1, 0, 0, 0, 0, 0, 0, 0}))
+		assert.Equal(uint64(0x1be6c14bc5b612bd), amath.HashPirson[uint64]([]byte{0, 0, 0, 1, 0, 0, 0, 0}))
 	})
 	t.Run("Harmonic", func(t *testing.T) {
 		assert.Panics(func() { amath.Harmonic(-1) }, "The code is not panic")

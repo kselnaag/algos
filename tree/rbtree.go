@@ -3,8 +3,8 @@ package tree
 import (
 	"fmt"
 
-	amath "github.com/kselnaag/algos/math"
-	I "github.com/kselnaag/algos/types"
+	amath "algos/math"
+	I "algos/types"
 )
 
 // left-linear red-black tree with lazy node deletion

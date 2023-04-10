@@ -25,9 +25,9 @@ This is the hand-made algorithms and data-structures module with go generics. It
 </p>
 
 ## **Motivation:**
-The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). Now in Golang stdlib we have to wrap BDTs in structs and bind 3 methods (`len`, `less`, `swap`) to call a sort function, same with CDTs. This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `Comp` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
+The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `Comp` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
 
-## **The Main Idea**
+## **The main idea**
 We can build CDTs:
 ```
 type Comp interface {
@@ -40,22 +40,26 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int {
-	switch obj.(type) {
+	var this, that int
+	compFactor := func(st TestStruct) int {
+		return st.A + st.B
+	}
+	switch objComp := obj.(type) {
 	case *TestStruct:
-		break
+		this = compFactor(s)
+		that = compFactor(*objComp)
 	default:
-		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): " +
-				"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
+		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
+			"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
-	this := s.A + s.B
-	that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
-	if this < that {
+	switch {
+	case this < that:
 		return -1
-	}
-	if this > that {
+	case this > that:
 		return +1
+	default:
+		return 0
 	}
-	return 0
 }
 ```
 

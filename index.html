@@ -55,37 +55,37 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/array/func.go (100.0%)</option>
+				<option value="file0">algos/array/func.go (100.0%)</option>
 				
-				<option value="file1">github.com/kselnaag/algos/array/hmap.go (91.7%)</option>
+				<option value="file1">algos/array/hmap.go (91.7%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
+				<option value="file2">algos/array/pq.go (96.8%)</option>
 				
-				<option value="file3">github.com/kselnaag/algos/array/sort.go (81.9%)</option>
+				<option value="file3">algos/array/sort.go (81.9%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
+				<option value="file4">algos/array/stack.go (100.0%)</option>
 				
-				<option value="file5">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
+				<option value="file5">algos/graph/uf.go (96.0%)</option>
 				
-				<option value="file6">github.com/kselnaag/algos/list/func.go (100.0%)</option>
+				<option value="file6">algos/list/func.go (100.0%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/list/hmap.go (95.2%)</option>
+				<option value="file7">algos/list/hmap.go (95.2%)</option>
 				
-				<option value="file8">github.com/kselnaag/algos/list/stack.go (98.3%)</option>
+				<option value="file8">algos/list/stack.go (100.0%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/math/math.go (100.0%)</option>
+				<option value="file9">algos/math/math.go (97.9%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
+				<option value="file10">algos/sync/sync.go (95.8%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
+				<option value="file11">algos/tree/aatree.go (93.2%)</option>
 				
-				<option value="file12">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
+				<option value="file12">algos/tree/pq.go (0.0%)</option>
 				
-				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				<option value="file13">algos/tree/rbtree.go (94.9%)</option>
 				
-				<option value="file14">github.com/kselnaag/algos/types/equals.go (98.5%)</option>
+				<option value="file14">algos/types/equals.go (98.5%)</option>
 				
-				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
+				<option value="file15">algos/types/types.go (93.0%)</option>
 				
 				</select>
 			</div>
@@ -165,8 +165,8 @@ func Filter[T any](arr []T, fnc func(T) bool) []T <span class="cov4" title="3">{
 import (
         "math"
 
-        amath "github.com/kselnaag/algos/math"
-        I "github.com/kselnaag/algos/types"
+        amath "algos/math"
+        I "algos/types"
 )
 
 type Anode[K I.Ord, V any] struct {
@@ -196,7 +196,7 @@ func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="4">{
 
 func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         node := Anode[K, V]{Key: key, Val: val}
         if hm.hmarr[int(hash)] == nil </span><span class="cov2" title="9">{
                 hm.hmarr[int(hash)] = &amp;[]Anode[K, V]{node}
@@ -215,7 +215,7 @@ func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
 
 func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
                 return false
         }</span>
@@ -229,7 +229,7 @@ func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
 
 func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
                 panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
         }
@@ -243,7 +243,7 @@ func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
 
 func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="1">{
                 panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
         }
@@ -273,7 +273,7 @@ func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
 		<pre class="file" id="file2" style="display: none">package array
 
 import (
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 func swimLT[T any](arr []T, k int) <span class="cov6" title="42">{
@@ -592,7 +592,7 @@ func (mru *MRU[T]) Set(val T) <span class="cov4" title="9">{
 import (
         "math/rand"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
@@ -600,24 +600,24 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="279">{
-        if hi &lt;= lo </span><span class="cov6" title="161">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="273">{
+        if hi &lt;= lo </span><span class="cov6" title="158">{
                 return
         }</span>
-        <span class="cov6" title="118">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="427">{
-                if I.LT(arr[i], v) </span><span class="cov6" title="217">{
+        <span class="cov6" title="115">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="442">{
+                if I.LT(arr[i], v) </span><span class="cov6" title="214">{
                         swap(arr, l, i)
                         l++
                         i++
-                }</span> else<span class="cov6" title="210"> if I.GT(arr[i], v) </span><span class="cov6" title="210">{
+                }</span> else<span class="cov7" title="228"> if I.GT(arr[i], v) </span><span class="cov7" title="228">{
                         swap(arr, i, g)
                         g--
                 }</span> else<span class="cov0" title="0"> {
                         i++
                 }</span>
         }
-        <span class="cov6" title="118">q3sort(arr, lo, l-1)
+        <span class="cov6" title="115">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -653,21 +653,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="183">{
+        for </span><span class="cov6" title="194">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="183">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="194">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="183">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="194">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="141">swap(arr, i, j)</span>
+                <span class="cov6" title="152">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -786,10 +786,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1597">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1255">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1561">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1226">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="342"> {
+                        }</span> else<span class="cov7" title="335"> {
                                 break</span>
                         }
                 }
@@ -848,7 +848,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3262">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3259">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -976,8 +976,8 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
 		<pre class="file" id="file5" style="display: none">package graph
 
 import (
-        "github.com/kselnaag/algos/array"
-        "github.com/kselnaag/algos/math"
+        "algos/array"
+        "algos/math"
 )
 
 type UF struct {
@@ -1045,14 +1045,14 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 
 func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] <span class="cov5" title="6">{
         var res, ptr *Snode[T2]
-        for onode := root; onode != nil; onode = onode.Next </span><span class="cov10" title="40">{
+        for onode := root; onode != nil; onode = onode.Next </span><span class="cov9" title="40">{
                 nnode := &amp;Snode[T2]{Val: fnc(onode.Val), Next: nil}
                 if onode == root </span><span class="cov4" title="5">{
                         res = nnode
                 }</span> else<span class="cov9" title="35"> {
                         ptr.Next = nnode
                 }</span>
-                <span class="cov10" title="40">ptr = nnode</span>
+                <span class="cov9" title="40">ptr = nnode</span>
         }
         <span class="cov5" title="6">return res</span>
 }
@@ -1111,6 +1111,42 @@ func Filter[T any](root *Snode[T], fnc func(T) bool) *Snode[T] <span class="cov3
         }
         <span class="cov3" title="3">return res</span>
 }
+
+func ListSize[T any](root *Snode[T]) int <span class="cov2" title="2">{
+        size := 0
+        if root == nil </span><span class="cov1" title="1">{
+                return size
+        }</span>
+        <span class="cov1" title="1">for node := root; node != nil; node = node.Next </span><span class="cov6" title="10">{
+                size++
+        }</span>
+        <span class="cov1" title="1">return size</span>
+}
+
+func ReverseRec[T any](first *Snode[T]) *Snode[T] <span class="cov8" title="21">{
+        if first == nil </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="20">if first.Next == nil </span><span class="cov2" title="2">{
+                return first
+        }</span>
+        <span class="cov8" title="18">second := first.Next
+        root := ReverseRec(second)
+        second.Next = first
+        first.Next = nil
+        return root</span>
+}
+
+func Reverse[T any](first *Snode[T]) *Snode[T] <span class="cov5" title="6">{
+        var zero, second *Snode[T]
+        for first != nil </span><span class="cov10" title="41">{
+                second = first.Next
+                first.Next = zero
+                zero = first
+                first = second
+        }</span>
+        <span class="cov5" title="6">return zero</span>
+}
 </pre>
 		
 		<pre class="file" id="file7" style="display: none">package list
@@ -1118,8 +1154,8 @@ func Filter[T any](root *Snode[T], fnc func(T) bool) *Snode[T] <span class="cov3
 import (
         "math"
 
-        amath "github.com/kselnaag/algos/math"
-        I "github.com/kselnaag/algos/types"
+        amath "algos/math"
+        I "algos/types"
 )
 
 type Mnode[K I.Ord, V any] struct {
@@ -1150,7 +1186,7 @@ func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="4">{
 
 func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         setnode := &amp;Mnode[K, V]{Key: key, Val: val, Next: nil}
         for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
                 if node.Key == key </span><span class="cov1" title="2">{
@@ -1165,7 +1201,7 @@ func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
 
 func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="3">{
                 if node.Key == key </span><span class="cov1" title="3">{
                         return true
@@ -1176,7 +1212,7 @@ func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
 
 func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
                 if node.Key == key </span><span class="cov1" title="2">{
                         return node.Val
@@ -1187,7 +1223,7 @@ func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
 
 func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
         abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson16(abytes)
+        hash := amath.HashPirson[uint16](abytes)
         prev := hm.hmarr[int(hash)]
         for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="1">{
                 if node.Key == key </span><span class="cov1" title="1">{
@@ -1222,31 +1258,6 @@ type Snode[T any] struct {
         Next *Snode[T]
 }
 
-func Reverse[T any](first *Snode[T]) *Snode[T] <span class="cov10" title="21">{
-        if first == nil </span><span class="cov0" title="0">{
-                return nil
-        }</span>
-        <span class="cov10" title="21">if first.Next == nil </span><span class="cov4" title="3">{
-                return first
-        }</span>
-        <span class="cov9" title="18">second := first.Next
-        root := Reverse(second)
-        second.Next = first
-        first.Next = nil
-        return root</span>
-}
-
-func ListSize[T any](root *Snode[T]) int <span class="cov3" title="2">{
-        size := 0
-        if root == nil </span><span class="cov1" title="1">{
-                return size
-        }</span>
-        <span class="cov1" title="1">for node := root; node != nil; node = node.Next </span><span class="cov7" title="10">{
-                size++
-        }</span>
-        <span class="cov1" title="1">return size</span>
-}
-
 // ===========================
 type Bag[T any] struct {
         first *Snode[T]
@@ -1260,7 +1271,7 @@ func NewBag[T any]() Bag[T] <span class="cov1" title="1">{
         }
 }</span>
 
-func (b *Bag[T]) Size() int <span class="cov6" title="6">{
+func (b *Bag[T]) Size() int <span class="cov7" title="6">{
         return b.size
 }</span>
 
@@ -1268,14 +1279,14 @@ func (b *Bag[T]) IsEmpty() bool <span class="cov4" title="3">{
         return b.Size() == 0
 }</span>
 
-func (b *Bag[T]) Add(val T) <span class="cov6" title="7">{
+func (b *Bag[T]) Add(val T) <span class="cov7" title="7">{
         b.first = &amp;Snode[T]{Val: val, Next: b.first}
         b.size++
 }</span>
 
 func (b *Bag[T]) Iterate() []T <span class="cov3" title="2">{
         res := make([]T, 0, b.size)
-        for node := b.first; node != nil; node = node.Next </span><span class="cov8" title="14">{
+        for node := b.first; node != nil; node = node.Next </span><span class="cov10" title="14">{
                 res = append(res, node.Val)
         }</span>
         <span class="cov3" title="2">return res</span>
@@ -1298,7 +1309,7 @@ func NewStack[T any]() Stack[T] <span class="cov3" title="2">{
         }
 }</span>
 
-func (s *Stack[T]) Size() int <span class="cov7" title="9">{
+func (s *Stack[T]) Size() int <span class="cov8" title="9">{
         return s.size
 }</span>
 
@@ -1306,12 +1317,12 @@ func (s *Stack[T]) IsEmpty() bool <span class="cov5" title="4">{
         return s.Size() == 0
 }</span>
 
-func (s *Stack[T]) Push(val T) <span class="cov8" title="14">{
+func (s *Stack[T]) Push(val T) <span class="cov10" title="14">{
         s.first = &amp;Snode[T]{Val: val, Next: s.first}
         s.size++
 }</span>
 
-func (s *Stack[T]) Pop() T <span class="cov7" title="8">{
+func (s *Stack[T]) Pop() T <span class="cov8" title="8">{
         ret := s.first.Val
         s.first = s.first.Next
         s.size--
@@ -1320,7 +1331,7 @@ func (s *Stack[T]) Pop() T <span class="cov7" title="8">{
 
 func (s *Stack[T]) Iterate() []T <span class="cov1" title="1">{
         res := make([]T, 0, s.size)
-        for node := s.first; node != nil; node = node.Next </span><span class="cov6" title="7">{
+        for node := s.first; node != nil; node = node.Next </span><span class="cov7" title="7">{
                 res = append(res, node.Val)
         }</span>
         <span class="cov1" title="1">return res</span>
@@ -1345,7 +1356,7 @@ func NewQueue[T any]() Queue[T] <span class="cov3" title="2">{
         }
 }</span>
 
-func (q *Queue[T]) Size() int <span class="cov7" title="9">{
+func (q *Queue[T]) Size() int <span class="cov8" title="9">{
         return q.size
 }</span>
 
@@ -1353,30 +1364,30 @@ func (q *Queue[T]) IsEmpty() bool <span class="cov5" title="4">{
         return q.Size() == 0
 }</span>
 
-func (q *Queue[T]) Enq(val T) <span class="cov8" title="14">{
+func (q *Queue[T]) Enq(val T) <span class="cov10" title="14">{
         newnode := &amp;Snode[T]{Val: val, Next: nil}
         if q.size == 0 </span><span class="cov3" title="2">{
                 q.first = newnode
-        }</span> else<span class="cov8" title="12"> {
+        }</span> else<span class="cov9" title="12"> {
                 q.last.Next = newnode
         }</span>
-        <span class="cov8" title="14">q.last = newnode
+        <span class="cov10" title="14">q.last = newnode
         q.size++</span>
 }
 
-func (q *Queue[T]) Deq() T <span class="cov7" title="8">{
+func (q *Queue[T]) Deq() T <span class="cov8" title="8">{
         ret := q.first.Val
         q.first = q.first.Next
         q.size--
         if (q.size == 0) || (q.size == 1) </span><span class="cov3" title="2">{
                 q.last = q.first
         }</span>
-        <span class="cov6" title="7">return ret</span>
+        <span class="cov7" title="7">return ret</span>
 }
 
 func (q *Queue[T]) Iterate() []T <span class="cov1" title="1">{
         res := make([]T, 0, q.size)
-        for node := q.first; node != nil; node = node.Next </span><span class="cov6" title="7">{
+        for node := q.first; node != nil; node = node.Next </span><span class="cov7" title="7">{
                 res = append(res, node.Val)
         }</span>
         <span class="cov1" title="1">return res</span>
@@ -1391,10 +1402,57 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
 		<pre class="file" id="file9" style="display: none">package math
 
 import (
-        I "github.com/kselnaag/algos/types"
+        "fmt"
+
+        I "algos/types"
 )
 
-func HashPirson16(mess []byte) uint16 <span class="cov2" title="3">{
+func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) <span class="cov3" title="4">{
+        T := [256]byte{
+                130, 4, 133, 49, 108, 178, 125, 95, 35, 126, 41, 129, 229, 48, 6, 94, 206,
+                69, 20, 194, 236, 79, 156, 67, 100, 239, 152, 149, 93, 91, 56, 8, 183, 165,
+                42, 148, 114, 59, 57, 5, 112, 151, 54, 97, 109, 145, 228, 196, 250, 104,
+                169, 107, 86, 64, 98, 181, 200, 58, 199, 70, 138, 179, 60, 249, 34, 123,
+                30, 22, 124, 240, 201, 132, 218, 21, 74, 83, 39, 223, 73, 88, 136, 27, 0,
+                10, 89, 51, 215, 251, 255, 3, 235, 241, 19, 102, 71, 38, 166, 220, 110, 23,
+                232, 25, 172, 210, 142, 211, 121, 242, 75, 208, 195, 203, 226, 253, 176, 17,
+                66, 158, 231, 237, 99, 254, 173, 221, 117, 139, 213, 90, 85, 45, 187, 84, 92,
+                44, 164, 247, 122, 32, 127, 177, 170, 155, 111, 185, 171, 61, 76, 184, 234, 192,
+                16, 106, 160, 204, 153, 161, 186, 131, 28, 137, 37, 216, 248, 55, 72, 50, 26,
+                46, 53, 224, 7, 217, 189, 120, 219, 167, 119, 11, 252, 65, 135, 96, 222, 68,
+                144, 214, 227, 101, 207, 103, 212, 175, 157, 141, 168, 82, 163, 47, 52, 15, 113,
+                230, 245, 116, 43, 80, 246, 33, 198, 197, 146, 193, 13, 31, 24, 143, 12, 18, 118,
+                14, 62, 154, 78, 81, 134, 162, 105, 63, 244, 77, 190, 209, 150, 233, 159, 202, 191,
+                40, 87, 180, 188, 36, 238, 9, 140, 128, 147, 174, 1, 2, 182, 243, 29, 115, 205, 225,
+        }
+        rounds := 0
+        switch any(result).(type) </span>{
+        case uint8:<span class="cov1" title="1">
+                rounds = 1</span>
+        case uint16:<span class="cov1" title="1">
+                rounds = 2</span>
+        case uint32:<span class="cov1" title="1">
+                rounds = 4</span>
+        case uint64:<span class="cov1" title="1">
+                rounds = 8</span>
+        default:<span class="cov0" title="0">
+                panic(fmt.Sprintf("rules.HashPirson[R](mess []byte): "+
+                        "Type of R is unknown, expected (uint8 | uint16 | uint32 | uint64), actual %T", result))</span>
+        }
+
+        <span class="cov3" title="4">mlen := len(mess)
+        hash := T[mlen%256]
+        for j := 0; j &lt; rounds; j++ </span><span class="cov5" title="15">{
+                for i := 0; i &lt; mlen; i++ </span><span class="cov8" title="120">{
+                        hash = T[int(hash^mess[i])]
+                }</span>
+                <span class="cov5" title="15">result += R(hash) &lt;&lt; (8 * j)</span>
+        }
+        <span class="cov3" title="4">return result</span>
+}
+
+/*
+func HashPirson16(mess []byte) uint16 {
         T := [256]byte{
                 130, 4, 133, 49, 108, 178, 125, 95, 35, 126, 41, 129, 229, 48, 6, 94, 206,
                 69, 20, 194, 236, 79, 156, 67, 100, 239, 152, 149, 93, 91, 56, 8, 183, 165,
@@ -1415,14 +1473,14 @@ func HashPirson16(mess []byte) uint16 <span class="cov2" title="3">{
         result := uint16(0)
         mlen := len(mess)
         hash := T[mlen%256]
-        for j := 0; j &lt; 2; j++ </span><span class="cov3" title="6">{
-                for i := 0; i &lt; mlen; i++ </span><span class="cov7" title="48">{
+        for j := 0; j &lt; 2; j++ {
+                for i := 0; i &lt; mlen; i++ {
                         hash = T[int(hash^mess[i])]
-                }</span>
-                <span class="cov3" title="6">result += uint16(hash) &lt;&lt; (8 * j)</span>
+                }
+                result += uint16(hash) &lt;&lt; (8 * j)
         }
-        <span class="cov2" title="3">return result</span>
-}
+        return result
+} */
 
 func Harmonic(n int) float64 <span class="cov3" title="6">{
         if n &lt; 0 </span><span class="cov2" title="2">{
@@ -1502,7 +1560,7 @@ import (
         "sync"
         "time"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 // ====================
@@ -1592,8 +1650,8 @@ func (pro *Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov3" title
 import (
         "fmt"
 
-        amath "github.com/kselnaag/algos/math"
-        I "github.com/kselnaag/algos/types"
+        amath "algos/math"
+        I "algos/types"
 )
 
 // right-linear Arne Andersson tree with intensive node deletion
@@ -1832,7 +1890,7 @@ import (
         "fmt"
         "math"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 // tree based Priority Queue
@@ -2087,8 +2145,8 @@ CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
 import (
         "fmt"
 
-        amath "github.com/kselnaag/algos/math"
-        I "github.com/kselnaag/algos/types"
+        amath "algos/math"
+        I "algos/types"
 )
 
 // left-linear red-black tree with lazy node deletion
@@ -2377,22 +2435,26 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int <span class="cov6" title="6">{
-        switch obj.(type) </span>{
+        var this, that int
+        compFactor := func(st TestStruct) int </span><span class="cov8" title="12">{
+                return st.A + st.B
+        }</span>
+        <span class="cov6" title="6">switch objComp := obj.(type) </span>{
         case *TestStruct:<span class="cov6" title="6">
-                break</span>
+                this = compFactor(s)
+                that = compFactor(*objComp)</span>
         default:<span class="cov0" title="0">
                 panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
                         "Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
         }
-        <span class="cov6" title="6">this := s.A + s.B
-        that := (obj.(*TestStruct)).A + (obj.(*TestStruct)).B
-        if this &lt; that </span><span class="cov4" title="3">{
-                return -1
-        }</span>
-        <span class="cov4" title="3">if this &gt; that </span><span class="cov2" title="2">{
-                return +1
-        }</span>
-        <span class="cov1" title="1">return 0</span>
+        <span class="cov6" title="6">switch </span>{
+        case this &lt; that:<span class="cov4" title="3">
+                return -1</span>
+        case this &gt; that:<span class="cov2" title="2">
+                return +1</span>
+        default:<span class="cov1" title="1">
+                return 0</span>
+        }
 }
 
 func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{

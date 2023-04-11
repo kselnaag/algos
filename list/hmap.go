@@ -1,11 +1,11 @@
 package list
 
 import (
-	"math"
-
-	amath "algos/math"
-	I "algos/types"
+	"github.com/kselnaag/algos/amath"
+	I "github.com/kselnaag/algos/types"
 )
+
+const maxUint16 int = 1<<16 - 1
 
 type Mnode[K I.Ord, V any] struct {
 	Key  K
@@ -14,13 +14,13 @@ type Mnode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-	hmarr   [math.MaxUint16]*Mnode[K, V]
+	hmarr   [maxUint16]*Mnode[K, V]
 	keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] {
 	return Hmap[K, V]{
-		hmarr:   [math.MaxUint16]*Mnode[K, V]{},
+		hmarr:   [maxUint16]*Mnode[K, V]{},
 		keysnum: 0,
 	}
 }

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	S "algos/sync"
-	I "algos/types"
+	S "github.com/kselnaag/algos/sync"
+	I "github.com/kselnaag/algos/types"
 
 	"github.com/stretchr/testify/assert"
 )

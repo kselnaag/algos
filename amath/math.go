@@ -1,9 +1,9 @@
-package math
+package amath
 
 import (
 	"fmt"
 
-	I "algos/types"
+	I "github.com/kselnaag/algos/types"
 )
 
 func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
@@ -52,7 +52,7 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 
 func Harmonic(n int) float64 {
 	if n < 0 {
-		panic("algos.math.Harmonic(x) -> 'x' can not be negative")
+		panic("algos.amath.Harmonic(x) -> 'x' can not be negative")
 	}
 	sum := 0.0
 	for i := 1; i <= n; i++ {
@@ -64,7 +64,7 @@ func Harmonic(n int) float64 {
 // Newton square root
 func Sqrt(c float64) float64 {
 	if c < 0 {
-		panic("algos.math.Sqrt(x) -> 'x' can not be negative")
+		panic("algos.amath.Sqrt(x) -> 'x' can not be negative")
 	}
 	err := 1e-15
 	t := c

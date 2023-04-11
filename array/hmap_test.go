@@ -3,7 +3,7 @@ package array_test
 import (
 	"testing"
 
-	"algos/array"
+	"github.com/kselnaag/algos/array"
 
 	"github.com/stretchr/testify/assert"
 )

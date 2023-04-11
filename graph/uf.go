@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"algos/array"
-	"algos/math"
+	"github.com/kselnaag/algos/amath"
+	"github.com/kselnaag/algos/array"
 )
 
 type UF struct {
@@ -13,7 +13,7 @@ type UF struct {
 }
 
 func NewUF(n int) UF {
-	n = math.Abs(n)
+	n = amath.Abs(n)
 	arr := make([]int, n)
 	for i := 0; i < n; i++ {
 		arr[i] = i
@@ -37,7 +37,7 @@ func (uf *UF) Union(p, q int) {
 }
 
 func (uf *UF) Find(p int) int {
-	p = math.Abs(p)
+	p = amath.Abs(p)
 	for p != uf.id[p] {
 		uf.bag.Add(p)
 		p = uf.id[p]

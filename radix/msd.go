@@ -1,5 +1,5 @@
 package radix
 
 import (
-	_ "algos/types"
+	_ "github.com/kselnaag/algos/types"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	I "algos/types"
+	I "github.com/kselnaag/algos/types"
 )
 
 // tree based Priority Queue

@@ -1,11 +1,11 @@
-package math_test
+package amath_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	amath "algos/math"
+	"github.com/kselnaag/algos/amath"
 )
 
 func TestMath(t *testing.T) {

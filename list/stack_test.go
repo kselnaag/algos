@@ -3,7 +3,7 @@ package list_test
 import (
 	"testing"
 
-	"algos/list"
+	"github.com/kselnaag/algos/list"
 
 	"github.com/stretchr/testify/assert"
 )

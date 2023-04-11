@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	I "algos/types"
+	I "github.com/kselnaag/algos/types"
 )
 
 // ====================

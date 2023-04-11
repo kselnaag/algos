@@ -1,15 +1,15 @@
-module algos
+module github.com/kselnaag/algos
 
 go 1.19
 
 replace (
-	algos/array => ./array
-	algos/graph => ./graph
-	algos/list => ./list
-	algos/math => ./math
-	algos/radix => ./radix
-	algos/tree => ./tree
-	algos/types => ./types
+	github.com/kselnaag/algos/array => ./array
+	github.com/kselnaag/algos/graph => ./graph
+	github.com/kselnaag/algos/list => ./list
+	github.com/kselnaag/algos/amath => ./amath
+	github.com/kselnaag/algos/radix => ./radix
+	github.com/kselnaag/algos/tree => ./tree
+	github.com/kselnaag/algos/types => ./types
 )
 
 require (

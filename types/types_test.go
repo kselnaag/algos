@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	I "algos/types"
+	I "github.com/kselnaag/algos/types"
 
 	"github.com/stretchr/testify/assert"
 )

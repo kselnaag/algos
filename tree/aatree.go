@@ -3,8 +3,8 @@ package tree
 import (
 	"fmt"
 
-	amath "algos/math"
-	I "algos/types"
+	"github.com/kselnaag/algos/amath"
+	I "github.com/kselnaag/algos/types"
 )
 
 // right-linear Arne Andersson tree with intensive node deletion

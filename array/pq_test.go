@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"algos/array"
+	"github.com/kselnaag/algos/array"
 
 	"github.com/stretchr/testify/assert"
 )

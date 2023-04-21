@@ -38,11 +38,12 @@ func (tm *RBmap[K, V]) IsEmpty() bool {
 func (tm *RBmap[K, V]) IsKey(key K) bool {
 	node := tm.root
 	for node != nil {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node = node.L
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node = node.R
-		} else {
+		default:
 			return !node.IsDel
 		}
 	}
@@ -52,11 +53,12 @@ func (tm *RBmap[K, V]) IsKey(key K) bool {
 func (tm *RBmap[K, V]) Get(key K) V {
 	node := tm.root
 	for node != nil {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node = node.L
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node = node.R
-		} else {
+		default:
 			if !node.IsDel {
 				return node.Val
 			}
@@ -72,11 +74,12 @@ func (tm *RBmap[K, V]) Del(key K) {
 	}
 	node := tm.root
 	for node != nil {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node = node.L
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node = node.R
-		} else {
+		default:
 			node.IsDel = true
 			if tm.size > 0 {
 				tm.size--
@@ -99,11 +102,12 @@ func (tm *RBmap[K, V]) put(node *RBnode[K, V], key K, val V) *RBnode[K, V] {
 		tm.size++
 		node = &RBnode[K, V]{Key: key, Val: val, L: nil, R: nil, IsRed: true, IsDel: false}
 	} else {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node.L = tm.put(node.L, key, val)
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node.R = tm.put(node.R, key, val)
-		} else {
+		default:
 			node.Val = val
 			if node.IsDel {
 				node.IsDel = false
@@ -187,7 +191,7 @@ func (tm *RBmap[K, V]) IsBSTcheck() bool {
 	return tm.isbst(tm.root, nil, nil)
 }
 
-func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min *K, max *K) bool {
+func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min, max *K) bool {
 	if node == nil {
 		return true
 	}

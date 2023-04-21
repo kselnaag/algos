@@ -63,7 +63,7 @@
 				
 				<option value="file3">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/array/sort.go (81.9%)</option>
+				<option value="file4">github.com/kselnaag/algos/array/sort.go (81.5%)</option>
 				
 				<option value="file5">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
@@ -73,17 +73,17 @@
 				
 				<option value="file8">github.com/kselnaag/algos/list/hmap.go (95.2%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/list/stack.go (100.0%)</option>
+				<option value="file9">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
 				
 				<option value="file10">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.2%)</option>
+				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.0%)</option>
 				
 				<option value="file12">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
 				
-				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.9%)</option>
+				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.7%)</option>
 				
-				<option value="file14">github.com/kselnaag/algos/types/equals.go (98.5%)</option>
+				<option value="file14">github.com/kselnaag/algos/types/equals.go (98.8%)</option>
 				
 				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
 				
@@ -406,7 +406,7 @@ func swimLT[T any](arr []T, k int) <span class="cov6" title="42">{
         }</span>
 }
 
-func sinkLT[T any](arr []T, k int, size int) <span class="cov5" title="21">{
+func sinkLT[T any](arr []T, k, size int) <span class="cov5" title="21">{
         for (2 * k) &lt;= size </span><span class="cov5" title="21">{
                 j := 2 * k
                 if (j &lt; size) &amp;&amp; I.GT(arr[j], arr[j+1]) </span><span class="cov3" title="6">{
@@ -427,7 +427,7 @@ func swimGT[T any](arr []T, k int) <span class="cov6" title="42">{
         }</span>
 }
 
-func sinkGT[T any](arr []T, k int, size int) <span class="cov9" title="236">{
+func sinkGT[T any](arr []T, k, size int) <span class="cov9" title="236">{
         for (2 * k) &lt;= size </span><span class="cov10" title="367">{
                 j := 2 * k
                 if (j &lt; size) &amp;&amp; I.LT(arr[j], arr[j+1]) </span><span class="cov8" title="146">{
@@ -568,9 +568,9 @@ type LRU[T any] struct {
         arr []T
 }
 
-func NewLRU[T any](cap int) LRU[T] <span class="cov1" title="1">{
+func NewLRU[T any](size int) LRU[T] <span class="cov1" title="1">{
         return LRU[T]{
-                arr: make([]T, 0, cap),
+                arr: make([]T, 0, size),
         }
 }</span>
 
@@ -641,9 +641,9 @@ type MRU[T any] struct {
         arr []T
 }
 
-func NewMRU[T any](cap int) MRU[T] <span class="cov1" title="1">{
+func NewMRU[T any](size int) MRU[T] <span class="cov1" title="1">{
         return MRU[T]{
-                arr: make([]T, 0, cap),
+                arr: make([]T, 0, size),
         }
 }</span>
 
@@ -723,24 +723,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="289">{
-        if hi &lt;= lo </span><span class="cov6" title="166">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="265">{
+        if hi &lt;= lo </span><span class="cov6" title="154">{
                 return
         }</span>
-        <span class="cov6" title="123">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="438">{
-                if I.LT(arr[i], v) </span><span class="cov6" title="206">{
+        <span class="cov6" title="111">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="428">{
+                switch </span>{
+                case I.LT(arr[i], v):<span class="cov6" title="184">
                         swap(arr, l, i)
                         l++
-                        i++
-                }</span> else<span class="cov7" title="232"> if I.GT(arr[i], v) </span><span class="cov7" title="232">{
+                        i++</span>
+                case I.GT(arr[i], v):<span class="cov7" title="244">
                         swap(arr, i, g)
-                        g--
-                }</span> else<span class="cov0" title="0"> {
-                        i++
-                }</span>
+                        g--</span>
+                default:<span class="cov0" title="0">
+                        i++</span>
+                }
         }
-        <span class="cov6" title="123">q3sort(arr, lo, l-1)
+        <span class="cov6" title="111">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -776,21 +777,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov7" title="221">{
+        for </span><span class="cov6" title="209">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="221">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="209">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="221">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="209">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="179">swap(arr, i, j)</span>
+                <span class="cov6" title="167">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -803,7 +804,7 @@ func MergeSort[T any](arr []T) <span class="cov5" title="43">{
         mrgsort(aux, arr, 0, alen-1)
 }</span>
 
-func mrgsort[T any](src []T, dst []T, lo, hi int) <span class="cov5" title="61">{
+func mrgsort[T any](src, dst []T, lo, hi int) <span class="cov5" title="61">{
         if hi &lt;= lo </span><span class="cov3" title="8">{
                 return
         }</span>
@@ -818,7 +819,7 @@ func mrgsort[T any](src []T, dst []T, lo, hi int) <span class="cov5" title="61">
         merge(src, dst, lo, mid, hi)</span>
 }
 
-func merge[T any](src []T, dst []T, lo, mid, hi int) <span class="cov3" title="9">{
+func merge[T any](src, dst []T, lo, mid, hi int) <span class="cov3" title="9">{
         if !I.GT(src[mid], src[mid+1]) </span><span class="cov3" title="9">{
                 copy(dst[lo:hi+1], src[lo:hi+1])
                 return
@@ -902,17 +903,17 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
                                 }
                         }
                 }
-                <span class="cov5" title="57">h = h / 3</span>
+                <span class="cov5" title="57">h /= 3</span>
         }
 }
 
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1563">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1218">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1581">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1244">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="345"> {
+                        }</span> else<span class="cov7" title="337"> {
                                 break</span>
                         }
                 }
@@ -925,13 +926,14 @@ func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
         for low &lt; high </span><span class="cov2" title="5">{
                 mid := (low + ((high - low) / 2))
                 val := arr[mid]
-                if I.EQ(val, elem) </span><span class="cov1" title="1">{
-                        return mid
-                }</span> else<span class="cov2" title="4"> if I.GT(val, elem) </span><span class="cov0" title="0">{
-                        high = mid
-                }</span> else<span class="cov2" title="4"> if I.LT(val, elem) </span><span class="cov2" title="4">{
-                        low = mid + 1
-                }</span>
+                switch </span>{
+                case I.GT(val, elem):<span class="cov0" title="0">
+                        high = mid</span>
+                case I.LT(val, elem):<span class="cov2" title="4">
+                        low = mid + 1</span>
+                default:<span class="cov1" title="1">
+                        return mid</span>
+                }
         }
         <span class="cov1" title="2">return -1</span>
 }
@@ -939,7 +941,7 @@ func BinarySearch[T any](arr []T, elem T) int <span class="cov2" title="3">{
 func Shuffle[T any](arr []T) <span class="cov5" title="88">{
         alen := len(arr)
         for i := 0; i &lt; alen; i++ </span><span class="cov7" title="419">{
-                j := rand.Intn(i + 1)
+                j := rand.Intn(i + 1) //nolint:gosec // simple `math.rand` enough for sorting
                 swap(arr, i, j)
         }</span>
 }
@@ -971,7 +973,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3274">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3278">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1520,6 +1522,106 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
         q.last = q.first
         q.first = Reverse(q.first)
 }</span>
+
+// ===========================
+type Dnode[T any] struct {
+        Val  T
+        Prev *Dnode[T]
+        Next *Dnode[T]
+}
+
+type Deque[T any] struct {
+        first *Dnode[T]
+        last  *Dnode[T]
+        size  int
+}
+
+func NewDeque[T any]() Deque[T] <span class="cov1" title="1">{
+        return Deque[T]{
+                first: nil,
+                last:  nil,
+                size:  0,
+        }
+}</span>
+
+func (d *Deque[T]) Size() int <span class="cov7" title="6">{
+        return d.size
+}</span>
+
+func (d *Deque[T]) IsEmpty() bool <span class="cov4" title="3">{
+        return d.Size() == 0
+}</span>
+
+func (d *Deque[T]) Front() T <span class="cov1" title="1">{
+        return d.first.Val
+}</span>
+
+func (d *Deque[T]) Back() T <span class="cov1" title="1">{
+        return d.last.Val
+}</span>
+
+func (d *Deque[T]) PushFront(val T) <span class="cov4" title="3">{
+        newnode := &amp;Dnode[T]{Val: val, Prev: nil, Next: d.first}
+        if d.size == 0 </span><span class="cov1" title="1">{
+                d.last = newnode
+        }</span> else<span class="cov3" title="2"> {
+                d.first.Prev = newnode
+        }</span>
+        <span class="cov4" title="3">d.first = newnode
+        d.size++</span>
+}
+
+func (d *Deque[T]) PopFront() T <span class="cov4" title="3">{
+        val := d.first.Val
+        if d.size == 1 </span><span class="cov0" title="0">{
+                d.last = nil
+                d.first = nil
+        }</span> else<span class="cov4" title="3"> {
+                d.first = d.first.Next
+                d.first.Prev = nil
+        }</span>
+        <span class="cov4" title="3">d.size--
+        return val</span>
+}
+
+func (d *Deque[T]) PushBack(val T) <span class="cov4" title="3">{
+        newnode := &amp;Dnode[T]{Val: val, Prev: d.last, Next: nil}
+        if d.size == 0 </span><span class="cov0" title="0">{
+                d.first = newnode
+        }</span> else<span class="cov4" title="3"> {
+                d.last.Next = newnode
+        }</span>
+        <span class="cov4" title="3">d.last = newnode
+        d.size++</span>
+}
+
+func (d *Deque[T]) PopBack() T <span class="cov4" title="3">{
+        val := d.last.Val
+        if d.size == 1 </span><span class="cov1" title="1">{
+                d.last = nil
+                d.first = nil
+        }</span> else<span class="cov3" title="2"> {
+                d.last = d.last.Prev
+                d.last.Next = nil
+        }</span>
+        <span class="cov4" title="3">d.size--
+        return val</span>
+}
+
+func (d *Deque[T]) Iterate() []T <span class="cov3" title="2">{
+        res := make([]T, 0, d.size)
+        for node := d.first; node != nil; node = node.Next </span><span class="cov9" title="12">{
+                res = append(res, node.Val)
+        }</span>
+        <span class="cov3" title="2">return res</span>
+}
+
+func (d *Deque[T]) Reverse() <span class="cov1" title="1">{
+        d.first, d.last = d.last, d.first
+        for node := d.first; node != nil; node = node.Next </span><span class="cov7" title="6">{
+                node.Next, node.Prev = node.Prev, node.Next
+        }</span>
+}
 </pre>
 		
 		<pre class="file" id="file10" style="display: none">package sync
@@ -1654,13 +1756,14 @@ func (tm *AAmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
 func (tm *AAmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
         node := tm.root
         for node != nil </span><span class="cov7" title="33">{
-                if I.LT(key, node.Key) </span><span class="cov5" title="10">{
-                        node = node.L
-                }</span> else<span class="cov6" title="23"> if I.GT(key, node.Key) </span><span class="cov5" title="13">{
-                        node = node.R
-                }</span> else<span class="cov5" title="10"> {
-                        return true
-                }</span>
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov5" title="10">
+                        node = node.L</span>
+                case I.GT(key, node.Key):<span class="cov5" title="13">
+                        node = node.R</span>
+                default:<span class="cov5" title="10">
+                        return true</span>
+                }
         }
         <span class="cov1" title="1">return false</span>
 }
@@ -1668,13 +1771,14 @@ func (tm *AAmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
 func (tm *AAmap[K, V]) Get(key K) V <span class="cov5" title="12">{
         node := tm.root
         for node != nil </span><span class="cov7" title="37">{
-                if I.LT(key, node.Key) </span><span class="cov5" title="12">{
-                        node = node.L
-                }</span> else<span class="cov6" title="25"> if I.GT(key, node.Key) </span><span class="cov5" title="15">{
-                        node = node.R
-                }</span> else<span class="cov5" title="10"> {
-                        return node.Val
-                }</span>
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov5" title="12">
+                        node = node.L</span>
+                case I.GT(key, node.Key):<span class="cov5" title="15">
+                        node = node.R</span>
+                default:<span class="cov5" title="10">
+                        return node.Val</span>
+                }
         }
         <span class="cov2" title="2">panic("algos.tree.(AAmap).Get(key): No any key found, check first")</span>
 }
@@ -1688,13 +1792,14 @@ func (tm *AAmap[K, V]) put(node *AAnode[K, V], key K, val V) *AAnode[K, V] <span
                 tm.size++
                 node = &amp;AAnode[K, V]{Key: key, Val: val, L: nil, R: nil, Lvl: 1}
         }</span> else<span class="cov7" title="29"> {
-                if I.LT(key, node.Key) </span><span class="cov5" title="11">{
-                        node.L = tm.put(node.L, key, val)
-                }</span> else<span class="cov6" title="18"> if I.GT(key, node.Key) </span><span class="cov5" title="15">{
-                        node.R = tm.put(node.R, key, val)
-                }</span> else<span class="cov3" title="3"> {
-                        node.Val = val
-                }</span>
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov5" title="11">
+                        node.L = tm.put(node.L, key, val)</span>
+                case I.GT(key, node.Key):<span class="cov5" title="15">
+                        node.R = tm.put(node.R, key, val)</span>
+                default:<span class="cov3" title="3">
+                        node.Val = val</span>
+                }
         }
         <span class="cov7" title="40">return tm.balance(node)</span>
 }
@@ -1743,11 +1848,12 @@ func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V] <span class=
         if node == nil </span><span class="cov2" title="2">{
                 panic("algos.tree.(AAmap).Del(key): No any key found, check first")</span>
         }
-        <span class="cov5" title="12">if I.LT(key, node.Key) </span><span class="cov1" title="1">{
-                node.L = tm.del(node.L, key)
-        }</span> else<span class="cov5" title="11"> if I.GT(key, node.Key) </span><span class="cov4" title="6">{
-                node.R = tm.del(node.R, key)
-        }</span> else<span class="cov3" title="5"> {
+        <span class="cov5" title="12">switch </span>{
+        case I.LT(key, node.Key):<span class="cov1" title="1">
+                node.L = tm.del(node.L, key)</span>
+        case I.GT(key, node.Key):<span class="cov4" title="6">
+                node.R = tm.del(node.R, key)</span>
+        default:<span class="cov3" title="5">
                 if tm.size &gt; 0 </span><span class="cov3" title="5">{
                         tm.size--
                 }</span>
@@ -1945,15 +2051,15 @@ func (min *MinPQ[K, V]) swimNode(node *PQnode[K, V]) <span class="cov0" title="0
         }</span>
 }
 
-func (min *MinPQ[K, V]) Min() (K, V) <span class="cov0" title="0">{
+func (min *MinPQ[K, V]) Min() (key K, val V) <span class="cov0" title="0">{
         return min.root.Key, min.root.Val
 }</span>
 
-func (min *MinPQ[K, V]) DelMin() (K, V) <span class="cov0" title="0">{
+func (min *MinPQ[K, V]) DelMin() (key K, val V) <span class="cov0" title="0">{
         if min.IsEmpty() </span><span class="cov0" title="0">{
                 panic("algos.tree.(MinPQ).DelMin(): No any node found, tree is empty")</span>
         }
-        <span class="cov0" title="0">key, val := min.root.Key, min.root.Val
+        <span class="cov0" title="0">key, val = min.root.Key, min.root.Val
         if min.size == 1 </span><span class="cov0" title="0">{
                 min.root = nil
                 min.size--
@@ -2106,7 +2212,7 @@ lastRightNodePar lastLeftNode
 CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
 */
 
-//===========================
+// ===========================
 </pre>
 		
 		<pre class="file" id="file13" style="display: none">package tree
@@ -2149,13 +2255,14 @@ func (tm *RBmap[K, V]) IsEmpty() bool <span class="cov7" title="24">{
 func (tm *RBmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
         node := tm.root
         for node != nil </span><span class="cov7" title="33">{
-                if I.LT(key, node.Key) </span><span class="cov6" title="13">{
-                        node = node.L
-                }</span> else<span class="cov6" title="20"> if I.GT(key, node.Key) </span><span class="cov5" title="10">{
-                        node = node.R
-                }</span> else<span class="cov5" title="10"> {
-                        return !node.IsDel
-                }</span>
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov6" title="13">
+                        node = node.L</span>
+                case I.GT(key, node.Key):<span class="cov5" title="10">
+                        node = node.R</span>
+                default:<span class="cov5" title="10">
+                        return !node.IsDel</span>
+                }
         }
         <span class="cov1" title="1">return false</span>
 }
@@ -2163,11 +2270,12 @@ func (tm *RBmap[K, V]) IsKey(key K) bool <span class="cov5" title="11">{
 func (tm *RBmap[K, V]) Get(key K) V <span class="cov5" title="12">{
         node := tm.root
         for node != nil </span><span class="cov8" title="36">{
-                if I.LT(key, node.Key) </span><span class="cov6" title="13">{
-                        node = node.L
-                }</span> else<span class="cov7" title="23"> if I.GT(key, node.Key) </span><span class="cov5" title="12">{
-                        node = node.R
-                }</span> else<span class="cov5" title="11"> {
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov6" title="13">
+                        node = node.L</span>
+                case I.GT(key, node.Key):<span class="cov5" title="12">
+                        node = node.R</span>
+                default:<span class="cov5" title="11">
                         if !node.IsDel </span><span class="cov5" title="10">{
                                 return node.Val
                         }</span>
@@ -2183,11 +2291,12 @@ func (tm *RBmap[K, V]) Del(key K) <span class="cov4" title="6">{
         }
         <span class="cov4" title="5">node := tm.root
         for node != nil </span><span class="cov6" title="15">{
-                if I.LT(key, node.Key) </span><span class="cov2" title="2">{
-                        node = node.L
-                }</span> else<span class="cov6" title="13"> if I.GT(key, node.Key) </span><span class="cov5" title="9">{
-                        node = node.R
-                }</span> else<span class="cov3" title="4"> {
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov2" title="2">
+                        node = node.L</span>
+                case I.GT(key, node.Key):<span class="cov5" title="9">
+                        node = node.R</span>
+                default:<span class="cov3" title="4">
                         node.IsDel = true
                         if tm.size &gt; 0 </span><span class="cov3" title="4">{
                                 tm.size--
@@ -2210,11 +2319,12 @@ func (tm *RBmap[K, V]) put(node *RBnode[K, V], key K, val V) *RBnode[K, V] <span
                 tm.size++
                 node = &amp;RBnode[K, V]{Key: key, Val: val, L: nil, R: nil, IsRed: true, IsDel: false}
         }</span> else<span class="cov7" title="32"> {
-                if I.LT(key, node.Key) </span><span class="cov6" title="16">{
-                        node.L = tm.put(node.L, key, val)
-                }</span> else<span class="cov6" title="16"> if I.GT(key, node.Key) </span><span class="cov5" title="12">{
-                        node.R = tm.put(node.R, key, val)
-                }</span> else<span class="cov3" title="4"> {
+                switch </span>{
+                case I.LT(key, node.Key):<span class="cov6" title="16">
+                        node.L = tm.put(node.L, key, val)</span>
+                case I.GT(key, node.Key):<span class="cov5" title="12">
+                        node.R = tm.put(node.R, key, val)</span>
+                default:<span class="cov3" title="4">
                         node.Val = val
                         if node.IsDel </span><span class="cov1" title="1">{
                                 node.IsDel = false
@@ -2298,7 +2408,7 @@ func (tm *RBmap[K, V]) IsBSTcheck() bool <span class="cov2" title="2">{
         return tm.isbst(tm.root, nil, nil)
 }</span>
 
-func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min *K, max *K) bool <span class="cov8" title="42">{
+func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min, max *K) bool <span class="cov8" title="42">{
         if node == nil </span><span class="cov7" title="22">{
                 return true
         }</span>
@@ -2455,79 +2565,112 @@ func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{
 func LT[T any](i, j T) bool <span class="cov8" title="13">{
         switch ii := any(i).(type) </span>{
         case int:<span class="cov2" title="2">
-                jj := any(j).(int)
-                return ii &lt; jj</span>
+                jj, ok := any(j).(int)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &lt; jj
+                }</span>
         case float64:<span class="cov2" title="2">
-                jj := any(j).(float64)
-                return ii &lt; jj</span>
+                jj, ok := any(j).(float64)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &lt; jj
+                }</span>
         case string:<span class="cov2" title="2">
-                jj := any(j).(string)
-                return ii &lt; jj</span>
+                jj, ok := any(j).(string)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &lt; jj
+                }</span>
         case Comp:<span class="cov2" title="2">
-                jj := any(j).(Comp)
-                return ii.CompareTo(jj) &lt; 0</span>
+                jj, ok := any(j).(Comp)
+                if ok </span><span class="cov2" title="2">{
+                        return ii.CompareTo(jj) &lt; 0
+                }</span>
         case uint:<span class="cov2" title="2">
-                jj := any(j).(uint)
-                return ii &lt; jj</span>
+                jj, ok := any(j).(uint)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &lt; jj
+                }</span>
         case uint32:<span class="cov2" title="2">
-                jj := any(j).(uint32)
-                return ii &lt; jj</span>
-        default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
-                        "Type of args is not processed: arg Type is %T", i))</span>
+                jj, ok := any(j).(uint32)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &lt; jj
+                }</span>
         }
+        <span class="cov1" title="1">panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
+                "Type of args is not processed: arg Type is %T", i))</span>
 }
 
 func GT[T any](i, j T) bool <span class="cov8" title="13">{
         switch ii := any(i).(type) </span>{
         case int:<span class="cov2" title="2">
-                jj := any(j).(int)
-                return ii &gt; jj</span>
+                jj, ok := any(j).(int)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &gt; jj
+                }</span>
         case float64:<span class="cov2" title="2">
-                jj := any(j).(float64)
-                return ii &gt; jj</span>
+                jj, ok := any(j).(float64)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &gt; jj
+                }</span>
         case string:<span class="cov2" title="2">
-                jj := any(j).(string)
-                return ii &gt; jj</span>
+                jj, ok := any(j).(string)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &gt; jj
+                }</span>
         case Comp:<span class="cov2" title="2">
-                jj := any(j).(Comp)
-                return ii.CompareTo(jj) &gt; 0</span>
+                jj, ok := any(j).(Comp)
+                if ok </span><span class="cov2" title="2">{
+                        return ii.CompareTo(jj) &gt; 0
+                }</span>
         case uint:<span class="cov2" title="2">
-                jj := any(j).(uint)
-                return ii &gt; jj</span>
+                jj, ok := any(j).(uint)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &gt; jj
+                }</span>
         case uint32:<span class="cov2" title="2">
-                jj := any(j).(uint32)
-                return ii &gt; jj</span>
-        default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
-                        "Type of args is not processed: arg Type is %T", i))</span>
+                jj, ok := any(j).(uint32)
+                if ok </span><span class="cov2" title="2">{
+                        return ii &gt; jj
+                }</span>
         }
+        <span class="cov1" title="1">panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
+                "Type of args is not processed: arg Type is %T", i))</span>
 }
 
 func EQ[T any](i, j T) bool <span class="cov8" title="13">{
         switch ii := any(i).(type) </span>{
         case int:<span class="cov2" title="2">
-                jj := any(j).(int)
-                return ii == jj</span>
+                jj, ok := any(j).(int)
+                if ok </span><span class="cov2" title="2">{
+                        return ii == jj
+                }</span>
         case float64:<span class="cov2" title="2">
-                jj := any(j).(float64)
-                return ii == jj</span>
+                jj, ok := any(j).(float64)
+                if ok </span><span class="cov2" title="2">{
+                        return ii == jj
+                }</span>
         case string:<span class="cov2" title="2">
-                jj := any(j).(string)
-                return ii == jj</span>
+                jj, ok := any(j).(string)
+                if ok </span><span class="cov2" title="2">{
+                        return ii == jj
+                }</span>
         case Comp:<span class="cov2" title="2">
-                jj := any(j).(Comp)
-                return ii.CompareTo(jj) == 0</span>
+                jj, ok := any(j).(Comp)
+                if ok </span><span class="cov2" title="2">{
+                        return ii.CompareTo(jj) == 0
+                }</span>
         case uint:<span class="cov2" title="2">
-                jj := any(j).(uint)
-                return ii == jj</span>
+                jj, ok := any(j).(uint)
+                if ok </span><span class="cov2" title="2">{
+                        return ii == jj
+                }</span>
         case uint32:<span class="cov2" title="2">
-                jj := any(j).(uint32)
-                return ii == jj</span>
-        default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
-                        "Type of args is not processed: arg Type is %T", i))</span>
+                jj, ok := any(j).(uint32)
+                if ok </span><span class="cov2" title="2">{
+                        return ii == jj
+                }</span>
         }
+        <span class="cov1" title="1">panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
+                "Type of args is not processed: arg Type is %T", i))</span>
 }
 </pre>
 		

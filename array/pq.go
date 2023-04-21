@@ -11,7 +11,7 @@ func swimLT[T any](arr []T, k int) {
 	}
 }
 
-func sinkLT[T any](arr []T, k int, size int) {
+func sinkLT[T any](arr []T, k, size int) {
 	for (2 * k) <= size {
 		j := 2 * k
 		if (j < size) && I.GT(arr[j], arr[j+1]) {
@@ -32,7 +32,7 @@ func swimGT[T any](arr []T, k int) {
 	}
 }
 
-func sinkGT[T any](arr []T, k int, size int) {
+func sinkGT[T any](arr []T, k, size int) {
 	for (2 * k) <= size {
 		j := 2 * k
 		if (j < size) && I.LT(arr[j], arr[j+1]) {
@@ -173,9 +173,9 @@ type LRU[T any] struct {
 	arr []T
 }
 
-func NewLRU[T any](cap int) LRU[T] {
+func NewLRU[T any](size int) LRU[T] {
 	return LRU[T]{
-		arr: make([]T, 0, cap),
+		arr: make([]T, 0, size),
 	}
 }
 
@@ -246,9 +246,9 @@ type MRU[T any] struct {
 	arr []T
 }
 
-func NewMRU[T any](cap int) MRU[T] {
+func NewMRU[T any](size int) MRU[T] {
 	return MRU[T]{
-		arr: make([]T, 0, cap),
+		arr: make([]T, 0, size),
 	}
 }
 

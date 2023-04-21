@@ -90,15 +90,15 @@ func (min *MinPQ[K, V]) swimNode(node *PQnode[K, V]) {
 	}
 }
 
-func (min *MinPQ[K, V]) Min() (K, V) {
+func (min *MinPQ[K, V]) Min() (key K, val V) {
 	return min.root.Key, min.root.Val
 }
 
-func (min *MinPQ[K, V]) DelMin() (K, V) {
+func (min *MinPQ[K, V]) DelMin() (key K, val V) {
 	if min.IsEmpty() {
 		panic("algos.tree.(MinPQ).DelMin(): No any node found, tree is empty")
 	}
-	key, val := min.root.Key, min.root.Val
+	key, val = min.root.Key, min.root.Val
 	if min.size == 1 {
 		min.root = nil
 		min.size--
@@ -251,4 +251,4 @@ lastRightNodePar lastLeftNode
 CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
 */
 
-//===========================
+// ===========================

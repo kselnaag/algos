@@ -17,14 +17,15 @@ func q3sort[T any](arr []T, lo, hi int) {
 	}
 	l, i, v, g := lo, lo+1, arr[lo], hi
 	for i <= g {
-		if I.LT(arr[i], v) {
+		switch {
+		case I.LT(arr[i], v):
 			swap(arr, l, i)
 			l++
 			i++
-		} else if I.GT(arr[i], v) {
+		case I.GT(arr[i], v):
 			swap(arr, i, g)
 			g--
-		} else {
+		default:
 			i++
 		}
 	}
@@ -91,7 +92,7 @@ func MergeSort[T any](arr []T) {
 	mrgsort(aux, arr, 0, alen-1)
 }
 
-func mrgsort[T any](src []T, dst []T, lo, hi int) {
+func mrgsort[T any](src, dst []T, lo, hi int) {
 	if hi <= lo {
 		return
 	}
@@ -106,7 +107,7 @@ func mrgsort[T any](src []T, dst []T, lo, hi int) {
 	merge(src, dst, lo, mid, hi)
 }
 
-func merge[T any](src []T, dst []T, lo, mid, hi int) {
+func merge[T any](src, dst []T, lo, mid, hi int) {
 	if !I.GT(src[mid], src[mid+1]) {
 		copy(dst[lo:hi+1], src[lo:hi+1])
 		return
@@ -190,7 +191,7 @@ func ShellSort[T any](arr []T) {
 				}
 			}
 		}
-		h = h / 3
+		h /= 3
 	}
 }
 
@@ -213,12 +214,13 @@ func BinarySearch[T any](arr []T, elem T) int {
 	for low < high {
 		mid := (low + ((high - low) / 2))
 		val := arr[mid]
-		if I.EQ(val, elem) {
-			return mid
-		} else if I.GT(val, elem) {
+		switch {
+		case I.GT(val, elem):
 			high = mid
-		} else if I.LT(val, elem) {
+		case I.LT(val, elem):
 			low = mid + 1
+		default:
+			return mid
 		}
 	}
 	return -1
@@ -227,7 +229,7 @@ func BinarySearch[T any](arr []T, elem T) int {
 func Shuffle[T any](arr []T) {
 	alen := len(arr)
 	for i := 0; i < alen; i++ {
-		j := rand.Intn(i + 1)
+		j := rand.Intn(i + 1) //nolint:gosec // simple `math.rand` enough for sorting
 		swap(arr, i, j)
 	}
 }

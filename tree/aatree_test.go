@@ -9,51 +9,51 @@ import (
 )
 
 func TestAAtree(t *testing.T) {
-	assert := assert.New(t)
+	asrt := assert.New(t)
 	defer func() {
 		err := recover()
-		assert.Nil(err)
+		asrt.Nil(err)
 	}()
 
 	aatree := tree.NewAAmap[string, int]()
-	assert.Equal(aatree.IsEmpty(), true)
-	assert.Equal(aatree.Size(), 0)
-	assert.Panics(func() { aatree.Del("A") }, "algos.tree.(AAmap).Del(key): the code is not panic when tree is empty")
+	asrt.True(aatree.IsEmpty())
+	asrt.Equal(0, aatree.Size())
+	asrt.Panics(func() { aatree.Del("A") }, "algos.tree.(AAmap).Del(key): the code is not panic when tree is empty")
 
 	arr := []string{"S", "E", "A", "R", "C", "H", "E", "X", "A", "M", "P", "L", "E"} // S E A R C H X M P L
 	for i, el := range arr {
 		aatree.Put(el, i)
 	}
-	assert.Equal(aatree.IsEmpty(), false)
-	assert.Equal(aatree.Size(), 10)
+	asrt.False(aatree.IsEmpty())
+	asrt.Equal(10, aatree.Size())
 
-	assert.Equal(aatree.IsKey("S"), true)
-	assert.Equal(aatree.IsKey("E"), true)
-	assert.Equal(aatree.IsKey("A"), true)
-	assert.Equal(aatree.IsKey("R"), true)
-	assert.Equal(aatree.IsKey("C"), true)
-	assert.Equal(aatree.IsKey("H"), true)
-	assert.Equal(aatree.IsKey("X"), true)
-	assert.Equal(aatree.IsKey("M"), true)
-	assert.Equal(aatree.IsKey("P"), true)
-	assert.Equal(aatree.IsKey("L"), true)
-	assert.Equal(aatree.IsKey("J"), false)
+	asrt.True(aatree.IsKey("S"))
+	asrt.True(aatree.IsKey("E"))
+	asrt.True(aatree.IsKey("A"))
+	asrt.True(aatree.IsKey("R"))
+	asrt.True(aatree.IsKey("C"))
+	asrt.True(aatree.IsKey("H"))
+	asrt.True(aatree.IsKey("X"))
+	asrt.True(aatree.IsKey("M"))
+	asrt.True(aatree.IsKey("P"))
+	asrt.True(aatree.IsKey("L"))
+	asrt.False(aatree.IsKey("J"))
 
-	assert.Equal(aatree.Get("S"), 0)
-	assert.Equal(aatree.Get("E"), 12)
-	assert.Equal(aatree.Get("A"), 8)
-	assert.Equal(aatree.Get("R"), 3)
-	assert.Equal(aatree.Get("C"), 4)
-	assert.Equal(aatree.Get("H"), 5)
-	assert.Equal(aatree.Get("X"), 7)
-	assert.Equal(aatree.Get("M"), 9)
-	assert.Equal(aatree.Get("P"), 10)
-	assert.Equal(aatree.Get("L"), 11)
-	assert.Panics(func() { aatree.Get("J") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
+	asrt.Equal(0, aatree.Get("S"))
+	asrt.Equal(12, aatree.Get("E"))
+	asrt.Equal(8, aatree.Get("A"))
+	asrt.Equal(3, aatree.Get("R"))
+	asrt.Equal(4, aatree.Get("C"))
+	asrt.Equal(5, aatree.Get("H"))
+	asrt.Equal(7, aatree.Get("X"))
+	asrt.Equal(9, aatree.Get("M"))
+	asrt.Equal(10, aatree.Get("P"))
+	asrt.Equal(11, aatree.Get("L"))
+	asrt.Panics(func() { aatree.Get("J") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
 
-	assert.Equal(aatree.IterateKeys(), []string{"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"})
-	assert.Equal(aatree.IsEmpty(), false)
-	assert.Equal(aatree.Size(), 10)
+	asrt.Equal([]string{"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}, aatree.IterateKeys())
+	asrt.False(aatree.IsEmpty())
+	asrt.Equal(10, aatree.Size())
 
 	aatree.PrintTreeCheck()
 	aatree.Del("M")
@@ -62,35 +62,11 @@ func TestAAtree(t *testing.T) {
 	aatree.Del("C")
 	aatree.Del("P")
 	aatree.Put("P", 16)
-	assert.Panics(func() { aatree.Get("M") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
-	assert.Panics(func() { aatree.Del("Z") }, "algos.tree.(RBmap).Del(key): the code is not panic when key is not found")
+	asrt.Panics(func() { aatree.Get("M") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
+	asrt.Panics(func() { aatree.Del("Z") }, "algos.tree.(RBmap).Del(key): the code is not panic when key is not found")
 
-	assert.Equal(aatree.IterateKeys(), []string{"A", "H", "L", "P", "S", "X"})
-	assert.Equal(aatree.IsEmpty(), false)
-	assert.Equal(aatree.Size(), 6)
+	asrt.Equal([]string{"A", "H", "L", "P", "S", "X"}, aatree.IterateKeys())
+	asrt.False(aatree.IsEmpty())
+	asrt.Equal(6, aatree.Size())
 	aatree.PrintTreeCheck()
 }
-
-/*
-func NewAAmap[K I.Ord, V any]() AAmap[K, V]
-func (tm *AAmap[K, V]) Size() int
-func (tm *AAmap[K, V]) IsEmpty() bool
-func (tm *AAmap[K, V]) IsKey(key K) bool
-func (tm *AAmap[K, V]) Get(key K) V
-func (tm *AAmap[K, V]) Put(key K, val V)
-func (tm *AAmap[K, V]) Del(key K)
-func (tm *AAmap[K, V]) IterateKeys() []K
-func (tm *AAmap[K, V]) PrintTreeCheck()
-
-func (tm *AAmap[K, V]) put(node *AAnode[K, V], key K, val V) *AAnode[K, V]
-func (tm *AAmap[K, V]) balance(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) skew(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) split(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) decrLvl(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V]
-func (tm *AAmap[K, V]) min(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) delmin(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) balanceDel(node *AAnode[K, V]) *AAnode[K, V]
-func (tm *AAmap[K, V]) iteratekeys(node *AAnode[K, V], keysarr []K) []K
-func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int)
-*/

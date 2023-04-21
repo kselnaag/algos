@@ -12,10 +12,10 @@ import (
 )
 
 func TestSync(t *testing.T) {
-	assert := assert.New(t)
+	asrt := assert.New(t)
 	defer func() {
 		err := recover()
-		assert.Nil(err)
+		asrt.Nil(err)
 	}()
 
 	t.Run("Future", func(t *testing.T) {
@@ -24,45 +24,45 @@ func TestSync(t *testing.T) {
 			time.Sleep(10 * time.Millisecond)
 			return I.NewResult(42)
 		})
-		assert.Equal(false, fut.IsCompleted())
+		asrt.False(fut.IsCompleted())
 		r := make(chan int)
 		fut.OnComplete(func(i I.Result[int]) {
 			r <- i.Unbox(func() int { panic("algos.sync.(Future): Result can not be Unboxed") })
 		})
-		assert.Equal(42, <-r)
-		assert.Equal(42, fut.Value().Res(func() int { panic("algos.sync.(Future): Result can not be Resed") }))
-		assert.Equal(true, fut.IsCompleted())
-		assert.Equal("Result(42)", fut.ToString())
+		asrt.Equal(42, <-r)
+		asrt.Equal(42, fut.Value().Res(func() int { panic("algos.sync.(Future): Result can not be Resed") }))
+		asrt.True(fut.IsCompleted())
+		asrt.Equal("Result(42)", fut.ToString())
 
 		err := S.NewFuture(func() I.Result[int] {
 			time.Sleep(10 * time.Millisecond)
 			return I.NewResultError[int](testerror)
 		})
-		assert.Equal(false, err.IsCompleted())
+		asrt.False(err.IsCompleted())
 		err.OnComplete(func(i I.Result[int]) {
-			assert.Panics(func() {
+			asrt.Panics(func() {
 				i.Unbox(func() int { panic("algos.sync.(Future): Result can not be Unboxed") })
 			})
 		})
-		assert.Equal(testerror, err.Value().Err(func() error { panic("algos.sync.(Future): Result can not be Resed") }))
-		assert.Equal(true, err.IsCompleted())
-		assert.Equal("Error(future error)", err.ToString())
+		asrt.Equal(testerror, err.Value().Err(func() error { panic("algos.sync.(Future): Result can not be Resed") }))
+		asrt.True(err.IsCompleted())
+		asrt.Equal("Error(future error)", err.ToString())
 
 		wrong := S.NewFuture(func() I.Result[int] { return I.Result[int]{} })
-		assert.Equal(false, wrong.IsCompleted())
+		asrt.False(wrong.IsCompleted())
 		wrong.OnComplete(func(i I.Result[int]) {
-			assert.Panics(func() {
+			asrt.Panics(func() {
 				i.Unbox(func() int { panic("algos.sync.(Future): Result can not be Unboxed") })
 			})
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			e := wrong.Value().Err(func() error { panic("algos.sync.(Future): Result can not be Resed") })
 			if e != nil {
 				panic("algos.sync.(Future): Result can not be Resed")
 			}
 		})
-		assert.Equal(true, wrong.IsCompleted())
-		assert.Panics(func() { wrong.ToString() })
+		asrt.True(wrong.IsCompleted())
+		asrt.Panics(func() { wrong.ToString() })
 
 	})
 	t.Run("Promise", func(t *testing.T) {
@@ -71,28 +71,28 @@ func TestSync(t *testing.T) {
 			time.Sleep(10 * time.Millisecond)
 			return I.NewResult(42)
 		})
-		assert.Equal(false, prom.IsCompleted())
+		asrt.False(prom.IsCompleted())
 		prom.OnComplete(func(i I.Result[int]) {
 			d <- i.Unbox(func() int { panic("algos.sync.(Promise): Result can not be Unboxed") })
 		})
-		assert.Equal(42, <-d)
-		assert.Equal(42, prom.Value().Res(func() int { panic("algos.sync.(Promise): Result can not be Resed") }))
-		assert.Equal(true, prom.IsCompleted())
-		assert.Equal("Result(42)", prom.ToString())
+		asrt.Equal(42, <-d)
+		asrt.Equal(42, prom.Value().Res(func() int { panic("algos.sync.(Promise): Result can not be Resed") }))
+		asrt.True(prom.IsCompleted())
+		asrt.Equal("Result(42)", prom.ToString())
 
 		testerror := errors.New("algos.types.(Future): callback is timed out")
 		morp := S.NewPromise(50, func() I.Result[int] {
 			time.Sleep(100 * time.Millisecond)
 			return I.NewResult(42)
 		})
-		assert.Equal(false, morp.IsCompleted())
+		asrt.False(morp.IsCompleted())
 		morp.OnComplete(func(i I.Result[int]) {
-			assert.Panics(func() {
+			asrt.Panics(func() {
 				i.Unbox(func() int { panic("algos.sync.(Promise): Result can not be Unboxed") })
 			})
 		})
-		assert.Equal(testerror, morp.Value().Err(func() error { panic("algos.sync.(Promise): Result can not be Resed") }))
-		assert.Equal(true, morp.IsCompleted())
-		assert.Equal("Error(algos.types.(Future): callback is timed out)", morp.ToString())
+		asrt.Equal(testerror, morp.Value().Err(func() error { panic("algos.sync.(Promise): Result can not be Resed") }))
+		asrt.True(morp.IsCompleted())
+		asrt.Equal("Error(algos.types.(Future): callback is timed out)", morp.ToString())
 	})
 }

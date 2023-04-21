@@ -38,11 +38,12 @@ func (tm *AAmap[K, V]) IsEmpty() bool {
 func (tm *AAmap[K, V]) IsKey(key K) bool {
 	node := tm.root
 	for node != nil {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node = node.L
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node = node.R
-		} else {
+		default:
 			return true
 		}
 	}
@@ -52,11 +53,12 @@ func (tm *AAmap[K, V]) IsKey(key K) bool {
 func (tm *AAmap[K, V]) Get(key K) V {
 	node := tm.root
 	for node != nil {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node = node.L
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node = node.R
-		} else {
+		default:
 			return node.Val
 		}
 	}
@@ -72,11 +74,12 @@ func (tm *AAmap[K, V]) put(node *AAnode[K, V], key K, val V) *AAnode[K, V] {
 		tm.size++
 		node = &AAnode[K, V]{Key: key, Val: val, L: nil, R: nil, Lvl: 1}
 	} else {
-		if I.LT(key, node.Key) {
+		switch {
+		case I.LT(key, node.Key):
 			node.L = tm.put(node.L, key, val)
-		} else if I.GT(key, node.Key) {
+		case I.GT(key, node.Key):
 			node.R = tm.put(node.R, key, val)
-		} else {
+		default:
 			node.Val = val
 		}
 	}
@@ -127,11 +130,12 @@ func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V] {
 	if node == nil {
 		panic("algos.tree.(AAmap).Del(key): No any key found, check first")
 	}
-	if I.LT(key, node.Key) {
+	switch {
+	case I.LT(key, node.Key):
 		node.L = tm.del(node.L, key)
-	} else if I.GT(key, node.Key) {
+	case I.GT(key, node.Key):
 		node.R = tm.del(node.R, key)
-	} else {
+	default:
 		if tm.size > 0 {
 			tm.size--
 		}

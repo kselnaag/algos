@@ -63,77 +63,110 @@ func ConvToByteArr[T Ord](mess T) []byte {
 func LT[T any](i, j T) bool {
 	switch ii := any(i).(type) {
 	case int:
-		jj := any(j).(int)
-		return ii < jj
+		jj, ok := any(j).(int)
+		if ok {
+			return ii < jj
+		}
 	case float64:
-		jj := any(j).(float64)
-		return ii < jj
+		jj, ok := any(j).(float64)
+		if ok {
+			return ii < jj
+		}
 	case string:
-		jj := any(j).(string)
-		return ii < jj
+		jj, ok := any(j).(string)
+		if ok {
+			return ii < jj
+		}
 	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) < 0
+		jj, ok := any(j).(Comp)
+		if ok {
+			return ii.CompareTo(jj) < 0
+		}
 	case uint:
-		jj := any(j).(uint)
-		return ii < jj
+		jj, ok := any(j).(uint)
+		if ok {
+			return ii < jj
+		}
 	case uint32:
-		jj := any(j).(uint32)
-		return ii < jj
-	default:
-		panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
-			"Type of args is not processed: arg Type is %T", i))
+		jj, ok := any(j).(uint32)
+		if ok {
+			return ii < jj
+		}
 	}
+	panic(fmt.Sprintf("algos.types.LT[T any](i, j T): "+
+		"Type of args is not processed: arg Type is %T", i))
 }
 
 func GT[T any](i, j T) bool {
 	switch ii := any(i).(type) {
 	case int:
-		jj := any(j).(int)
-		return ii > jj
+		jj, ok := any(j).(int)
+		if ok {
+			return ii > jj
+		}
 	case float64:
-		jj := any(j).(float64)
-		return ii > jj
+		jj, ok := any(j).(float64)
+		if ok {
+			return ii > jj
+		}
 	case string:
-		jj := any(j).(string)
-		return ii > jj
+		jj, ok := any(j).(string)
+		if ok {
+			return ii > jj
+		}
 	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) > 0
+		jj, ok := any(j).(Comp)
+		if ok {
+			return ii.CompareTo(jj) > 0
+		}
 	case uint:
-		jj := any(j).(uint)
-		return ii > jj
+		jj, ok := any(j).(uint)
+		if ok {
+			return ii > jj
+		}
 	case uint32:
-		jj := any(j).(uint32)
-		return ii > jj
-	default:
-		panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
-			"Type of args is not processed: arg Type is %T", i))
+		jj, ok := any(j).(uint32)
+		if ok {
+			return ii > jj
+		}
 	}
+	panic(fmt.Sprintf("algos.types.GT[T any](i, j T): "+
+		"Type of args is not processed: arg Type is %T", i))
 }
 
 func EQ[T any](i, j T) bool {
 	switch ii := any(i).(type) {
 	case int:
-		jj := any(j).(int)
-		return ii == jj
+		jj, ok := any(j).(int)
+		if ok {
+			return ii == jj
+		}
 	case float64:
-		jj := any(j).(float64)
-		return ii == jj
+		jj, ok := any(j).(float64)
+		if ok {
+			return ii == jj
+		}
 	case string:
-		jj := any(j).(string)
-		return ii == jj
+		jj, ok := any(j).(string)
+		if ok {
+			return ii == jj
+		}
 	case Comp:
-		jj := any(j).(Comp)
-		return ii.CompareTo(jj) == 0
+		jj, ok := any(j).(Comp)
+		if ok {
+			return ii.CompareTo(jj) == 0
+		}
 	case uint:
-		jj := any(j).(uint)
-		return ii == jj
+		jj, ok := any(j).(uint)
+		if ok {
+			return ii == jj
+		}
 	case uint32:
-		jj := any(j).(uint32)
-		return ii == jj
-	default:
-		panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
-			"Type of args is not processed: arg Type is %T", i))
+		jj, ok := any(j).(uint32)
+		if ok {
+			return ii == jj
+		}
 	}
+	panic(fmt.Sprintf("algos.types.EQ[T any](i, j T): "+
+		"Type of args is not processed: arg Type is %T", i))
 }

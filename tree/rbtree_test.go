@@ -9,84 +9,73 @@ import (
 )
 
 func TestRBtree(t *testing.T) {
-	assert := assert.New(t)
+	asrt := assert.New(t)
 	defer func() {
 		err := recover()
-		assert.Nil(err)
+		asrt.Nil(err)
 	}()
 
 	rbtree := tree.NewRBmap[string, int]()
-	assert.Equal(rbtree.IsEmpty(), true)
-	assert.Equal(rbtree.Size(), 0)
-	assert.Panics(func() { rbtree.Del("A") }, "algos.tree.(RBmap).Del(key): the code is not panic when tree is empty")
+	asrt.True(rbtree.IsEmpty())
+	asrt.Equal(0, rbtree.Size())
+	asrt.Panics(func() { rbtree.Del("A") }, "algos.tree.(RBmap).Del(key): the code is not panic when tree is empty")
 
 	arr := []string{"S", "E", "A", "R", "C", "H", "E", "X", "A", "M", "P", "L", "E"} // S E A R C H X M P L
 	for i, el := range arr {
 		rbtree.Put(el, i)
 	}
-	assert.Equal(rbtree.IsEmpty(), false)
-	assert.Equal(rbtree.Size(), 10)
+	asrt.False(rbtree.IsEmpty())
+	asrt.Equal(10, rbtree.Size())
 
-	assert.Equal(rbtree.IsKey("S"), true)
-	assert.Equal(rbtree.IsKey("E"), true)
-	assert.Equal(rbtree.IsKey("A"), true)
-	assert.Equal(rbtree.IsKey("R"), true)
-	assert.Equal(rbtree.IsKey("C"), true)
-	assert.Equal(rbtree.IsKey("H"), true)
-	assert.Equal(rbtree.IsKey("X"), true)
-	assert.Equal(rbtree.IsKey("M"), true)
-	assert.Equal(rbtree.IsKey("P"), true)
-	assert.Equal(rbtree.IsKey("L"), true)
-	assert.Equal(rbtree.IsKey("J"), false)
+	asrt.True(rbtree.IsKey("S"))
+	asrt.True(rbtree.IsKey("E"))
+	asrt.True(rbtree.IsKey("A"))
+	asrt.True(rbtree.IsKey("R"))
+	asrt.True(rbtree.IsKey("C"))
+	asrt.True(rbtree.IsKey("H"))
+	asrt.True(rbtree.IsKey("X"))
+	asrt.True(rbtree.IsKey("M"))
+	asrt.True(rbtree.IsKey("P"))
+	asrt.True(rbtree.IsKey("L"))
+	asrt.False(rbtree.IsKey("J"))
 
-	assert.Equal(rbtree.Get("S"), 0)
-	assert.Equal(rbtree.Get("E"), 12)
-	assert.Equal(rbtree.Get("A"), 8)
-	assert.Equal(rbtree.Get("R"), 3)
-	assert.Equal(rbtree.Get("C"), 4)
-	assert.Equal(rbtree.Get("H"), 5)
-	assert.Equal(rbtree.Get("X"), 7)
-	assert.Equal(rbtree.Get("M"), 9)
-	assert.Equal(rbtree.Get("P"), 10)
-	assert.Equal(rbtree.Get("L"), 11)
-	assert.Panics(func() { rbtree.Get("J") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
+	asrt.Equal(0, rbtree.Get("S"))
+	asrt.Equal(12, rbtree.Get("E"))
+	asrt.Equal(8, rbtree.Get("A"))
+	asrt.Equal(3, rbtree.Get("R"))
+	asrt.Equal(4, rbtree.Get("C"))
+	asrt.Equal(5, rbtree.Get("H"))
+	asrt.Equal(7, rbtree.Get("X"))
+	asrt.Equal(9, rbtree.Get("M"))
+	asrt.Equal(10, rbtree.Get("P"))
+	asrt.Equal(11, rbtree.Get("L"))
+	asrt.Panics(func() { rbtree.Get("J") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
 
-	assert.Equal(rbtree.IsBSTcheck(), true)
-	assert.Equal(rbtree.BSTheightCheck(), 3)
-	assert.Equal(rbtree.IsRedBlackCheck(), true)
-	assert.Equal(rbtree.IsBalancedCheck(), true)
+	asrt.True(rbtree.IsBSTcheck())
+	asrt.Equal(3, rbtree.BSTheightCheck())
+	asrt.True(rbtree.IsRedBlackCheck())
+	asrt.True(rbtree.IsBalancedCheck())
 
-	assert.Equal(rbtree.IterateKeys(), []string{"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"})
-	assert.Equal(rbtree.IsEmpty(), false)
-	assert.Equal(rbtree.Size(), 10)
+	asrt.Equal([]string{"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}, rbtree.IterateKeys())
+	asrt.False(rbtree.IsEmpty())
+	asrt.Equal(10, rbtree.Size())
 
 	rbtree.Del("R")
 	rbtree.Del("S")
 	rbtree.Del("X")
 	rbtree.Del("P")
 	rbtree.Put("P", 16)
-	assert.Panics(func() { rbtree.Get("X") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
-	assert.Panics(func() { rbtree.Del("Z") }, "algos.tree.(RBmap).Del(key): the code is not panic when key is not found")
+	asrt.Panics(func() { rbtree.Get("X") }, "algos.tree.(RBmap).Get(key): the code is not panic when key is not found")
+	asrt.Panics(func() { rbtree.Del("Z") }, "algos.tree.(RBmap).Del(key): the code is not panic when key is not found")
 
-	assert.Equal(rbtree.IterateKeys(), []string{"A", "C", "E", "H", "L", "M", "P"})
-	assert.Equal(rbtree.IsEmpty(), false)
-	assert.Equal(rbtree.Size(), 7)
+	asrt.Equal([]string{"A", "C", "E", "H", "L", "M", "P"}, rbtree.IterateKeys())
+	asrt.False(rbtree.IsEmpty())
+	asrt.Equal(7, rbtree.Size())
 
-	assert.Equal(rbtree.IsBSTcheck(), true)
-	assert.Equal(rbtree.BSTheightCheck(), 3)
-	assert.Equal(rbtree.IsRedBlackCheck(), true)
-	assert.Equal(rbtree.IsBalancedCheck(), true)
+	asrt.True(rbtree.IsBSTcheck())
+	asrt.Equal(3, rbtree.BSTheightCheck())
+	asrt.True(rbtree.IsRedBlackCheck())
+	asrt.True(rbtree.IsBalancedCheck())
 
 	rbtree.PrintTreeCheck()
 }
-
-/*
-NewRBmap Size IsEmpty IsKey Get Put
-Del IterateKeys
-
-put iteratekeys printtree isbalanced isredblack bstheight isbst
-balance rotateLeft rotateRight flipColors
-
-IsBSTcheck IsRedBlackCheck IsBalancedCheck
-BSTheightCheck PrintTreeCheck
-*/

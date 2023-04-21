@@ -10,27 +10,27 @@ import (
 )
 
 func TestTypes(t *testing.T) {
-	assert := assert.New(t)
+	asrt := assert.New(t)
 	defer func() {
 		err := recover()
-		assert.Nil(err)
+		asrt.Nil(err)
 	}()
 
 	t.Run("Option", func(t *testing.T) {
 		some := I.NewOptionSome(42)
 		none := I.NewOptionNone[int]()
-		assert.Equal(some.IsDefined(), true)
-		assert.Equal(none.IsDefined(), false)
-		assert.Equal(some.Unbox(func() int {
+		asrt.True(some.IsDefined())
+		asrt.False(none.IsDefined())
+		asrt.Equal(42, some.Unbox(func() int {
 			panic("algos.types.(Option): Option can not be Unboxed")
-		}), 42)
-		assert.Panics(func() {
+		}))
+		asrt.Panics(func() {
 			none.Unbox(func() int {
 				panic("algos.types.(Option): Option can not be Unboxed")
 			})
 		})
-		assert.Equal(some.ToString(), "Some(42)")
-		assert.Equal(none.ToString(), "None")
+		asrt.Equal("Some(42)", some.ToString())
+		asrt.Equal("None", none.ToString())
 
 	})
 	t.Run("Either", func(t *testing.T) {
@@ -38,50 +38,50 @@ func TestTypes(t *testing.T) {
 		right := I.NewEitherRight[int]("string")
 		wrong := I.Either[int, string]{}
 
-		assert.Equal(left.IsLeft(), true)
-		assert.Equal(left.IsRight(), false)
-		assert.Equal(right.IsLeft(), false)
-		assert.Equal(right.IsRight(), true)
-		assert.Panics(func() { wrong.IsLeft() })
-		assert.Panics(func() { wrong.IsRight() })
+		asrt.True(left.IsLeft())
+		asrt.False(left.IsRight())
+		asrt.False(right.IsLeft())
+		asrt.True(right.IsRight())
+		asrt.Panics(func() { wrong.IsLeft() })
+		asrt.Panics(func() { wrong.IsRight() })
 
-		assert.Equal(left.ValLeft(), I.NewOptionSome(42))
-		assert.Equal(left.ValRight(), I.NewOptionNone[string]())
-		assert.Equal(right.ValLeft(), I.NewOptionNone[int]())
-		assert.Equal(right.ValRight(), I.NewOptionSome("string"))
-		assert.Panics(func() { wrong.ValLeft() })
-		assert.Panics(func() { wrong.ValRight() })
+		asrt.Equal(I.NewOptionSome(42), left.ValLeft())
+		asrt.Equal(I.NewOptionNone[string](), left.ValRight())
+		asrt.Equal(I.NewOptionNone[int](), right.ValLeft())
+		asrt.Equal(I.NewOptionSome("string"), right.ValRight())
+		asrt.Panics(func() { wrong.ValLeft() })
+		asrt.Panics(func() { wrong.ValRight() })
 
-		assert.Equal(left.Left(func() int {
-			panic("algos.types.(Either): Either can not be Lefted")
-		}), 42)
-		assert.Panics(func() {
+		asrt.Equal(42, left.Left(func() int {
+			panic("algos.types.(Either): Either can not be Left")
+		}))
+		asrt.Panics(func() {
 			left.Right(func() string {
-				panic("algos.types.(Either): Either can not be Righted")
+				panic("algos.types.(Either): Either can not be Right")
 			})
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			right.Left(func() int {
-				panic("algos.types.(Either): Either can not be Lefted")
+				panic("algos.types.(Either): Either can not be Left")
 			})
 		})
-		assert.Equal(right.Right(func() string {
-			panic("algos.types.(Either): Either can not be Righted")
-		}), "string")
-		assert.Panics(func() {
+		asrt.Equal("string", right.Right(func() string {
+			panic("algos.types.(Either): Either can not be Right")
+		}))
+		asrt.Panics(func() {
 			wrong.Left(func() int {
-				panic("algos.types.(Either): Either can not be Lefted")
+				panic("algos.types.(Either): Either can not be Left")
 			})
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			wrong.Right(func() string {
-				panic("algos.types.(Either): Either can not be Righted")
+				panic("algos.types.(Either): Either can not be Right")
 			})
 		})
 
-		assert.Equal(left.ToString(), "Left(42)")
-		assert.Equal(right.ToString(), "Right(string)")
-		assert.Panics(func() { wrong.ToString() })
+		asrt.Equal("Left(42)", left.ToString())
+		asrt.Equal("Right(string)", right.ToString())
+		asrt.Panics(func() { wrong.ToString() })
 	})
 	t.Run("Result", func(t *testing.T) {
 		testerror := errors.New("test error")
@@ -89,51 +89,51 @@ func TestTypes(t *testing.T) {
 		err := I.NewResultError[int](testerror)
 		wrong := I.Result[int]{}
 
-		assert.Equal(result.IsErr(), false)
-		assert.Equal(result.IsRes(), true)
-		assert.Equal(err.IsErr(), true)
-		assert.Equal(err.IsRes(), false)
-		assert.Panics(func() { wrong.IsErr() })
-		assert.Panics(func() { wrong.IsRes() })
+		asrt.False(result.IsErr())
+		asrt.True(result.IsRes())
+		asrt.True(err.IsErr())
+		asrt.False(err.IsRes())
+		asrt.Panics(func() { wrong.IsErr() })
+		asrt.Panics(func() { wrong.IsRes() })
 
-		assert.Equal(result.ValErr(), I.NewOptionNone[error]())
-		assert.Equal(result.ValRes(), I.NewOptionSome(42))
-		assert.Equal(err.ValErr(), I.NewOptionSome(testerror))
-		assert.Equal(err.ValRes(), I.NewOptionNone[int]())
-		assert.Panics(func() { wrong.ValErr() })
-		assert.Panics(func() { wrong.ValRes() })
+		asrt.Equal(I.NewOptionNone[error](), result.ValErr())
+		asrt.Equal(I.NewOptionSome(42), result.ValRes())
+		asrt.Equal(I.NewOptionSome(testerror), err.ValErr())
+		asrt.Equal(I.NewOptionNone[int](), err.ValRes())
+		asrt.Panics(func() { wrong.ValErr() })
+		asrt.Panics(func() { wrong.ValRes() })
 
-		assert.Equal(result.Res(func() int { panic("algos.types.(Result): Result can not be Resed") }), 42)
-		assert.Panics(func() {
+		asrt.Equal(42, result.Res(func() int { panic("algos.types.(Result): Result can not be Resed") }))
+		asrt.Panics(func() {
 			e := result.Err(func() error { panic("algos.types.(Result): Result can not be Erred") })
 			if e != nil {
 				panic("algos.types.(Result): Result can not be Erred")
 			}
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			err.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
 		})
-		assert.Equal(err.Err(func() error { panic("algos.types.(Result): Result can not be Erred") }), testerror)
-		assert.Panics(func() {
+		asrt.Equal(testerror, err.Err(func() error { panic("algos.types.(Result): Result can not be Erred") }))
+		asrt.Panics(func() {
 			wrong.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			e := wrong.Err(func() error { panic("algos.types.(Result): Result can not be Erred") })
 			if e != nil {
 				panic("algos.types.(Result): Result can not be Erred")
 			}
 		})
 
-		assert.Equal(result.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") }), 42)
-		assert.Panics(func() {
+		asrt.Equal(42, result.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") }))
+		asrt.Panics(func() {
 			err.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") })
 		})
-		assert.Panics(func() {
+		asrt.Panics(func() {
 			wrong.Unbox(func() int { panic("algos.types.(Result): Result can not be Unboxed") })
 		})
 
-		assert.Equal(result.ToString(), "Result(42)")
-		assert.Equal(err.ToString(), "Error(test error)")
-		assert.Panics(func() { wrong.ToString() })
+		asrt.Equal("Result(42)", result.ToString())
+		asrt.Equal("Error(test error)", err.ToString())
+		asrt.Panics(func() { wrong.ToString() })
 	})
 }

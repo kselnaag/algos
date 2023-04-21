@@ -144,3 +144,103 @@ func (q *Queue[T]) Reverse() {
 	q.last = q.first
 	q.first = Reverse(q.first)
 }
+
+// ===========================
+type Dnode[T any] struct {
+	Val  T
+	Prev *Dnode[T]
+	Next *Dnode[T]
+}
+
+type Deque[T any] struct {
+	first *Dnode[T]
+	last  *Dnode[T]
+	size  int
+}
+
+func NewDeque[T any]() Deque[T] {
+	return Deque[T]{
+		first: nil,
+		last:  nil,
+		size:  0,
+	}
+}
+
+func (d *Deque[T]) Size() int {
+	return d.size
+}
+
+func (d *Deque[T]) IsEmpty() bool {
+	return d.Size() == 0
+}
+
+func (d *Deque[T]) Front() T {
+	return d.first.Val
+}
+
+func (d *Deque[T]) Back() T {
+	return d.last.Val
+}
+
+func (d *Deque[T]) PushFront(val T) {
+	newnode := &Dnode[T]{Val: val, Prev: nil, Next: d.first}
+	if d.size == 0 {
+		d.last = newnode
+	} else {
+		d.first.Prev = newnode
+	}
+	d.first = newnode
+	d.size++
+}
+
+func (d *Deque[T]) PopFront() T {
+	val := d.first.Val
+	if d.size == 1 {
+		d.last = nil
+		d.first = nil
+	} else {
+		d.first = d.first.Next
+		d.first.Prev = nil
+	}
+	d.size--
+	return val
+}
+
+func (d *Deque[T]) PushBack(val T) {
+	newnode := &Dnode[T]{Val: val, Prev: d.last, Next: nil}
+	if d.size == 0 {
+		d.first = newnode
+	} else {
+		d.last.Next = newnode
+	}
+	d.last = newnode
+	d.size++
+}
+
+func (d *Deque[T]) PopBack() T {
+	val := d.last.Val
+	if d.size == 1 {
+		d.last = nil
+		d.first = nil
+	} else {
+		d.last = d.last.Prev
+		d.last.Next = nil
+	}
+	d.size--
+	return val
+}
+
+func (d *Deque[T]) Iterate() []T {
+	res := make([]T, 0, d.size)
+	for node := d.first; node != nil; node = node.Next {
+		res = append(res, node.Val)
+	}
+	return res
+}
+
+func (d *Deque[T]) Reverse() {
+	d.first, d.last = d.last, d.first
+	for node := d.first; node != nil; node = node.Next {
+		node.Next, node.Prev = node.Prev, node.Next
+	}
+}

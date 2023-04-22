@@ -136,5 +136,8 @@ func TestList(t *testing.T) {
 		asrt.Equal(134, deq.PopBack())
 		asrt.True(deq.IsEmpty())
 		asrt.Equal(0, deq.Size())
+
+		asrt.Panics(func() { deq.PopFront() }, "algos.list.(Deque).PopFront():  the code is not panic when structure is empty")
+		asrt.Panics(func() { deq.PopBack() }, "algos.list.(Deque).PopBack():  the code is not panic when structure is empty")
 	})
 }

@@ -12,18 +12,16 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int {
-	var this, that int
-	compFactor := func(st TestStruct) int {
-		return st.A + st.B
-	}
-	switch objComp := obj.(type) {
-	case *TestStruct:
-		this = compFactor(s)
-		that = compFactor(*objComp)
-	default:
+	objComp, ok := obj.(*TestStruct)
+	if !ok {
 		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
 			"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
+	compFactor := func(st TestStruct) int {
+		return st.A + st.B
+	}
+	this := compFactor(s)
+	that := compFactor(*objComp)
 	switch {
 	case this < that:
 		return -1

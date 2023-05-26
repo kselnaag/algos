@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/amath/math.go (97.9%)</option>
+				<option value="file0">github.com/kselnaag/algos/amath/math.go (97.8%)</option>
 				
 				<option value="file1">github.com/kselnaag/algos/array/func.go (100.0%)</option>
 				
@@ -184,14 +184,6 @@ func Sqrt(c float64) float64 <span class="cov3" title="6">{
         <span class="cov3" title="4">return t</span>
 }
 
-func Abs[T I.Signed | I.Float](val T) T <span class="cov7" title="60">{
-        if val &lt; 0 </span><span class="cov3" title="6">{
-                return val * (-1)
-        }</span> else<span class="cov7" title="54"> {
-                return val
-        }</span>
-}
-
 func IsPrime(n int) bool <span class="cov4" title="9">{
         if n &lt; 2 </span><span class="cov2" title="3">{
                 return false
@@ -214,20 +206,23 @@ func Gcd(p, q int) int <span class="cov4" title="10">{
         return Gcd(q, r)</span>
 }
 
+func Abs[T I.Signed | I.Float](val T) T <span class="cov7" title="60">{
+        return Ternar((val &lt; 0), (-1 * val), val)
+}</span>
+
 func Min[T I.Ord](x, y T) T <span class="cov4" title="9">{
-        if x &lt; y </span><span class="cov3" title="4">{
-                return x
-        }</span> else<span class="cov3" title="5"> {
-                return y
-        }</span>
-}
+        return Ternar((x &lt; y), x, y)
+}</span>
 
 func Max[T I.Ord](x, y T) T <span class="cov4" title="9">{
-        if x &gt; y </span><span class="cov3" title="4">{
-                return x
-        }</span> else<span class="cov3" title="5"> {
-                return y
+        return Ternar((x &gt; y), x, y)
+}</span>
+
+func Ternar[T any](cond bool, a, b T) T <span class="cov8" title="86">{
+        if cond </span><span class="cov5" title="18">{
+                return a
         }</span>
+        <span class="cov7" title="68">return b</span>
 }
 </pre>
 		
@@ -723,25 +718,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="291">{
-        if hi &lt;= lo </span><span class="cov6" title="167">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="293">{
+        if hi &lt;= lo </span><span class="cov6" title="168">{
                 return
         }</span>
-        <span class="cov6" title="124">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="465">{
+        <span class="cov6" title="125">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="443">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="233">
+                case I.LT(arr[i], v):<span class="cov7" title="238">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="232">
+                case I.GT(arr[i], v):<span class="cov6" title="205">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="124">q3sort(arr, lo, l-1)
+        <span class="cov6" title="125">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -777,21 +772,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov7" title="226">{
+        for </span><span class="cov6" title="191">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="226">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="191">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="226">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="191">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="184">swap(arr, i, j)</span>
+                <span class="cov6" title="149">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -910,10 +905,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1577">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1245">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1608">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1272">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="332"> {
+                        }</span> else<span class="cov7" title="336"> {
                                 break</span>
                         }
                 }
@@ -973,7 +968,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3333">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3303">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1571,7 +1566,7 @@ func (d *Deque[T]) PushFront(val T) <span class="cov4" title="3">{
         d.size++</span>
 }
 
-func (d *Deque[T]) PopFront() T <span class="cov4" title="3">{
+func (d *Deque[T]) PopFront() T <span class="cov5" title="4">{
         val := d.first.Val
         if d.size == 1 </span><span class="cov0" title="0">{
                 d.last = nil
@@ -1595,7 +1590,7 @@ func (d *Deque[T]) PushBack(val T) <span class="cov4" title="3">{
         d.size++</span>
 }
 
-func (d *Deque[T]) PopBack() T <span class="cov4" title="3">{
+func (d *Deque[T]) PopBack() T <span class="cov5" title="4">{
         val := d.last.Val
         if d.size == 1 </span><span class="cov1" title="1">{
                 d.last = nil
@@ -2514,19 +2509,17 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int <span class="cov6" title="6">{
-        var this, that int
-        compFactor := func(st TestStruct) int </span><span class="cov8" title="12">{
-                return st.A + st.B
-        }</span>
-        <span class="cov6" title="6">switch objComp := obj.(type) </span>{
-        case *TestStruct:<span class="cov6" title="6">
-                this = compFactor(s)
-                that = compFactor(*objComp)</span>
-        default:<span class="cov0" title="0">
+        objComp, ok := obj.(*TestStruct)
+        if !ok </span><span class="cov0" title="0">{
                 panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
                         "Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
         }
-        <span class="cov6" title="6">switch </span>{
+        <span class="cov6" title="6">compFactor := func(st TestStruct) int </span><span class="cov8" title="12">{
+                return st.A + st.B
+        }</span>
+        <span class="cov6" title="6">this := compFactor(s)
+        that := compFactor(*objComp)
+        switch </span>{
         case this &lt; that:<span class="cov4" title="3">
                 return -1</span>
         case this &gt; that:<span class="cov2" title="2">

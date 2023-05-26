@@ -14,14 +14,14 @@
 ----
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/myGophers.jpg" title="#DIY #GENERICS #ERRORS" alt="#DIY #GENERICS #ERRORS"/>
+  <img src="./pics/myGophers.jpg" title="#DIY #GENERICS #ERRORS" alt="#DIY #GENERICS #ERRORS"/>
 </p>
 
 This is the hand-made algorithms and data-structures module with go generics. It has main abstractions based on Robert Sedgewick "Algorithms" book and his Prinestone video course. There is implementation of basic versions of arrays, lists, trees, tries, graphs and some algos to work with them.
 
 ## **Types and func scheme**
 <p align="center">
-  <img src="https://raw.githubusercontent.com/kselnaag/algos/master/pics/algos.png" title="Types and func scheme" alt="Types and func scheme"/>
+  <img src="./pics/algos.png" title="Types and func scheme" alt="Types and func scheme"/>
 </p>
 
 ## **Motivation:**
@@ -40,18 +40,16 @@ type TestStruct struct {
 }
 
 func (s TestStruct) CompareTo(obj Comp) int {
-	var this, that int
-	compFactor := func(st TestStruct) int {
-		return st.A + st.B
-	}
-	switch objComp := obj.(type) {
-	case *TestStruct:
-		this = compFactor(s)
-		that = compFactor(*objComp)
-	default:
+	objComp, ok := obj.(*TestStruct)
+	if !ok {
 		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
 			"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
+	compFactor := func(st TestStruct) int {
+		return st.A + st.B
+	}
+	this := compFactor(s)
+	that := compFactor(*objComp)
 	switch {
 	case this < that:
 		return -1

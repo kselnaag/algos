@@ -87,4 +87,17 @@ func TestMath(t *testing.T) {
 		asrt.Equal(16.77, amath.Max(4.093, 16.77))
 		asrt.Equal("aac", amath.Max("aac", "aa"))
 	})
+	t.Run("Ternar", func(t *testing.T) {
+		asrt.Equal(false, amath.Ternar(true, false, true))
+		asrt.Equal(true, amath.Ternar(false, false, true))
+
+		asrt.Equal(1, amath.Ternar(true, 1, 2))
+		asrt.Equal(2, amath.Ternar(false, 1, 2))
+
+		asrt.Equal(2.0, amath.Ternar(true, 2.0, -1.1))
+		asrt.Equal(-1.1, amath.Ternar(false, 2.0, -1.1))
+
+		asrt.Equal("aaa", amath.Ternar(true, "aaa", "bbb"))
+		asrt.Equal("bbb", amath.Ternar(false, "aaa", "bbb"))
+	})
 }

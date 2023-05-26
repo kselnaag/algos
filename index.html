@@ -718,25 +718,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="293">{
-        if hi &lt;= lo </span><span class="cov6" title="168">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="287">{
+        if hi &lt;= lo </span><span class="cov6" title="165">{
                 return
         }</span>
-        <span class="cov6" title="125">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="443">{
+        <span class="cov6" title="122">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="470">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="238">
+                case I.LT(arr[i], v):<span class="cov7" title="253">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov6" title="205">
+                case I.GT(arr[i], v):<span class="cov6" title="217">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="125">q3sort(arr, lo, l-1)
+        <span class="cov6" title="122">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -772,21 +772,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="191">{
+        for </span><span class="cov6" title="215">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="191">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="215">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="191">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="215">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="149">swap(arr, i, j)</span>
+                <span class="cov6" title="173">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -905,10 +905,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1608">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1272">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1583">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1245">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="336"> {
+                        }</span> else<span class="cov7" title="338"> {
                                 break</span>
                         }
                 }
@@ -968,7 +968,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3303">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3327">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>

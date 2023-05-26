@@ -74,14 +74,6 @@ func Sqrt(c float64) float64 {
 	return t
 }
 
-func Abs[T I.Signed | I.Float](val T) T {
-	if val < 0 {
-		return val * (-1)
-	} else {
-		return val
-	}
-}
-
 func IsPrime(n int) bool {
 	if n < 2 {
 		return false
@@ -104,18 +96,21 @@ func Gcd(p, q int) int {
 	return Gcd(q, r)
 }
 
+func Abs[T I.Signed | I.Float](val T) T {
+	return Ternar((val < 0), (-1 * val), val)
+}
+
 func Min[T I.Ord](x, y T) T {
-	if x < y {
-		return x
-	} else {
-		return y
-	}
+	return Ternar((x < y), x, y)
 }
 
 func Max[T I.Ord](x, y T) T {
-	if x > y {
-		return x
-	} else {
-		return y
+	return Ternar((x > y), x, y)
+}
+
+func Ternar[T any](cond bool, a, b T) T {
+	if cond {
+		return a
 	}
+	return b
 }

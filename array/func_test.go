@@ -1,6 +1,7 @@
 package array_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/kselnaag/algos/array"
@@ -46,5 +47,22 @@ func TestFunc(t *testing.T) {
 		asrt.Equal([]int{2, 4, 6, 8, 10}, arr)
 		arr = array.Filter([]int{}, func(x int) bool { return (x % 2) == 0 })
 		asrt.Equal([]int{}, arr)
+	})
+	t.Run("Perm", func(t *testing.T) {
+		resStr := make([]string, 0, 6)
+		array.Perm([]byte("abc"), func(a []byte) {
+			resStr = append(resStr, string(a))
+		})
+		asrt.Equal([]string{"abc", "acb", "bac", "bca", "cba", "cab"}, resStr)
+
+		resInt := make([]string, 0, 6)
+		array.Perm([]int{1, 3, 2}, func(a []int) {
+			str := ""
+			for _, el := range a {
+				str += strconv.Itoa(el) + " "
+			}
+			resInt = append(resInt, str)
+		})
+		asrt.Equal([]string{"1 3 2 ", "1 2 3 ", "3 1 2 ", "3 2 1 ", "2 3 1 ", "2 1 3 "}, resInt)
 	})
 }

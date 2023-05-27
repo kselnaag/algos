@@ -228,53 +228,70 @@ func Ternar[T any](cond bool, a, b T) T <span class="cov8" title="86">{
 		
 		<pre class="file" id="file1" style="display: none">package array
 
-func Map[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov3" title="2">{
+func Map[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov2" title="2">{
         res := make([]T2, 0, len(arr))
-        for _, el := range arr </span><span class="cov7" title="10">{
+        for _, el := range arr </span><span class="cov6" title="10">{
                 res = append(res, fnc(el))
         }</span>
-        <span class="cov3" title="2">return res</span>
+        <span class="cov2" title="2">return res</span>
 }
 
-func MapA[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov3" title="2">{
+func MapA[T1, T2 any](arr []T1, fnc func(T1) T2) []T2 <span class="cov2" title="2">{
         res := make([]T2, 0, len(arr))
         chans := make([]chan T2, len(arr))
-        for i, el := range arr </span><span class="cov7" title="10">{
+        for i, el := range arr </span><span class="cov6" title="10">{
                 elemChan := make(chan T2)
                 chans[i] = elemChan
-                go func(elemChan chan&lt;- T2, el T1) </span><span class="cov7" title="10">{
+                go func(elemChan chan&lt;- T2, el T1) </span><span class="cov6" title="10">{
                         elemChan &lt;- fnc(el)
                 }</span>(elemChan, el)
         }
-        <span class="cov3" title="2">for _, elemChan := range chans </span><span class="cov7" title="10">{
+        <span class="cov2" title="2">for _, elemChan := range chans </span><span class="cov6" title="10">{
                 res = append(res, &lt;-elemChan)
         }</span>
-        <span class="cov3" title="2">return res</span>
+        <span class="cov2" title="2">return res</span>
 }
 
-func Reduce[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov3" title="2">{
-        for _, el := range arr </span><span class="cov7" title="10">{
+func Reduce[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov2" title="2">{
+        for _, el := range arr </span><span class="cov6" title="10">{
                 acc = fnc(acc, el)
         }</span>
-        <span class="cov3" title="2">return acc</span>
+        <span class="cov2" title="2">return acc</span>
 }
 
-func ReduceR[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov3" title="2">{
+func ReduceR[T1, T2 any](arr []T1, fnc func(T2, T1) T2, acc T2) T2 <span class="cov2" title="2">{
         alen := len(arr)
-        for i := alen - 1; i &gt;= 0; i-- </span><span class="cov7" title="10">{
+        for i := alen - 1; i &gt;= 0; i-- </span><span class="cov6" title="10">{
                 acc = fnc(acc, arr[i])
         }</span>
-        <span class="cov3" title="2">return acc</span>
+        <span class="cov2" title="2">return acc</span>
 }
 
-func Filter[T any](arr []T, fnc func(T) bool) []T <span class="cov4" title="3">{
+func Filter[T any](arr []T, fnc func(T) bool) []T <span class="cov3" title="3">{
         res := make([]T, 0)
-        for _, el := range arr </span><span class="cov10" title="20">{
-                if fnc(el) </span><span class="cov7" title="10">{
+        for _, el := range arr </span><span class="cov8" title="20">{
+                if fnc(el) </span><span class="cov6" title="10">{
                         res = append(res, el)
                 }</span>
         }
-        <span class="cov4" title="3">return res</span>
+        <span class="cov3" title="3">return res</span>
+}
+
+func Perm[T any](a []T, f func([]T)) <span class="cov2" title="2">{
+        perm(a, f, 0)
+}</span>
+
+func perm[T any](a []T, f func([]T), i int) <span class="cov10" title="44">{
+        if i &gt; len(a) </span><span class="cov6" title="12">{
+                f(a)
+                return
+        }</span>
+        <span class="cov9" title="32">perm(a, f, i+1)
+        for j := i + 1; j &lt; len(a); j++ </span><span class="cov6" title="10">{
+                a[i], a[j] = a[j], a[i]
+                perm(a, f, i+1)
+                a[i], a[j] = a[j], a[i]
+        }</span>
 }
 </pre>
 		
@@ -723,13 +740,13 @@ func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="287">{
                 return
         }</span>
         <span class="cov6" title="122">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="470">{
+        for i &lt;= g </span><span class="cov7" title="469">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="253">
+                case I.LT(arr[i], v):<span class="cov7" title="240">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov6" title="217">
+                case I.GT(arr[i], v):<span class="cov7" title="229">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
@@ -905,10 +922,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1583">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1245">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1561">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1220">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="338"> {
+                        }</span> else<span class="cov7" title="341"> {
                                 break</span>
                         }
                 }
@@ -968,7 +985,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3327">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3301">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>

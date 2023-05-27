@@ -5,7 +5,7 @@
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
                 <mxCell id="7" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#0d1117;strokeWidth=1;perimeterSpacing=1;shadow=0;glass=0;fillStyle=solid;" parent="1" vertex="1">
-                    <mxGeometry x="150" y="110" width="410" height="560" as="geometry"/>
+                    <mxGeometry x="150" y="110" width="410" height="590" as="geometry"/>
                 </mxCell>
                 <mxCell id="JtaezXzCazCUk_wRYMuN-2" value="&lt;font color=&quot;#e6edf3&quot;&gt;array&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=none;strokeColor=#e6edf3;" parent="1" vertex="1">
                     <mxGeometry x="160" y="200" width="50" height="20" as="geometry"/>
@@ -22,8 +22,8 @@
                 <mxCell id="JtaezXzCazCUk_wRYMuN-6" value="&lt;font color=&quot;#e6edf3&quot;&gt;graph !&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=none;strokeColor=#e6edf3;" parent="1" vertex="1">
                     <mxGeometry x="490" y="200" width="60" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="JtaezXzCazCUk_wRYMuN-7" value="&lt;font color=&quot;#e6edf3&quot;&gt;shuffle&lt;br&gt;reverse&lt;br&gt;isSorted&lt;br&gt;BinarySearch&lt;br&gt;selectSort&lt;br&gt;reverseSort&lt;br&gt;insertSort&lt;br&gt;shellSort&lt;br&gt;mergeSort&lt;br&gt;heapSort&lt;br&gt;quickSort&lt;br&gt;quick3Sort&lt;br&gt;&lt;br&gt;stack&lt;br&gt;queue&lt;br&gt;bag&lt;br&gt;&lt;br&gt;minPQ&lt;br&gt;maxPQ&lt;br&gt;lru&lt;br&gt;mru&lt;br&gt;&lt;br&gt;hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
-                    <mxGeometry x="160" y="240" width="80" height="420" as="geometry"/>
+                <mxCell id="JtaezXzCazCUk_wRYMuN-7" value="&lt;font color=&quot;#e6edf3&quot;&gt;shuffle&lt;br&gt;reverse&lt;br&gt;isSorted&lt;br&gt;perm&lt;br&gt;binarySearch&lt;br&gt;&lt;br&gt;selectSort&lt;br&gt;reverseSort&lt;br&gt;insertSort&lt;br&gt;shellSort&lt;br&gt;mergeSort&lt;br&gt;heapSort&lt;br&gt;quickSort&lt;br&gt;quick3Sort&lt;br&gt;&lt;br&gt;stack&lt;br&gt;queue&lt;br&gt;bag&lt;br&gt;&lt;br&gt;minPQ&lt;br&gt;maxPQ&lt;br&gt;lru&lt;br&gt;mru&lt;br&gt;&lt;br&gt;hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="240" width="80" height="450" as="geometry"/>
                 </mxCell>
                 <mxCell id="JtaezXzCazCUk_wRYMuN-8" value="&lt;font color=&quot;#e6edf3&quot;&gt;stack&lt;br&gt;queue&lt;br&gt;bag&lt;br&gt;deque&lt;br&gt;&lt;br&gt;hmap&lt;br&gt;&lt;br&gt;map&lt;br&gt;mapA&lt;br&gt;reduce&lt;br&gt;reduceR&lt;br&gt;filter&lt;br&gt;&lt;br&gt;reverse&lt;br&gt;reverseRec&lt;br&gt;listSize&lt;br&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="241" y="240" width="69" height="230" as="geometry"/>

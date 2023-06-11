@@ -140,7 +140,7 @@ func ReverseSort[T any](arr []T) {
 	for i := 0; i < mid; i++ {
 		min := i
 		max := i
-		for j := i + 1; j < (alen - i); j++ {
+		for j := 1 + i; j < (alen - i); j++ {
 			if I.LT(arr[j], arr[min]) {
 				min = j
 			}
@@ -148,16 +148,11 @@ func ReverseSort[T any](arr []T) {
 				max = j
 			}
 		}
-		if max == i {
-			if min == (alen - i - 1) {
-				swap(arr, max, min)
-			} else {
-				swap(arr, (alen - i - 1), max)
-				swap(arr, i, min)
-			}
+		if (max == i) && (min == (alen - 1 - i)) {
+			swap(arr, min, max)
 		} else {
-			swap(arr, i, min)
-			swap(arr, (alen - i - 1), max)
+			swap(arr, min, i)
+			swap(arr, max, alen-1-i)
 		}
 	}
 }

@@ -63,7 +63,7 @@
 				
 				<option value="file3">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/array/sort.go (81.5%)</option>
+				<option value="file4">github.com/kselnaag/algos/array/sort.go (83.2%)</option>
 				
 				<option value="file5">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
 				
@@ -740,13 +740,13 @@ func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="287">{
                 return
         }</span>
         <span class="cov6" title="122">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="469">{
+        for i &lt;= g </span><span class="cov7" title="452">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="240">
+                case I.LT(arr[i], v):<span class="cov7" title="224">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="229">
+                case I.GT(arr[i], v):<span class="cov7" title="228">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
@@ -789,21 +789,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="215">{
+        for </span><span class="cov6" title="214">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="215">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="214">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="215">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="214">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="173">swap(arr, i, j)</span>
+                <span class="cov6" title="172">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -864,7 +864,7 @@ func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
         for i := 0; i &lt; mid; i++ </span><span class="cov5" title="87">{
                 min := i
                 max := i
-                for j := i + 1; j &lt; (alen - i); j++ </span><span class="cov8" title="635">{
+                for j := 1 + i; j &lt; (alen - i); j++ </span><span class="cov8" title="635">{
                         if I.LT(arr[j], arr[min]) </span><span class="cov0" title="0">{
                                 min = j
                         }</span>
@@ -872,16 +872,11 @@ func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
                                 max = j
                         }</span>
                 }
-                <span class="cov5" title="87">if max == i </span><span class="cov0" title="0">{
-                        if min == (alen - i - 1) </span><span class="cov0" title="0">{
-                                swap(arr, max, min)
-                        }</span> else<span class="cov0" title="0"> {
-                                swap(arr, (alen - i - 1), max)
-                                swap(arr, i, min)
-                        }</span>
-                } else<span class="cov5" title="87"> {
-                        swap(arr, i, min)
-                        swap(arr, (alen - i - 1), max)
+                <span class="cov5" title="87">if (max == i) &amp;&amp; (min == (alen - 1 - i)) </span><span class="cov0" title="0">{
+                        swap(arr, min, max)
+                }</span> else<span class="cov5" title="87"> {
+                        swap(arr, min, i)
+                        swap(arr, max, alen-1-i)
                 }</span>
         }
 }
@@ -922,10 +917,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1561">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1220">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1576">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1231">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="341"> {
+                        }</span> else<span class="cov7" title="345"> {
                                 break</span>
                         }
                 }
@@ -985,7 +980,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3301">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3294">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>

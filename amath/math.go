@@ -6,6 +6,34 @@ import (
 	I "github.com/kselnaag/algos/types"
 )
 
+func HashELF(mess []byte) uint32 {
+	var hash uint32 = 0
+	mlen := len(mess)
+	for i := 0; i < mlen; i++ {
+		hash = (hash << 4) + uint32(mess[i])
+		hash ^= (hash >> 24) & 0xf0
+	}
+	return hash & 0x0fffffff
+}
+
+func HashDJB2a[R uint32 | uint64](mess []byte) (hash R) {
+	hash = 5381
+	mlen := len(mess)
+	for i := 0; i < mlen; i++ {
+		hash = ((hash << 5) + hash) ^ R(mess[i])
+	}
+	return hash
+}
+
+func HashDJB2[R uint32 | uint64](mess []byte) (hash R) {
+	hash = 5381
+	mlen := len(mess)
+	for i := 0; i < mlen; i++ {
+		hash = ((hash << 5) + hash) + R(mess[i])
+	}
+	return hash
+}
+
 func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 	T := [256]byte{
 		130, 4, 133, 49, 108, 178, 125, 95, 35, 126, 41, 129, 229, 48, 6, 94, 206,
@@ -38,7 +66,6 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 		panic(fmt.Sprintf("rules.HashPirson[R](mess []byte): "+
 			"Type of R is unknown, expected (uint8 | uint16 | uint32 | uint64), actual %T", result))
 	}
-
 	mlen := len(mess)
 	hash := T[mlen%256]
 	for j := 0; j < rounds; j++ {

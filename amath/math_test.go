@@ -15,6 +15,29 @@ func TestMath(t *testing.T) {
 		asrt.Nil(err)
 	}()
 
+	t.Run("HashELF", func(t *testing.T) {
+		asrt.Equal(uint32(0x00000048), amath.HashELF([]byte("H")))
+		asrt.Equal(uint32(0x04a85151), amath.HashELF([]byte("HelloWorld!")))
+		asrt.Equal(uint32(0x034a8514), amath.HashELF([]byte("HelloWorld")))
+	})
+	t.Run("HashDJB2a", func(t *testing.T) {
+		asrt.Equal(uint32(0x0002b5ed), amath.HashDJB2[uint32]([]byte("H")))
+		asrt.Equal(uint32(0xfe9502c4), amath.HashDJB2a[uint32]([]byte("HelloWorld!")))
+		asrt.Equal(uint32(0xa2ddba45), amath.HashDJB2a[uint32]([]byte("HelloWorld")))
+
+		asrt.Equal(uint64(0x000000000002b5ed), amath.HashDJB2[uint64]([]byte("H")))
+		asrt.Equal(uint64(0xbfe37049fe9502c4), amath.HashDJB2a[uint64]([]byte("HelloWorld!")))
+		asrt.Equal(uint64(0x726bbd95a2ddba45), amath.HashDJB2a[uint64]([]byte("HelloWorld")))
+	})
+	t.Run("HashDJB2", func(t *testing.T) {
+		asrt.Equal(uint32(0x0002b5ed), amath.HashDJB2[uint32]([]byte("H")))
+		asrt.Equal(uint32(0x0977a182), amath.HashDJB2[uint32]([]byte("HelloWorld!")))
+		asrt.Equal(uint32(0x7c687941), amath.HashDJB2[uint32]([]byte("HelloWorld")))
+
+		asrt.Equal(uint64(0x000000000002b5ed), amath.HashDJB2[uint64]([]byte("H")))
+		asrt.Equal(uint64(0xbfe621040977a182), amath.HashDJB2[uint64]([]byte("HelloWorld!")))
+		asrt.Equal(uint64(0x726bd2747c687941), amath.HashDJB2[uint64]([]byte("HelloWorld")))
+	})
 	t.Run("HashPirson", func(t *testing.T) {
 		asrt.Equal(uint8(0x7c), amath.HashPirson[uint8]([]byte{0, 0, 0, 0, 0, 0, 0, 0}))
 		asrt.Equal(uint16(0xa2f0), amath.HashPirson[uint16]([]byte{0, 0, 0, 0, 0, 0, 0, 1}))

@@ -47,5 +47,5 @@ func TestHmap(t *testing.T) {
 	hmap.Set(9, "at")
 	asrt.False(hmap.IsEmpty())
 	asrt.Equal(8, hmap.Size())
-	asrt.Equal([]int{5, 6, 9, 4, 8, 2, 3, 7}, hmap.IterateKeys())
+	asrt.Equal([]int{5, 4, 7, 6, 3, 2, 9, 8}, hmap.IterateKeys())
 }

@@ -5,7 +5,7 @@ import (
 	I "github.com/kselnaag/algos/types"
 )
 
-const maxUint16 int = 1<<16 - 1
+const maxUint8 int = (1 << 8)
 
 type Anode[K I.Ord, V any] struct {
 	Key K
@@ -13,13 +13,13 @@ type Anode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-	hmarr   [maxUint16]*[]Anode[K, V]
+	hmarr   [maxUint8]*[]Anode[K, V]
 	keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] {
 	return Hmap[K, V]{
-		hmarr:   [maxUint16]*[]Anode[K, V]{},
+		hmarr:   [maxUint8]*[]Anode[K, V]{},
 		keysnum: 0,
 	}
 }
@@ -32,32 +32,36 @@ func (hm *Hmap[K, V]) IsEmpty() bool {
 	return hm.Size() == 0
 }
 
+func hashFromKey[K I.Ord](key K) int {
+	bytesarr := I.ConvToByteArr(key)
+	hash := amath.HashDJB2a[uint32](bytesarr)
+	return int(hash & 0x000000FF)
+}
+
 func (hm *Hmap[K, V]) Set(key K, val V) {
-	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson[uint16](abytes)
+	hashIdx := hashFromKey(key)
 	node := Anode[K, V]{Key: key, Val: val}
-	if hm.hmarr[int(hash)] == nil {
-		hm.hmarr[int(hash)] = &[]Anode[K, V]{node}
+	if hm.hmarr[hashIdx] == nil {
+		hm.hmarr[hashIdx] = &[]Anode[K, V]{node}
 		hm.keysnum++
 		return
 	}
-	for i, hnode := range *hm.hmarr[int(hash)] {
+	for i, hnode := range *hm.hmarr[hashIdx] {
 		if hnode.Key == key {
-			(*hm.hmarr[int(hash)])[i] = node
+			(*hm.hmarr[hashIdx])[i] = node
 			return
 		}
 	}
-	*hm.hmarr[int(hash)] = append(*hm.hmarr[int(hash)], node)
+	*hm.hmarr[hashIdx] = append(*hm.hmarr[hashIdx], node)
 	hm.keysnum++
 }
 
 func (hm *Hmap[K, V]) IsKey(key K) bool {
-	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson[uint16](abytes)
-	if hm.hmarr[int(hash)] == nil {
+	hashIdx := hashFromKey(key)
+	if hm.hmarr[hashIdx] == nil {
 		return false
 	}
-	for _, hnode := range *hm.hmarr[int(hash)] {
+	for _, hnode := range *hm.hmarr[hashIdx] {
 		if hnode.Key == key {
 			return true
 		}
@@ -66,12 +70,11 @@ func (hm *Hmap[K, V]) IsKey(key K) bool {
 }
 
 func (hm *Hmap[K, V]) Get(key K) V {
-	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson[uint16](abytes)
-	if hm.hmarr[int(hash)] == nil {
+	hashIdx := hashFromKey(key)
+	if hm.hmarr[hashIdx] == nil {
 		panic("algos.array.(Hmap).Get(key K): No any key found, check first")
 	}
-	for _, hnode := range *hm.hmarr[int(hash)] {
+	for _, hnode := range *hm.hmarr[hashIdx] {
 		if hnode.Key == key {
 			return hnode.Val
 		}
@@ -80,14 +83,13 @@ func (hm *Hmap[K, V]) Get(key K) V {
 }
 
 func (hm *Hmap[K, V]) Del(key K) {
-	abytes := I.ConvToByteArr(key)
-	hash := amath.HashPirson[uint16](abytes)
-	if hm.hmarr[int(hash)] == nil {
+	hashIdx := hashFromKey(key)
+	if hm.hmarr[hashIdx] == nil {
 		panic("algos.array.(Hmap).Del(key K): No any key found, check first")
 	}
-	for i, hnode := range *hm.hmarr[int(hash)] {
+	for i, hnode := range *hm.hmarr[hashIdx] {
 		if hnode.Key == key {
-			*hm.hmarr[int(hash)] = append((*hm.hmarr[int(hash)])[:i], (*hm.hmarr[int(hash)])[i+1:]...)
+			*hm.hmarr[hashIdx] = append((*hm.hmarr[hashIdx])[:i], (*hm.hmarr[hashIdx])[i+1:]...)
 			hm.keysnum--
 			return
 		}

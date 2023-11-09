@@ -59,7 +59,7 @@
 				
 				<option value="file1">github.com/kselnaag/algos/array/func.go (100.0%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/hmap.go (91.7%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/hmap.go (91.5%)</option>
 				
 				<option value="file3">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
 				
@@ -71,7 +71,7 @@
 				
 				<option value="file7">github.com/kselnaag/algos/list/func.go (100.0%)</option>
 				
-				<option value="file8">github.com/kselnaag/algos/list/hmap.go (95.2%)</option>
+				<option value="file8">github.com/kselnaag/algos/list/hmap.go (95.1%)</option>
 				
 				<option value="file9">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
 				
@@ -329,7 +329,7 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-const maxUint16 int = 1&lt;&lt;16 - 1
+const maxUint8 int = (1 &lt;&lt; 8)
 
 type Anode[K I.Ord, V any] struct {
         Key K
@@ -337,81 +337,83 @@ type Anode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-        hmarr   [maxUint16]*[]Anode[K, V]
+        hmarr   [maxUint8]*[]Anode[K, V]
         keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
         return Hmap[K, V]{
-                hmarr:   [maxUint16]*[]Anode[K, V]{},
+                hmarr:   [maxUint8]*[]Anode[K, V]{},
                 keysnum: 0,
         }
 }</span>
 
-func (hm *Hmap[K, V]) Size() int <span class="cov2" title="8">{
+func (hm *Hmap[K, V]) Size() int <span class="cov4" title="8">{
         return hm.keysnum
 }</span>
 
-func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="4">{
+func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
         return hm.Size() == 0
 }</span>
 
-func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
+func hashFromKey[K I.Ord](key K) int <span class="cov6" title="23">{
+        bytesarr := I.ConvToByteArr(key)
+        hash := amath.HashDJB2a[uint32](bytesarr)
+        return int(hash &amp; 0x000000FF)
+}</span>
+
+func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov4" title="11">{
+        hashIdx := hashFromKey(key)
         node := Anode[K, V]{Key: key, Val: val}
-        if hm.hmarr[int(hash)] == nil </span><span class="cov2" title="9">{
-                hm.hmarr[int(hash)] = &amp;[]Anode[K, V]{node}
+        if hm.hmarr[hashIdx] == nil </span><span class="cov4" title="9">{
+                hm.hmarr[hashIdx] = &amp;[]Anode[K, V]{node}
                 hm.keysnum++
                 return
         }</span>
-        <span class="cov1" title="2">for i, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="2">{
-                if hnode.Key == key </span><span class="cov1" title="2">{
-                        (*hm.hmarr[int(hash)])[i] = node
+        <span class="cov2" title="2">for i, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="2">{
+                if hnode.Key == key </span><span class="cov2" title="2">{
+                        (*hm.hmarr[hashIdx])[i] = node
                         return
                 }</span>
         }
-        <span class="cov0" title="0">*hm.hmarr[int(hash)] = append(*hm.hmarr[int(hash)], node)
+        <span class="cov0" title="0">*hm.hmarr[hashIdx] = append(*hm.hmarr[hashIdx], node)
         hm.keysnum++</span>
 }
 
-func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
+func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov3" title="6">{
+        hashIdx := hashFromKey(key)
+        if hm.hmarr[hashIdx] == nil </span><span class="cov2" title="2">{
                 return false
         }</span>
-        <span class="cov2" title="4">for _, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="3">{
-                if hnode.Key == key </span><span class="cov1" title="3">{
+        <span class="cov3" title="4">for _, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="3">{
+                if hnode.Key == key </span><span class="cov2" title="3">{
                         return true
                 }</span>
         }
         <span class="cov1" title="1">return false</span>
 }
 
-func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="2">{
+func (hm *Hmap[K, V]) Get(key K) V <span class="cov3" title="4">{
+        hashIdx := hashFromKey(key)
+        if hm.hmarr[hashIdx] == nil </span><span class="cov2" title="2">{
                 panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
         }
-        <span class="cov1" title="2">for _, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="2">{
-                if hnode.Key == key </span><span class="cov1" title="2">{
+        <span class="cov2" title="2">for _, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="2">{
+                if hnode.Key == key </span><span class="cov2" title="2">{
                         return hnode.Val
                 }</span>
         }
         <span class="cov0" title="0">panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
 }
 
-func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        if hm.hmarr[int(hash)] == nil </span><span class="cov1" title="1">{
+func (hm *Hmap[K, V]) Del(key K) <span class="cov2" title="2">{
+        hashIdx := hashFromKey(key)
+        if hm.hmarr[hashIdx] == nil </span><span class="cov1" title="1">{
                 panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
         }
-        <span class="cov1" title="1">for i, hnode := range *hm.hmarr[int(hash)] </span><span class="cov1" title="1">{
+        <span class="cov1" title="1">for i, hnode := range *hm.hmarr[hashIdx] </span><span class="cov1" title="1">{
                 if hnode.Key == key </span><span class="cov1" title="1">{
-                        *hm.hmarr[int(hash)] = append((*hm.hmarr[int(hash)])[:i], (*hm.hmarr[int(hash)])[i+1:]...)
+                        *hm.hmarr[hashIdx] = append((*hm.hmarr[hashIdx])[:i], (*hm.hmarr[hashIdx])[i+1:]...)
                         hm.keysnum--
                         return
                 }</span>
@@ -421,9 +423,9 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="65535">{
-                if ptr != nil </span><span class="cov2" title="9">{
-                        for _, kvnode := range *ptr </span><span class="cov2" title="8">{
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="256">{
+                if ptr != nil </span><span class="cov4" title="9">{
+                        for _, kvnode := range *ptr </span><span class="cov4" title="8">{
                                 res = append(res, kvnode.Key)
                         }</span>
                 }
@@ -762,25 +764,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="275">{
-        if hi &lt;= lo </span><span class="cov6" title="159">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="277">{
+        if hi &lt;= lo </span><span class="cov6" title="160">{
                 return
         }</span>
-        <span class="cov6" title="116">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="482">{
+        <span class="cov6" title="117">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="520">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov6" title="203">
+                case I.LT(arr[i], v):<span class="cov6" title="204">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="279">
+                case I.GT(arr[i], v):<span class="cov7" title="316">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="116">q3sort(arr, lo, l-1)
+        <span class="cov6" title="117">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -816,21 +818,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="189">{
+        for </span><span class="cov6" title="216">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="189">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="216">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="189">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="216">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="147">swap(arr, i, j)</span>
+                <span class="cov6" title="174">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -944,10 +946,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1598">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1257">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1600">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1260">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="341"> {
+                        }</span> else<span class="cov7" title="340"> {
                                 break</span>
                         }
                 }
@@ -1007,7 +1009,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3325">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3393">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1315,7 +1317,7 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-const maxUint16 int = 1&lt;&lt;16 - 1
+const maxUint8 int = (1 &lt;&lt; 8)
 
 type Mnode[K I.Ord, V any] struct {
         Key  K
@@ -1324,70 +1326,72 @@ type Mnode[K I.Ord, V any] struct {
 }
 
 type Hmap[K I.Ord, V any] struct {
-        hmarr   [maxUint16]*Mnode[K, V]
+        hmarr   [maxUint8]*Mnode[K, V]
         keysnum int
 }
 
 func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
         return Hmap[K, V]{
-                hmarr:   [maxUint16]*Mnode[K, V]{},
+                hmarr:   [maxUint8]*Mnode[K, V]{},
                 keysnum: 0,
         }
 }</span>
 
-func (hm *Hmap[K, V]) Size() int <span class="cov2" title="8">{
+func (hm *Hmap[K, V]) Size() int <span class="cov4" title="8">{
         return hm.keysnum
 }</span>
 
-func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov2" title="4">{
+func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
         return hm.Size() == 0
 }</span>
 
-func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov2" title="11">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
+func hashFromKey[K I.Ord](key K) int <span class="cov6" title="23">{
+        bytesarr := I.ConvToByteArr(key)
+        hash := amath.HashDJB2a[uint32](bytesarr)
+        return int(hash &amp; 0x000000FF)
+}</span>
+
+func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov4" title="11">{
+        hashIDX := hashFromKey(key)
         setnode := &amp;Mnode[K, V]{Key: key, Val: val, Next: nil}
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
-                if node.Key == key </span><span class="cov1" title="2">{
+        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov2" title="2">{
+                if node.Key == key </span><span class="cov2" title="2">{
                         node.Val = val
                         return
                 }</span>
         }
-        <span class="cov2" title="9">setnode.Next = hm.hmarr[int(hash)]
-        hm.hmarr[int(hash)] = setnode
+        <span class="cov4" title="9">setnode.Next = hm.hmarr[hashIDX]
+        hm.hmarr[hashIDX] = setnode
         hm.keysnum++</span>
 }
 
-func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov2" title="6">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="3">{
-                if node.Key == key </span><span class="cov1" title="3">{
+func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov3" title="6">{
+        hashIDX := hashFromKey(key)
+        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov2" title="3">{
+                if node.Key == key </span><span class="cov2" title="3">{
                         return true
                 }</span>
         }
-        <span class="cov1" title="3">return false</span>
+        <span class="cov2" title="3">return false</span>
 }
 
-func (hm *Hmap[K, V]) Get(key K) V <span class="cov2" title="4">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="2">{
-                if node.Key == key </span><span class="cov1" title="2">{
+func (hm *Hmap[K, V]) Get(key K) V <span class="cov3" title="4">{
+        hashIDX := hashFromKey(key)
+        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov2" title="2">{
+                if node.Key == key </span><span class="cov2" title="2">{
                         return node.Val
                 }</span>
         }
-        <span class="cov1" title="2">panic("algos.list.(Hmap).Get(key K): No any key found, check first")</span>
+        <span class="cov2" title="2">panic("algos.list.(Hmap).Get(key K): No any key found, check first")</span>
 }
 
-func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
-        abytes := I.ConvToByteArr(key)
-        hash := amath.HashPirson[uint16](abytes)
-        prev := hm.hmarr[int(hash)]
-        for node := hm.hmarr[int(hash)]; node != nil; node = node.Next </span><span class="cov1" title="1">{
+func (hm *Hmap[K, V]) Del(key K) <span class="cov2" title="2">{
+        hashIDX := hashFromKey(key)
+        prev := hm.hmarr[hashIDX]
+        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov1" title="1">{
                 if node.Key == key </span><span class="cov1" title="1">{
-                        if prev == hm.hmarr[int(hash)] </span><span class="cov1" title="1">{
-                                hm.hmarr[int(hash)] = node.Next
+                        if prev == hm.hmarr[hashIDX] </span><span class="cov1" title="1">{
+                                hm.hmarr[hashIDX] = node.Next
                         }</span> else<span class="cov0" title="0"> {
                                 prev.Next = node.Next
                         }</span>
@@ -1401,8 +1405,8 @@ func (hm *Hmap[K, V]) Del(key K) <span class="cov1" title="2">{
 
 func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
         res := []K{}
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="65535">{
-                for node := ptr; node != nil; node = node.Next </span><span class="cov2" title="8">{
+        for _, ptr := range hm.hmarr </span><span class="cov10" title="256">{
+                for node := ptr; node != nil; node = node.Next </span><span class="cov4" title="8">{
                         res = append(res, node.Key)
                 }</span>
         }

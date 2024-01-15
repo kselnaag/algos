@@ -87,6 +87,8 @@
 				
 				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
 				
+				<option value="file16">github.com/kselnaag/algos/unsafes/unsafes.go (0.0%)</option>
+				
 				</select>
 			</div>
 			<div id="legend">
@@ -764,25 +766,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="277">{
-        if hi &lt;= lo </span><span class="cov6" title="160">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="281">{
+        if hi &lt;= lo </span><span class="cov6" title="162">{
                 return
         }</span>
-        <span class="cov6" title="117">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="520">{
+        <span class="cov6" title="119">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="455">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov6" title="204">
+                case I.LT(arr[i], v):<span class="cov7" title="253">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="316">
+                case I.GT(arr[i], v):<span class="cov6" title="202">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="117">q3sort(arr, lo, l-1)
+        <span class="cov6" title="119">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -818,21 +820,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="216">{
+        for </span><span class="cov6" title="204">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="216">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="204">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="216">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="204">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="174">swap(arr, i, j)</span>
+                <span class="cov6" title="162">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -946,10 +948,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1600">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1260">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1568">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1227">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="340"> {
+                        }</span> else<span class="cov7" title="341"> {
                                 break</span>
                         }
                 }
@@ -1009,7 +1011,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3393">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3283">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -2914,6 +2916,30 @@ func (res Result[T]) ToString() string <span class="cov2" title="3">{
         <span class="cov1" title="1">return fmt.Sprintf("Result(%v)", res.Res(func() T </span><span class="cov0" title="0">{
                 panic("algos.types.(Result): cannot get Result value")</span>
         }))
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package unsafes
+
+import (
+        "fmt"
+        "reflect"
+        "unsafe"
+)
+
+func PrintAsBinary(a any) string <span class="cov0" title="0">{
+        type iface struct {
+                t, v unsafe.Pointer
+        }
+        p := uintptr((*iface)(unsafe.Pointer(&amp;a)).v)
+        t := reflect.TypeOf(a)
+        resStr := ""
+        for i := 0; i &lt; int(t.Size()); i++ </span><span class="cov0" title="0">{
+                n := *((*byte)(unsafe.Pointer(p)))
+                resStr += fmt.Sprintf("%08b ", n)
+                p += unsafe.Sizeof(n)
+        }</span>
+        <span class="cov0" title="0">return resStr</span>
 }
 </pre>
 		

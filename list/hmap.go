@@ -18,8 +18,8 @@ type Hmap[K I.Ord, V any] struct {
 	keysnum int
 }
 
-func NewHmap[K I.Ord, V any]() Hmap[K, V] {
-	return Hmap[K, V]{
+func NewHmap[K I.Ord, V any]() *Hmap[K, V] {
+	return &Hmap[K, V]{
 		hmarr:   [maxUint8]*Mnode[K, V]{},
 		keysnum: 0,
 	}
@@ -53,24 +53,14 @@ func (hm *Hmap[K, V]) Set(key K, val V) {
 	hm.keysnum++
 }
 
-func (hm *Hmap[K, V]) IsKey(key K) bool {
+func (hm *Hmap[K, V]) Get(key K) *V {
 	hashIDX := hashFromKey(key)
 	for node := hm.hmarr[hashIDX]; node != nil; node = node.Next {
 		if node.Key == key {
-			return true
+			return &node.Val
 		}
 	}
-	return false
-}
-
-func (hm *Hmap[K, V]) Get(key K) V {
-	hashIDX := hashFromKey(key)
-	for node := hm.hmarr[hashIDX]; node != nil; node = node.Next {
-		if node.Key == key {
-			return node.Val
-		}
-	}
-	panic("algos.list.(Hmap).Get(key K): No any key found, check first")
+	return nil
 }
 
 func (hm *Hmap[K, V]) Del(key K) {
@@ -88,11 +78,10 @@ func (hm *Hmap[K, V]) Del(key K) {
 		}
 		prev = node
 	}
-	panic("algos.list.(Hmap).Del(key K): No any key found, check first")
 }
 
 func (hm *Hmap[K, V]) IterateKeys() []K {
-	res := []K{}
+	res := make([]K, 0, 8)
 	for _, ptr := range hm.hmarr {
 		for node := ptr; node != nil; node = node.Next {
 			res = append(res, node.Key)

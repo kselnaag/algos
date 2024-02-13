@@ -69,25 +69,27 @@
 				
 				<option value="file6">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/list/func.go (100.0%)</option>
+				<option value="file7">github.com/kselnaag/algos/list/cache3A.go (0.0%)</option>
 				
-				<option value="file8">github.com/kselnaag/algos/list/hmap.go (94.3%)</option>
+				<option value="file8">github.com/kselnaag/algos/list/func.go (100.0%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
+				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.3%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
+				<option value="file10">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/tree/aatree.go (93.0%)</option>
+				<option value="file11">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
 				
-				<option value="file12">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
+				<option value="file12">github.com/kselnaag/algos/tree/aatree.go (93.0%)</option>
 				
-				<option value="file13">github.com/kselnaag/algos/tree/rbtree.go (94.7%)</option>
+				<option value="file13">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
 				
-				<option value="file14">github.com/kselnaag/algos/types/equals.go (98.8%)</option>
+				<option value="file14">github.com/kselnaag/algos/tree/rbtree.go (94.7%)</option>
 				
-				<option value="file15">github.com/kselnaag/algos/types/types.go (93.0%)</option>
+				<option value="file15">github.com/kselnaag/algos/types/equals.go (98.8%)</option>
 				
-				<option value="file16">github.com/kselnaag/algos/unsafes/unsafes.go (0.0%)</option>
+				<option value="file16">github.com/kselnaag/algos/types/types.go (93.0%)</option>
+				
+				<option value="file17">github.com/kselnaag/algos/unsafes/unsafes.go (0.0%)</option>
 				
 				</select>
 			</div>
@@ -766,25 +768,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="291">{
-        if hi &lt;= lo </span><span class="cov6" title="167">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="287">{
+        if hi &lt;= lo </span><span class="cov6" title="165">{
                 return
         }</span>
-        <span class="cov6" title="124">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="475">{
+        <span class="cov6" title="122">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="485">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="245">
+                case I.LT(arr[i], v):<span class="cov7" title="248">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="230">
+                case I.GT(arr[i], v):<span class="cov7" title="237">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="124">q3sort(arr, lo, l-1)
+        <span class="cov6" title="122">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -820,21 +822,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="195">{
+        for </span><span class="cov6" title="201">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="195">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="201">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="195">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="201">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="153">swap(arr, i, j)</span>
+                <span class="cov6" title="159">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -948,8 +950,8 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1584">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1244">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1572">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1232">{
                                 swap(arr, j, j-1)
                         }</span> else<span class="cov7" title="340"> {
                                 break</span>
@@ -1011,7 +1013,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3311">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3315">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1206,6 +1208,90 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 		
 		<pre class="file" id="file7" style="display: none">package list
 
+import (
+        "sync/atomic"
+        "time"
+
+        I "github.com/kselnaag/algos/types"
+)
+
+// const maxUint8 int = (1 &lt;&lt; 8)
+
+type LMnode[K I.Ord, V any] struct {
+        LongKey   K
+        LongExpr  time.Time
+        ShortKey  K
+        ShortExpr time.Time
+        Val       V
+        Next      *LMnode[K, V]
+}
+
+type SMnode[K I.Ord, V any] struct {
+        ShortKey  K
+        ShortExpr time.Time
+        Link      *LMnode[K, V]
+        Next      *SMnode[K, V]
+}
+
+type Cache3A[K I.Ord, V any] struct {
+        lmarr    [maxUint8]*LMnode[K, V]
+        smarr    [maxUint8]*SMnode[K, V]
+        lkeysnum atomic.Uint32
+        // mu       sync.RWMutex
+}
+
+func NewCache3A[K I.Ord, V any]() *Cache3A[K, V] <span class="cov0" title="0">{
+        return &amp;Cache3A[K, V]{
+                lmarr: [maxUint8]*LMnode[K, V]{},
+                smarr: [maxUint8]*SMnode[K, V]{},
+        }
+}</span>
+
+func (c *Cache3A[K, V]) Size() int <span class="cov0" title="0">{
+        return int(c.lkeysnum.Load())
+}</span>
+
+func (c *Cache3A[K, V]) IsEmpty() bool <span class="cov0" title="0">{
+        return (c.Size() == 0)
+}</span>
+
+/* func hashFromKeys[K I.Ord](key K) int {
+        bytesarr := I.ConvToByteArr(key)
+        hash := A.HashDJB2a[uint32](bytesarr)
+        return int(hash &amp; 0x000000FF)
+} */
+
+func (c *Cache3A[K, V]) SetLong(long K, val V) {<span class="cov0" title="0">
+        //
+}</span>
+
+func (c *Cache3A[K, V]) SetShort(short, long K) {<span class="cov0" title="0">
+
+}</span>
+
+func (c *Cache3A[K, V]) GetLong(long K) *V <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (c *Cache3A[K, V]) GetShort(short K) *V <span class="cov0" title="0">{
+        return nil
+}</span>
+
+func (c *Cache3A[K, V]) DelLong(long K) {<span class="cov0" title="0">
+
+}</span>
+
+func (c *Cache3A[K, V]) DelShort(short K) {<span class="cov0" title="0">
+
+}</span>
+
+func (c *Cache3A[K, V]) IterateLongKeys() []K <span class="cov0" title="0">{
+        return []K{}
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package list
+
 func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] <span class="cov5" title="6">{
         var res, ptr *Snode[T2]
         for onode := root; onode != nil; onode = onode.Next </span><span class="cov9" title="40">{
@@ -1312,7 +1398,7 @@ func Reverse[T any](first *Snode[T]) *Snode[T] <span class="cov5" title="6">{
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package list
+		<pre class="file" id="file9" style="display: none">package list
 
 import (
         "github.com/kselnaag/algos/amath"
@@ -1405,7 +1491,7 @@ func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package list
+		<pre class="file" id="file10" style="display: none">package list
 
 type Snode[T any] struct {
         Val  T
@@ -1653,7 +1739,7 @@ func (d *Deque[T]) Reverse() <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package sync
+		<pre class="file" id="file11" style="display: none">package sync
 
 import (
         "errors"
@@ -1745,7 +1831,7 @@ func (pro *Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov3" title
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package tree
+		<pre class="file" id="file12" style="display: none">package tree
 
 import (
         "fmt"
@@ -1988,7 +2074,7 @@ func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int) <span class="cov7" t
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package tree
+		<pre class="file" id="file13" style="display: none">package tree
 
 import (
         "fmt"
@@ -2244,7 +2330,7 @@ CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
 // ===========================
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package tree
+		<pre class="file" id="file14" style="display: none">package tree
 
 import (
         "fmt"
@@ -2529,23 +2615,19 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" t
 }
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package types
+		<pre class="file" id="file15" style="display: none">package types
 
 import "fmt"
-
-type Comp interface {
-        CompareTo(Comp) int
-}
 
 type TestStruct struct {
         A int
         B int
 }
 
-func (s TestStruct) CompareTo(obj Comp) int <span class="cov6" title="6">{
+func (s TestStruct) CompareTo(obj STOrd) int <span class="cov6" title="6">{
         objComp, ok := obj.(*TestStruct)
         if !ok </span><span class="cov0" title="0">{
-                panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
+                panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj STOrd): "+
                         "Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
         }
         <span class="cov6" title="6">compFactor := func(st TestStruct) int </span><span class="cov8" title="12">{
@@ -2606,8 +2688,8 @@ func LT[T any](i, j T) bool <span class="cov8" title="13">{
                 if ok </span><span class="cov2" title="2">{
                         return ii &lt; jj
                 }</span>
-        case Comp:<span class="cov2" title="2">
-                jj, ok := any(j).(Comp)
+        case STOrd:<span class="cov2" title="2">
+                jj, ok := any(j).(STOrd)
                 if ok </span><span class="cov2" title="2">{
                         return ii.CompareTo(jj) &lt; 0
                 }</span>
@@ -2643,8 +2725,8 @@ func GT[T any](i, j T) bool <span class="cov8" title="13">{
                 if ok </span><span class="cov2" title="2">{
                         return ii &gt; jj
                 }</span>
-        case Comp:<span class="cov2" title="2">
-                jj, ok := any(j).(Comp)
+        case STOrd:<span class="cov2" title="2">
+                jj, ok := any(j).(STOrd)
                 if ok </span><span class="cov2" title="2">{
                         return ii.CompareTo(jj) &gt; 0
                 }</span>
@@ -2680,8 +2762,8 @@ func EQ[T any](i, j T) bool <span class="cov8" title="13">{
                 if ok </span><span class="cov2" title="2">{
                         return ii == jj
                 }</span>
-        case Comp:<span class="cov2" title="2">
-                jj, ok := any(j).(Comp)
+        case STOrd:<span class="cov2" title="2">
+                jj, ok := any(j).(STOrd)
                 if ok </span><span class="cov2" title="2">{
                         return ii.CompareTo(jj) == 0
                 }</span>
@@ -2701,11 +2783,19 @@ func EQ[T any](i, j T) bool <span class="cov8" title="13">{
 }
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package types
+		<pre class="file" id="file16" style="display: none">package types
 
 import (
         "fmt"
 )
+
+type STOrd interface {
+        CompareTo(STOrd) int
+}
+
+type Comp interface {
+        Ptr | Ord
+}
 
 type Ord interface {
         Integer | Float | ~string
@@ -2729,6 +2819,10 @@ type Unsigned interface {
 
 type Signed interface {
         ~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+type Complex interface {
+        ~complex64 | ~complex128
 }
 
 // ====================
@@ -2908,7 +3002,7 @@ func (res Result[T]) ToString() string <span class="cov2" title="3">{
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package unsafes
+		<pre class="file" id="file17" style="display: none">package unsafes
 
 import (
         "fmt"

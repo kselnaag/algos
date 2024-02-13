@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+type STOrd interface {
+	CompareTo(STOrd) int
+}
+
+type Comp interface {
+	Ptr | Ord
+}
+
 type Ord interface {
 	Integer | Float | ~string
 }
@@ -26,6 +34,10 @@ type Unsigned interface {
 
 type Signed interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+
+type Complex interface {
+	~complex64 | ~complex128
 }
 
 // ====================

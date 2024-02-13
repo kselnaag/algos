@@ -25,13 +25,13 @@ This is the hand-made algorithms and data-structures module with go generics. It
 </p>
 
 ## **Motivation:**
-The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `Comp` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
+The main idea of this module is to suggest more convenient way for sorting slices of different types. We have Buildin Data Types (BDTs: ints, floats, strings) and Combined Data Types (CDTs: self-made structures). This module dedicates `Ord` interface for BDTs with `>`, `==`, `<` operators and `STOrd` interface for CDTs with `CompareTo` method and `+1`, `0`, `-1` returns. Now comparing any values all kind of types will be more easy.
 
 ## **The main idea**
 We can build CDTs:
 ```
 type Comp interface {
-	CompareTo(Comp) int
+	CompareTo(STOrd) int
 }
 
 type TestStruct struct {
@@ -39,7 +39,7 @@ type TestStruct struct {
 	B int
 }
 
-func (s TestStruct) CompareTo(obj Comp) int {
+func (s TestStruct) CompareTo(obj STOrd) int {
 	objComp, ok := obj.(*TestStruct)
 	if !ok {
 		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
@@ -65,8 +65,8 @@ We can compare data types:
 ```
 func LT[T any](i, j T) bool {
 	switch ii := any(i).(type) {
-	case Comp:
-		jj := any(j).(I.Comp)
+	case STOrd:
+		jj := any(j).(I.STOrd)
 		return ii.CompareTo(jj) < 0
 	case int:
 		jj := any(j).(int)

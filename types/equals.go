@@ -2,19 +2,15 @@ package types
 
 import "fmt"
 
-type Comp interface {
-	CompareTo(Comp) int
-}
-
 type TestStruct struct {
 	A int
 	B int
 }
 
-func (s TestStruct) CompareTo(obj Comp) int {
+func (s TestStruct) CompareTo(obj STOrd) int {
 	objComp, ok := obj.(*TestStruct)
 	if !ok {
-		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj Comp): "+
+		panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj STOrd): "+
 			"Type of arg is unknown, expected *types.TestStruct, actual %T", obj))
 	}
 	compFactor := func(st TestStruct) int {
@@ -75,8 +71,8 @@ func LT[T any](i, j T) bool {
 		if ok {
 			return ii < jj
 		}
-	case Comp:
-		jj, ok := any(j).(Comp)
+	case STOrd:
+		jj, ok := any(j).(STOrd)
 		if ok {
 			return ii.CompareTo(jj) < 0
 		}
@@ -112,8 +108,8 @@ func GT[T any](i, j T) bool {
 		if ok {
 			return ii > jj
 		}
-	case Comp:
-		jj, ok := any(j).(Comp)
+	case STOrd:
+		jj, ok := any(j).(STOrd)
 		if ok {
 			return ii.CompareTo(jj) > 0
 		}
@@ -149,8 +145,8 @@ func EQ[T any](i, j T) bool {
 		if ok {
 			return ii == jj
 		}
-	case Comp:
-		jj, ok := any(j).(Comp)
+	case STOrd:
+		jj, ok := any(j).(STOrd)
 		if ok {
 			return ii.CompareTo(jj) == 0
 		}

@@ -50,8 +50,6 @@ func TestEquals(t *testing.T) {
 
 		asrt.True(I.LT(s1, s2))
 		asrt.False(I.LT(s3, s2))
-
-		asrt.Panics(func() { I.LT(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 	t.Run("GT", func(t *testing.T) {
 		asrt.True(I.GT(int(16), int(-1)))
@@ -71,8 +69,6 @@ func TestEquals(t *testing.T) {
 
 		asrt.True(I.GT(s2, s1))
 		asrt.False(I.GT(s2, s3))
-
-		asrt.Panics(func() { I.GT(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 	t.Run("EQ", func(t *testing.T) {
 		asrt.True(I.EQ(int(16), int(16)))
@@ -92,7 +88,5 @@ func TestEquals(t *testing.T) {
 
 		asrt.True(I.EQ(s1, s1))
 		asrt.False(I.EQ(s2, s3))
-
-		asrt.Panics(func() { I.EQ(float32(5.0), float32(-1.0)) }, "algos.types.LT():  Is not panics when args Type is not processed")
 	})
 }

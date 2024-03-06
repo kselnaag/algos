@@ -1,6 +1,7 @@
 package list_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/kselnaag/algos/list"
@@ -15,7 +16,7 @@ func TestHmap(t *testing.T) {
 		asrt.Nil(err)
 	}()
 
-	hmap := list.NewHmap[int, string]()
+	hmap := list.NewHMap[int, string]()
 	asrt.True(hmap.IsEmpty())
 	asrt.Equal(0, hmap.Size())
 	asrt.Nil(hmap.Get(1))
@@ -47,5 +48,11 @@ func TestHmap(t *testing.T) {
 	hmap.Set(9, "at")
 	asrt.False(hmap.IsEmpty())
 	asrt.Equal(8, hmap.Size())
-	asrt.Equal([]int{5, 4, 7, 6, 3, 2, 9, 8}, hmap.IterateKeys())
+	asrt.Equal([]int{5, 4, 9, 7, 8, 6, 3, 2}, hmap.IterateKeys())
+
+	for i := 0; i < 101; i++ {
+		hmap.Set(i, strconv.Itoa(i))
+	}
+	asrt.Equal(50, hmap.Buckets())
+	hmap.PrintAll()
 }

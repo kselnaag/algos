@@ -33,7 +33,7 @@ func (hm *Hmap[K, V]) IsEmpty() bool {
 }
 
 func hashFromKey[K I.Ord](key K) int {
-	bytesarr := I.ConvToByteArr(key)
+	bytesarr := I.ConvToBytes(key)
 	hash := amath.HashDJB2a[uint32](bytesarr)
 	return int(hash & 0x000000FF)
 }

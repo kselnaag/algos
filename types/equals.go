@@ -28,7 +28,7 @@ func (s TestStruct) CompareTo(obj STOrd) int {
 	}
 }
 
-func ConvToByteArr(key any) []byte {
+func ConvToBytes(key any) []byte {
 	return []byte(fmt.Sprintf("%v", key))
 }
 

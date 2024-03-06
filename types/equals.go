@@ -28,30 +28,8 @@ func (s TestStruct) CompareTo(obj STOrd) int {
 	}
 }
 
-func ConvToByteArr[T Ord](mess T) []byte {
-	res := make([]byte, 8)
-	switch m := any(mess).(type) {
-	case int:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case uint:
-		for i := 0; i < 8; i++ {
-			res[i] = byte(m >> (8 * (7 - i)))
-		}
-	case float64:
-		mi := uint(m)
-		for i := 0; i < 8; i++ {
-			res[i] = byte(mi >> (8 * (7 - i)))
-		}
-	case string:
-		return []byte(m)
-	default:
-		panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): "+
-			"Type of arg is Ord interface, but not processed: arg Type is %T", mess))
-	}
-	return res
+func ConvToByteArr(key any) []byte {
+	return []byte(fmt.Sprintf("%v", key))
 }
 
 func LT[T any](i, j T) bool {

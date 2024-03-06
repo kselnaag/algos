@@ -20,17 +20,16 @@ func TestEquals(t *testing.T) {
 	s3 := &I.TestStruct{A: 2, B: 3}
 
 	t.Run("ConvToByteArr", func(t *testing.T) {
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 0}, I.ConvToByteArr(int(0)))
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 1}, I.ConvToByteArr(int(1)))
-		asrt.Equal([]byte{0, 0, 1, 0, 0, 0, 0, 0}, I.ConvToByteArr(int(1<<40)))
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 0}, I.ConvToByteArr(uint(0)))
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 3}, I.ConvToByteArr(uint(3)))
-		asrt.Equal([]byte{0, 1, 0, 0, 0, 0, 0, 0}, I.ConvToByteArr(uint(1<<48)))
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 0}, I.ConvToByteArr(float64(0)))
-		asrt.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 5}, I.ConvToByteArr(float64(5)))
-		asrt.Equal([]byte{1, 0, 0, 0, 0, 0, 0, 0}, I.ConvToByteArr(float64(1<<56)))
-		asrt.Equal([]byte{0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68}, I.ConvToByteArr("abcdefgh"))
-		asrt.Panics(func() { I.ConvToByteArr(uint8(0)) }, "algos.types.ConvToByteArr():  Is not panics when args Type is not processed")
+		type STtest struct {
+			A int
+			B float64
+			C string
+		}
+		asrt.Equal([]byte{0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39}, I.ConvToByteArr(123456789))
+		asrt.Equal([]byte{0x39, 0x38, 0x37, 0x36, 0x35, 0x2e, 0x34, 0x33, 0x32, 0x31}, I.ConvToByteArr(98765.4321))
+		asrt.Equal([]byte{0x7b, 0x32, 0x33, 0x34, 0x35, 0x20, 0x31, 0x36, 0x37, 0x38, 0x2e, 0x32, 0x33, 0x34, 0x35, 0x20, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21, 0x7d},
+			I.ConvToByteArr(STtest{2345, 1678.2345, "Hello, world!"}))
+		asrt.Equal([]byte{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21}, I.ConvToByteArr("Hello, world!"))
 	})
 	t.Run("LT", func(t *testing.T) {
 		asrt.True(I.LT(int(-1), int(16)))

@@ -73,7 +73,7 @@
 				
 				<option value="file8">github.com/kselnaag/algos/list/func.go (100.0%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.3%)</option>
+				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.2%)</option>
 				
 				<option value="file10">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
 				
@@ -85,11 +85,9 @@
 				
 				<option value="file14">github.com/kselnaag/algos/tree/rbtree.go (94.7%)</option>
 				
-				<option value="file15">github.com/kselnaag/algos/types/equals.go (51.3%)</option>
+				<option value="file15">github.com/kselnaag/algos/types/equals.go (47.2%)</option>
 				
 				<option value="file16">github.com/kselnaag/algos/types/types.go (93.0%)</option>
-				
-				<option value="file17">github.com/kselnaag/algos/unsafes/unsafes.go (0.0%)</option>
 				
 				</select>
 			</div>
@@ -768,25 +766,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="291">{
-        if hi &lt;= lo </span><span class="cov6" title="167">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="285">{
+        if hi &lt;= lo </span><span class="cov6" title="164">{
                 return
         }</span>
-        <span class="cov6" title="124">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="470">{
+        <span class="cov6" title="121">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="487">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="227">
+                case I.LT(arr[i], v):<span class="cov7" title="258">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="243">
+                case I.GT(arr[i], v):<span class="cov7" title="229">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="124">q3sort(arr, lo, l-1)
+        <span class="cov6" title="121">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -822,21 +820,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov7" title="225">{
+        for </span><span class="cov6" title="180">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="225">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="180">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov7" title="225">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="180">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="183">swap(arr, i, j)</span>
+                <span class="cov6" title="138">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -950,10 +948,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1574">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1237">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1590">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1249">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="337"> {
+                        }</span> else<span class="cov7" title="341"> {
                                 break</span>
                         }
                 }
@@ -1013,7 +1011,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3329">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3313">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1215,7 +1213,7 @@ import (
         I "github.com/kselnaag/algos/types"
 )
 
-// const maxUint8 int = (1 &lt;&lt; 8)
+const maxUint8 int = (1 &lt;&lt; 8)
 
 type LMnode[K I.Ord, V any] struct {
         LongKey   K
@@ -1401,60 +1399,154 @@ func Reverse[T any](first *Snode[T]) *Snode[T] <span class="cov5" title="6">{
 		<pre class="file" id="file9" style="display: none">package list
 
 import (
-        "github.com/kselnaag/algos/amath"
-        I "github.com/kselnaag/algos/types"
+        "fmt"
+        "sync"
 )
 
-const maxUint8 int = (1 &lt;&lt; 8)
+const MAXUINT16 int = (1 &lt;&lt; 16)
 
-type Mnode[K I.Ord, V any] struct {
+type HMnode[K comparable, V any] struct {
         Key  K
         Val  V
-        Next *Mnode[K, V]
+        Next *HMnode[K, V]
 }
 
-type Hmap[K I.Ord, V any] struct {
-        hmarr   [maxUint8]*Mnode[K, V]
+type HMap[K comparable, V any] struct {
         keysnum int
+        bktsnum int
+        rwm     sync.RWMutex
+        hmarr   []*HMnode[K, V]
 }
 
-func NewHmap[K I.Ord, V any]() *Hmap[K, V] <span class="cov1" title="1">{
-        return &amp;Hmap[K, V]{
-                hmarr:   [maxUint8]*Mnode[K, V]{},
+func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] <span class="cov1" title="1">{
+        bktsnum := 10
+        if len(buckets) &gt; 0 &amp;&amp; (buckets[0] &gt; 10) </span><span class="cov0" title="0">{
+                bktsnum = int(buckets[0])
+        }</span>
+        <span class="cov1" title="1">return &amp;HMap[K, V]{
                 keysnum: 0,
-        }
+                bktsnum: bktsnum,
+                hmarr:   make([]*HMnode[K, V], bktsnum),
+        }</span>
+}
+
+func (hm *HMap[K, V]) Buckets() int <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        return hm.bktsnum
 }</span>
 
-func (hm *Hmap[K, V]) Size() int <span class="cov4" title="8">{
+func (hm *HMap[K, V]) Size() int <span class="cov4" title="8">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
         return hm.keysnum
 }</span>
 
-func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
+func (hm *HMap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
         return hm.Size() == 0
 }</span>
 
-func hashFromKey[K I.Ord](key K) int <span class="cov6" title="23">{
-        bytesarr := I.ConvToByteArr(key)
-        hash := amath.HashDJB2a[uint32](bytesarr)
-        return int(hash &amp; 0x000000FF)
+func (hm *HMap[K, V]) convToBytes(key K) []byte <span class="cov8" title="224">{
+        return []byte(fmt.Sprintf("%v", key))
 }</span>
 
-func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov4" title="11">{
-        hashIDX := hashFromKey(key)
-        setnode := &amp;Mnode[K, V]{Key: key, Val: val, Next: nil}
-        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov2" title="2">{
-                if node.Key == key </span><span class="cov2" title="2">{
+func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov8" title="224">{
+        var hash uint32 = 5381
+        mlen := len(data)
+        for i := 0; i &lt; mlen; i++ </span><span class="cov9" title="406">{
+                hash = ((hash &lt;&lt; 5) + hash) ^ uint32(data[i])
+        }</span>
+        <span class="cov8" title="224">return hash</span>
+}
+
+func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov8" title="224">{
+        bytesarr := hm.convToBytes(key)
+        hash := hm.hashDJB2a(bytesarr)
+        return int(hash&amp;0x0000ffff) % hm.bktsnum
+}</span>
+
+func (hm *HMap[K, V]) evacuate() <span class="cov1" title="1">{
+        newbkts := hm.bktsnum * 5
+        switch </span>{ // isSpaceToGrow
+        case newbkts &lt; MAXUINT16:<span class="cov1" title="1">
+                hm.bktsnum = newbkts</span>
+        case newbkts &gt; MAXUINT16:<span class="cov0" title="0">
+                hm.bktsnum = MAXUINT16</span>
+        default:<span class="cov0" title="0">
+                return</span>
+        }
+
+        <span class="cov1" title="1">newhmarr := make([]*HMnode[K, V], hm.bktsnum)
+        for i, ptr := range hm.hmarr </span><span class="cov4" title="10">{
+                if ptr != nil </span><span class="cov4" title="10">{
+                        for node, next := ptr, ptr.Next; node != nil; </span><span class="cov7" title="100">{
+                                idx := hm.hashFromKey(node.Key)
+                                node.Next = newhmarr[idx]
+                                newhmarr[idx] = node
+
+                                node = next
+                                if next != nil </span><span class="cov7" title="90">{
+                                        next = next.Next
+                                }</span>
+                        }
+                        <span class="cov4" title="10">hm.hmarr[i] = nil</span>
+                }
+        }
+        <span class="cov1" title="1">hm.hmarr = newhmarr</span>
+}
+
+func (hm *HMap[K, V]) Set(key K, val V) <span class="cov7" title="112">{
+        hm.rwm.Lock()
+        defer hm.rwm.Unlock()
+
+        newnode := &amp;HMnode[K, V]{Key: key, Val: val, Next: nil}
+        hashIDX := hm.hashFromKey(key)
+        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov10" title="491">{
+                if node.Key == key </span><span class="cov4" title="10">{
                         node.Val = val
                         return
                 }</span>
         }
-        <span class="cov4" title="9">setnode.Next = hm.hmarr[hashIDX]
-        hm.hmarr[hashIDX] = setnode
+
+        <span class="cov7" title="102">isNeedToGrow := (hm.keysnum &gt;= (hm.bktsnum * 10))
+        if isNeedToGrow </span><span class="cov1" title="1">{
+                hm.evacuate()
+        }</span>
+
+        <span class="cov7" title="102">newnode.Next = hm.hmarr[hashIDX]
+        hm.hmarr[hashIDX] = newnode
         hm.keysnum++</span>
 }
 
-func (hm *Hmap[K, V]) Get(key K) *V <span class="cov4" title="10">{
-        hashIDX := hashFromKey(key)
+func (hm *HMap[K, V]) Del(key K) *V <span class="cov2" title="2">{
+        hm.rwm.Lock()
+        defer hm.rwm.Unlock()
+
+        hashIDX := hm.hashFromKey(key)
+        prev := hm.hmarr[hashIDX]
+        for node := prev; node != nil; node = node.Next </span><span class="cov1" title="1">{
+                if node.Key == key </span><span class="cov1" title="1">{
+                        val := &amp;node.Val
+                        if prev == hm.hmarr[hashIDX] </span><span class="cov1" title="1">{
+                                hm.hmarr[hashIDX] = node.Next
+                        }</span> else<span class="cov0" title="0"> {
+                                prev.Next = node.Next
+                        }</span>
+                        <span class="cov1" title="1">hm.keysnum--
+                        return val</span>
+                }
+                <span class="cov0" title="0">prev = node</span>
+        }
+        <span class="cov1" title="1">return nil</span>
+}
+
+func (hm *HMap[K, V]) Get(key K) *V <span class="cov4" title="10">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        hashIDX := hm.hashFromKey(key)
         for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov3" title="5">{
                 if node.Key == key </span><span class="cov3" title="5">{
                         return &amp;node.Val
@@ -1463,31 +1555,30 @@ func (hm *Hmap[K, V]) Get(key K) *V <span class="cov4" title="10">{
         <span class="cov3" title="5">return nil</span>
 }
 
-func (hm *Hmap[K, V]) Del(key K) <span class="cov2" title="2">{
-        hashIDX := hashFromKey(key)
-        prev := hm.hmarr[hashIDX]
-        for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov1" title="1">{
-                if node.Key == key </span><span class="cov1" title="1">{
-                        if prev == hm.hmarr[hashIDX] </span><span class="cov1" title="1">{
-                                hm.hmarr[hashIDX] = node.Next
-                        }</span> else<span class="cov0" title="0"> {
-                                prev.Next = node.Next
-                        }</span>
-                        <span class="cov1" title="1">hm.keysnum--
-                        return</span>
-                }
-                <span class="cov0" title="0">prev = node</span>
-        }
-}
+func (hm *HMap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
 
-func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
-        res := make([]K, 0, 8)
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="256">{
+        keysarr := make([]K, 0, hm.keysnum)
+        for _, ptr := range hm.hmarr </span><span class="cov4" title="10">{
                 for node := ptr; node != nil; node = node.Next </span><span class="cov4" title="8">{
-                        res = append(res, node.Key)
+                        keysarr = append(keysarr, node.Key)
                 }</span>
         }
-        <span class="cov1" title="1">return res</span>
+        <span class="cov1" title="1">return keysarr</span>
+}
+
+func (hm *HMap[K, V]) PrintAll() <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        for idx, ptr := range hm.hmarr </span><span class="cov6" title="50">{
+                fmt.Printf("| %d | %p |", idx, ptr)
+                for node := ptr; node != nil; node = node.Next </span><span class="cov7" title="101">{
+                        fmt.Printf(" -&gt; [key:%v, val:%v, next:%p]", node.Key, node.Val, node.Next)
+                }</span>
+                <span class="cov6" title="50">fmt.Printf("\n")</span>
+        }
 }
 </pre>
 		
@@ -2624,63 +2715,41 @@ type TestStruct struct {
         B int
 }
 
-func (s TestStruct) CompareTo(obj STOrd) int <span class="cov6" title="6">{
+func (s TestStruct) CompareTo(obj STOrd) int <span class="cov7" title="6">{
         objComp, ok := obj.(*TestStruct)
         if !ok </span><span class="cov0" title="0">{
                 panic(fmt.Sprintf("algos.types.TestStruct.CompareTo(obj STOrd): "+
                         "Type of arg is unknown, expected *types.TestStruct, actual %T", obj))</span>
         }
-        <span class="cov6" title="6">compFactor := func(st TestStruct) int </span><span class="cov8" title="12">{
+        <span class="cov7" title="6">compFactor := func(st TestStruct) int </span><span class="cov10" title="12">{
                 return st.A + st.B
         }</span>
-        <span class="cov6" title="6">this := compFactor(s)
+        <span class="cov7" title="6">this := compFactor(s)
         that := compFactor(*objComp)
         switch </span>{
         case this &lt; that:<span class="cov4" title="3">
                 return -1</span>
-        case this &gt; that:<span class="cov2" title="2">
+        case this &gt; that:<span class="cov3" title="2">
                 return +1</span>
         default:<span class="cov1" title="1">
                 return 0</span>
         }
 }
 
-func ConvToByteArr[T Ord](mess T) []byte <span class="cov7" title="11">{
-        res := make([]byte, 8)
-        switch m := any(mess).(type) </span>{
-        case int:<span class="cov4" title="3">
-                mi := uint(m)
-                for i := 0; i &lt; 8; i++ </span><span class="cov10" title="24">{
-                        res[i] = byte(mi &gt;&gt; (8 * (7 - i)))
-                }</span>
-        case uint:<span class="cov4" title="3">
-                for i := 0; i &lt; 8; i++ </span><span class="cov10" title="24">{
-                        res[i] = byte(m &gt;&gt; (8 * (7 - i)))
-                }</span>
-        case float64:<span class="cov4" title="3">
-                mi := uint(m)
-                for i := 0; i &lt; 8; i++ </span><span class="cov10" title="24">{
-                        res[i] = byte(mi &gt;&gt; (8 * (7 - i)))
-                }</span>
-        case string:<span class="cov1" title="1">
-                return []byte(m)</span>
-        default:<span class="cov1" title="1">
-                panic(fmt.Sprintf("algos.types.ConvToByteArr(mess any): "+
-                        "Type of arg is Ord interface, but not processed: arg Type is %T", mess))</span>
-        }
-        <span class="cov7" title="9">return res</span>
-}
+func ConvToByteArr(key any) []byte <span class="cov6" title="4">{
+        return []byte(fmt.Sprintf("%v", key))
+}</span>
 
-func LT[T any](i, j T) bool <span class="cov8" title="12">{
+func LT[T any](i, j T) bool <span class="cov10" title="12">{
         switch ii := any(i).(type) </span>{
-        case STOrd:<span class="cov2" title="2">
+        case STOrd:<span class="cov3" title="2">
                 jj, ok := any(j).(STOrd)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii.CompareTo(jj) &lt; 0
                 }</span>
-        case int:<span class="cov2" title="2">
+        case int:<span class="cov3" title="2">
                 jj, ok := any(j).(int)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &lt; jj
                 }</span>
         case int8:<span class="cov0" title="0">
@@ -2708,19 +2777,19 @@ func LT[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii &lt; jj
                 }</span>
-        case float64:<span class="cov2" title="2">
+        case float64:<span class="cov3" title="2">
                 jj, ok := any(j).(float64)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &lt; jj
                 }</span>
-        case string:<span class="cov2" title="2">
+        case string:<span class="cov3" title="2">
                 jj, ok := any(j).(string)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &lt; jj
                 }</span>
-        case uint:<span class="cov2" title="2">
+        case uint:<span class="cov3" title="2">
                 jj, ok := any(j).(uint)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &lt; jj
                 }</span>
         case uint8:<span class="cov0" title="0">
@@ -2733,9 +2802,9 @@ func LT[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii &lt; jj
                 }</span>
-        case uint32:<span class="cov2" title="2">
+        case uint32:<span class="cov3" title="2">
                 jj, ok := any(j).(uint32)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &lt; jj
                 }</span>
         case uint64:<span class="cov0" title="0">
@@ -2748,16 +2817,16 @@ func LT[T any](i, j T) bool <span class="cov8" title="12">{
                 "Type of args is not processed: arg Type is %T", i))</span>
 }
 
-func GT[T any](i, j T) bool <span class="cov8" title="12">{
+func GT[T any](i, j T) bool <span class="cov10" title="12">{
         switch ii := any(i).(type) </span>{
-        case STOrd:<span class="cov2" title="2">
+        case STOrd:<span class="cov3" title="2">
                 jj, ok := any(j).(STOrd)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii.CompareTo(jj) &gt; 0
                 }</span>
-        case int:<span class="cov2" title="2">
+        case int:<span class="cov3" title="2">
                 jj, ok := any(j).(int)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &gt; jj
                 }</span>
         case int8:<span class="cov0" title="0">
@@ -2785,19 +2854,19 @@ func GT[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii &gt; jj
                 }</span>
-        case float64:<span class="cov2" title="2">
+        case float64:<span class="cov3" title="2">
                 jj, ok := any(j).(float64)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &gt; jj
                 }</span>
-        case string:<span class="cov2" title="2">
+        case string:<span class="cov3" title="2">
                 jj, ok := any(j).(string)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &gt; jj
                 }</span>
-        case uint:<span class="cov2" title="2">
+        case uint:<span class="cov3" title="2">
                 jj, ok := any(j).(uint)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &gt; jj
                 }</span>
         case uint8:<span class="cov0" title="0">
@@ -2810,9 +2879,9 @@ func GT[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii &gt; jj
                 }</span>
-        case uint32:<span class="cov2" title="2">
+        case uint32:<span class="cov3" title="2">
                 jj, ok := any(j).(uint32)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii &gt; jj
                 }</span>
         case uint64:<span class="cov0" title="0">
@@ -2825,16 +2894,16 @@ func GT[T any](i, j T) bool <span class="cov8" title="12">{
                 "Type of args is not processed: arg Type is %T", i))</span>
 }
 
-func EQ[T any](i, j T) bool <span class="cov8" title="12">{
+func EQ[T any](i, j T) bool <span class="cov10" title="12">{
         switch ii := any(i).(type) </span>{
-        case STOrd:<span class="cov2" title="2">
+        case STOrd:<span class="cov3" title="2">
                 jj, ok := any(j).(STOrd)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii.CompareTo(jj) == 0
                 }</span>
-        case int:<span class="cov2" title="2">
+        case int:<span class="cov3" title="2">
                 jj, ok := any(j).(int)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii == jj
                 }</span>
         case int8:<span class="cov0" title="0">
@@ -2862,19 +2931,19 @@ func EQ[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii == jj
                 }</span>
-        case float64:<span class="cov2" title="2">
+        case float64:<span class="cov3" title="2">
                 jj, ok := any(j).(float64)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii == jj
                 }</span>
-        case string:<span class="cov2" title="2">
+        case string:<span class="cov3" title="2">
                 jj, ok := any(j).(string)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii == jj
                 }</span>
-        case uint:<span class="cov2" title="2">
+        case uint:<span class="cov3" title="2">
                 jj, ok := any(j).(uint)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii == jj
                 }</span>
         case uint8:<span class="cov0" title="0">
@@ -2887,9 +2956,9 @@ func EQ[T any](i, j T) bool <span class="cov8" title="12">{
                 if ok </span><span class="cov0" title="0">{
                         return ii == jj
                 }</span>
-        case uint32:<span class="cov2" title="2">
+        case uint32:<span class="cov3" title="2">
                 jj, ok := any(j).(uint32)
-                if ok </span><span class="cov2" title="2">{
+                if ok </span><span class="cov3" title="2">{
                         return ii == jj
                 }</span>
         case uint64:<span class="cov0" title="0">
@@ -3119,30 +3188,6 @@ func (res Result[T]) ToString() string <span class="cov2" title="3">{
         <span class="cov1" title="1">return fmt.Sprintf("Result(%v)", res.Res(func() T </span><span class="cov0" title="0">{
                 panic("algos.types.(Result): cannot get Result value")</span>
         }))
-}
-</pre>
-		
-		<pre class="file" id="file17" style="display: none">package unsafes
-
-import (
-        "fmt"
-        "reflect"
-        "unsafe"
-)
-
-func PrintAsBinary(a any) string <span class="cov0" title="0">{
-        type iface struct {
-                t, v unsafe.Pointer
-        }
-        p := uintptr((*iface)(unsafe.Pointer(&amp;a)).v)
-        t := reflect.TypeOf(a)
-        resStr := ""
-        for i := 0; i &lt; int(t.Size()); i++ </span><span class="cov0" title="0">{
-                n := *((*byte)(unsafe.Pointer(p)))
-                resStr += fmt.Sprintf("%08b ", n)
-                p += unsafe.Sizeof(n)
-        }</span>
-        <span class="cov0" title="0">return resStr</span>
 }
 </pre>
 		

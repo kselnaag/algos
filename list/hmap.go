@@ -5,7 +5,15 @@ import (
 	"sync"
 )
 
-const MAXUINT16 int = (1 << 16)
+// [list/hmap] This struct is size-optimized.
+// If the number of K-V pairs is more than 10^6 it seems you should use some other tool.
+
+const (
+	MAXUINT16  int = (1 << 16)
+	STARTBCKTS int = 10
+	GROWCOEFF  int = 5
+	GROWCOND   int = 10
+)
 
 type HMnode[K comparable, V any] struct {
 	Key  K
@@ -21,8 +29,8 @@ type HMap[K comparable, V any] struct {
 }
 
 func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] {
-	bktsnum := 10
-	if len(buckets) > 0 && (buckets[0] > 10) {
+	bktsnum := STARTBCKTS
+	if len(buckets) > 0 && (int(buckets[0]) > STARTBCKTS) {
 		bktsnum = int(buckets[0])
 	}
 	return &HMap[K, V]{
@@ -70,7 +78,7 @@ func (hm *HMap[K, V]) hashFromKey(key K) int {
 }
 
 func (hm *HMap[K, V]) evacuate() {
-	newbkts := hm.bktsnum * 5
+	newbkts := hm.bktsnum * GROWCOEFF
 	switch { // isSpaceToGrow
 	case newbkts < MAXUINT16:
 		hm.bktsnum = newbkts
@@ -112,7 +120,7 @@ func (hm *HMap[K, V]) Set(key K, val V) {
 		}
 	}
 
-	isNeedToGrow := (hm.keysnum >= (hm.bktsnum * 10))
+	isNeedToGrow := (hm.keysnum >= (hm.bktsnum * GROWCOND))
 	if isNeedToGrow {
 		hm.evacuate()
 	}

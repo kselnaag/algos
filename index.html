@@ -359,7 +359,7 @@ func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
 }</span>
 
 func hashFromKey[K I.Ord](key K) int <span class="cov6" title="23">{
-        bytesarr := I.ConvToByteArr(key)
+        bytesarr := I.ConvToBytes(key)
         hash := amath.HashDJB2a[uint32](bytesarr)
         return int(hash &amp; 0x000000FF)
 }</span>
@@ -766,25 +766,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="293">{
-        if hi &lt;= lo </span><span class="cov6" title="168">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="281">{
+        if hi &lt;= lo </span><span class="cov6" title="162">{
                 return
         }</span>
-        <span class="cov6" title="125">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="446">{
+        <span class="cov6" title="119">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="473">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="225">
+                case I.LT(arr[i], v):<span class="cov7" title="253">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov6" title="221">
+                case I.GT(arr[i], v):<span class="cov6" title="220">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="125">q3sort(arr, lo, l-1)
+        <span class="cov6" title="119">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -820,21 +820,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="214">{
+        for </span><span class="cov6" title="196">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="214">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="196">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="214">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="196">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="172">swap(arr, i, j)</span>
+                <span class="cov6" title="154">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -948,10 +948,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1570">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1572">{
                         if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1233">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="337"> {
+                        }</span> else<span class="cov7" title="339"> {
                                 break</span>
                         }
                 }
@@ -1011,7 +1011,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3290">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3299">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1403,7 +1403,15 @@ import (
         "sync"
 )
 
-const MAXUINT16 int = (1 &lt;&lt; 16)
+// [list/hmap] This struct is size-optimized.
+// If the number of K-V pairs is more than 10^6 it seems you should use some other tool.
+
+const (
+        MAXUINT16  int = (1 &lt;&lt; 16)
+        STARTBCKTS int = 10
+        GROWCOEFF  int = 5
+        GROWCOND   int = 10
+)
 
 type HMnode[K comparable, V any] struct {
         Key  K
@@ -1419,8 +1427,8 @@ type HMap[K comparable, V any] struct {
 }
 
 func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] <span class="cov1" title="1">{
-        bktsnum := 10
-        if len(buckets) &gt; 0 &amp;&amp; (buckets[0] &gt; 10) </span><span class="cov0" title="0">{
+        bktsnum := STARTBCKTS
+        if len(buckets) &gt; 0 &amp;&amp; (int(buckets[0]) &gt; STARTBCKTS) </span><span class="cov0" title="0">{
                 bktsnum = int(buckets[0])
         }</span>
         <span class="cov1" title="1">return &amp;HMap[K, V]{
@@ -1468,7 +1476,7 @@ func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov8" title="224">{
 }</span>
 
 func (hm *HMap[K, V]) evacuate() <span class="cov1" title="1">{
-        newbkts := hm.bktsnum * 5
+        newbkts := hm.bktsnum * GROWCOEFF
         switch </span>{ // isSpaceToGrow
         case newbkts &lt; MAXUINT16:<span class="cov1" title="1">
                 hm.bktsnum = newbkts</span>
@@ -1510,7 +1518,7 @@ func (hm *HMap[K, V]) Set(key K, val V) <span class="cov7" title="112">{
                 }</span>
         }
 
-        <span class="cov7" title="102">isNeedToGrow := (hm.keysnum &gt;= (hm.bktsnum * 10))
+        <span class="cov7" title="102">isNeedToGrow := (hm.keysnum &gt;= (hm.bktsnum * GROWCOND))
         if isNeedToGrow </span><span class="cov1" title="1">{
                 hm.evacuate()
         }</span>
@@ -2736,7 +2744,7 @@ func (s TestStruct) CompareTo(obj STOrd) int <span class="cov7" title="6">{
         }
 }
 
-func ConvToByteArr(key any) []byte <span class="cov6" title="4">{
+func ConvToBytes(key any) []byte <span class="cov6" title="4">{
         return []byte(fmt.Sprintf("%v", key))
 }</span>
 

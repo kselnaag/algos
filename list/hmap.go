@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-// [list/hmap] This struct is size-optimized.
-// If the number of K-V pairs is more than 10^6 it seems you should use some other tool.
+// [list/hmap] Separate-chained.
+// If the number of K-V pairs is more than 2^16*10 (655 360) it seems you should use some other tool.
 
 const (
 	MAXUINT16  int = (1 << 16)
@@ -15,28 +15,28 @@ const (
 	GROWCOND   int = 10
 )
 
-type HMnode[K comparable, V any] struct {
+type SCnode[K comparable, V any] struct {
 	Key  K
 	Val  V
-	Next *HMnode[K, V]
+	Next *SCnode[K, V]
 }
 
 type HMap[K comparable, V any] struct {
 	keysnum int
 	bktsnum int
 	rwm     sync.RWMutex
-	hmarr   []*HMnode[K, V]
+	hmarr   []*SCnode[K, V]
 }
 
 func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] {
 	bktsnum := STARTBCKTS
-	if len(buckets) > 0 && (int(buckets[0]) > STARTBCKTS) {
+	if (len(buckets) > 0) && (int(buckets[0]) > STARTBCKTS) {
 		bktsnum = int(buckets[0])
 	}
 	return &HMap[K, V]{
 		keysnum: 0,
 		bktsnum: bktsnum,
-		hmarr:   make([]*HMnode[K, V], bktsnum),
+		hmarr:   make([]*SCnode[K, V], bktsnum),
 	}
 }
 
@@ -55,7 +55,7 @@ func (hm *HMap[K, V]) Size() int {
 }
 
 func (hm *HMap[K, V]) IsEmpty() bool {
-	return hm.Size() == 0
+	return (hm.Size() == 0)
 }
 
 func (hm *HMap[K, V]) convToBytes(key K) []byte {
@@ -88,7 +88,7 @@ func (hm *HMap[K, V]) evacuate() {
 		return
 	}
 
-	newhmarr := make([]*HMnode[K, V], hm.bktsnum)
+	newhmarr := make([]*SCnode[K, V], hm.bktsnum)
 	for i, ptr := range hm.hmarr {
 		if ptr != nil {
 			for node, next := ptr, ptr.Next; node != nil; {
@@ -111,7 +111,7 @@ func (hm *HMap[K, V]) Set(key K, val V) {
 	hm.rwm.Lock()
 	defer hm.rwm.Unlock()
 
-	newnode := &HMnode[K, V]{Key: key, Val: val, Next: nil}
+	newnode := &SCnode[K, V]{Key: key, Val: val, Next: nil}
 	hashIDX := hm.hashFromKey(key)
 	for node := hm.hmarr[hashIDX]; node != nil; node = node.Next {
 		if node.Key == key {
@@ -123,6 +123,7 @@ func (hm *HMap[K, V]) Set(key K, val V) {
 	isNeedToGrow := (hm.keysnum >= (hm.bktsnum * GROWCOND))
 	if isNeedToGrow {
 		hm.evacuate()
+		hashIDX = hm.hashFromKey(key)
 	}
 
 	newnode.Next = hm.hmarr[hashIDX]

@@ -1,6 +1,7 @@
 package array_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/kselnaag/algos/array"
@@ -16,26 +17,23 @@ func TestHmap(t *testing.T) {
 	}()
 
 	t.Run("Hmap", func(t *testing.T) {
-		hmap := array.NewHmap[int, string]()
+		hmap := array.NewHMap[int, string]()
 		asrt.True(hmap.IsEmpty())
 		asrt.Equal(hmap.Size(), 0)
-		asrt.False(hmap.IsKey(1))
-		asrt.False(hmap.IsKey(2))
+		asrt.Nil(hmap.Get(1))
+		asrt.Nil(hmap.Get(2))
 		hmap.Set(1, "one")
-		asrt.True(hmap.IsKey(1))
+		asrt.NotNil(hmap.Get(1))
 		hmap.Set(1, "oneone")
-		asrt.True(hmap.IsKey(1))
+		asrt.NotNil(hmap.Get(1))
 		hmap.Set(2, "two")
-		asrt.True(hmap.IsKey(2))
+		asrt.NotNil(hmap.Get(2))
 		asrt.False(hmap.IsEmpty())
 		asrt.Equal(2, hmap.Size())
-		asrt.Equal("oneone", hmap.Get(1))
-		asrt.Equal("two", hmap.Get(2))
-		asrt.Panics(func() { hmap.Get(0) }, "algos.array.(hmap).Get():  Is not panics when key is not found")
-		asrt.Panics(func() { hmap.Get(3) }, "algos.array.(hmap).Get():  Is not panics when key is not found")
-		asrt.Panics(func() { hmap.Del(3) }, "algos.array.(hmap).Del():  Is not panics when key is not found")
+		asrt.Equal("oneone", *hmap.Get(1))
+		asrt.Equal("two", *hmap.Get(2))
 		hmap.Del(1)
-		asrt.False(hmap.IsKey(1))
+		asrt.Nil(hmap.Get(1))
 		asrt.False(hmap.IsEmpty())
 		asrt.Equal(1, hmap.Size())
 		hmap.Set(3, "a")
@@ -49,5 +47,11 @@ func TestHmap(t *testing.T) {
 		asrt.False(hmap.IsEmpty())
 		asrt.Equal(8, hmap.Size())
 		asrt.Equal([]int{5, 4, 7, 6, 3, 2, 9, 8}, hmap.IterateKeys())
+
+		for i := 0; i < 151; i++ {
+			hmap.Set(i, strconv.Itoa(i))
+		}
+		asrt.Equal(400, hmap.Buckets())
+		hmap.PrintAll()
 	})
 }

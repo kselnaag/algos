@@ -59,7 +59,7 @@
 				
 				<option value="file1">github.com/kselnaag/algos/array/func.go (100.0%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/hmap.go (91.5%)</option>
+				<option value="file2">github.com/kselnaag/algos/array/hmap.go (86.6%)</option>
 				
 				<option value="file3">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
 				
@@ -73,7 +73,7 @@
 				
 				<option value="file8">github.com/kselnaag/algos/list/func.go (100.0%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.2%)</option>
+				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.3%)</option>
 				
 				<option value="file10">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
 				
@@ -327,112 +327,226 @@ func perm[T any](a []T, f func([]T), i int) <span class="cov10" title="44">{
 		<pre class="file" id="file2" style="display: none">package array
 
 import (
-        "github.com/kselnaag/algos/amath"
-        I "github.com/kselnaag/algos/types"
+        "fmt"
+        "sync"
 )
 
-const maxUint8 int = (1 &lt;&lt; 8)
+// [array/hmap] Open-addressed.
+// If the number of K-V pairs is more than 2^16 (65 536) it seems you should use some other tool.
 
-type Anode[K I.Ord, V any] struct {
+const (
+        MAXUINT16  int     = (1 &lt;&lt; 16)
+        STARTBCKTS int     = 200
+        GROWCOND   float64 = 0.75
+        GROWCOEFF  int     = 2
+)
+
+type OAnode[K comparable, V any] struct {
         Key K
         Val V
 }
 
-type Hmap[K I.Ord, V any] struct {
-        hmarr   [maxUint8]*[]Anode[K, V]
+type HMap[K comparable, V any] struct {
         keysnum int
+        bktsnum int
+        rwm     sync.RWMutex
+        hmarr   []*OAnode[K, V]
 }
 
-func NewHmap[K I.Ord, V any]() Hmap[K, V] <span class="cov1" title="1">{
-        return Hmap[K, V]{
-                hmarr:   [maxUint8]*[]Anode[K, V]{},
+func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] <span class="cov1" title="1">{
+        bktsnum := STARTBCKTS
+        if (len(buckets) &gt; 0) &amp;&amp; (int(buckets[0]) &gt; STARTBCKTS) </span><span class="cov0" title="0">{
+                bktsnum = int(buckets[0])
+        }</span>
+        <span class="cov1" title="1">return &amp;HMap[K, V]{
                 keysnum: 0,
-        }
+                bktsnum: bktsnum,
+                hmarr:   make([]*OAnode[K, V], bktsnum),
+        }</span>
+}
+
+func (hm *HMap[K, V]) Buckets() int <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        return hm.bktsnum
 }</span>
 
-func (hm *Hmap[K, V]) Size() int <span class="cov4" title="8">{
+func (hm *HMap[K, V]) Size() int <span class="cov3" title="8">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
         return hm.keysnum
 }</span>
 
-func (hm *Hmap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
-        return hm.Size() == 0
+func (hm *HMap[K, V]) IsEmpty() bool <span class="cov2" title="4">{
+        return (hm.Size() == 0)
 }</span>
 
-func hashFromKey[K I.Ord](key K) int <span class="cov6" title="23">{
-        bytesarr := I.ConvToBytes(key)
-        hash := amath.HashDJB2a[uint32](bytesarr)
-        return int(hash &amp; 0x000000FF)
+func (hm *HMap[K, V]) convToBytes(key K) []byte <span class="cov7" title="322">{
+        return []byte(fmt.Sprintf("%v", key))
 }</span>
 
-func (hm *Hmap[K, V]) Set(key K, val V) <span class="cov4" title="11">{
-        hashIdx := hashFromKey(key)
-        node := Anode[K, V]{Key: key, Val: val}
-        if hm.hmarr[hashIdx] == nil </span><span class="cov4" title="9">{
-                hm.hmarr[hashIdx] = &amp;[]Anode[K, V]{node}
-                hm.keysnum++
+func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov7" title="322">{
+        var hash uint32 = 5381
+        mlen := len(data)
+        for i := 0; i &lt; mlen; i++ </span><span class="cov8" title="706">{
+                hash = ((hash &lt;&lt; 5) + hash) ^ uint32(data[i])
+        }</span>
+        <span class="cov7" title="322">return hash</span>
+}
+
+func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov7" title="322">{
+        bytesarr := hm.convToBytes(key)
+        hash := hm.hashDJB2a(bytesarr)
+        return int(hash&amp;0x0000ffff) % hm.bktsnum
+}</span>
+
+func (hm *HMap[K, V]) evacuate() <span class="cov1" title="1">{
+        newbkts := hm.bktsnum * GROWCOEFF
+        switch </span>{ // isSpaceToGrow
+        case newbkts &lt; MAXUINT16:<span class="cov1" title="1">
+                hm.bktsnum = newbkts</span>
+        case newbkts &gt; MAXUINT16:<span class="cov0" title="0">
+                hm.bktsnum = MAXUINT16</span>
+        default:<span class="cov0" title="0">
+                return</span>
+        }
+
+        <span class="cov1" title="1">newhmarr := make([]*OAnode[K, V], hm.bktsnum)
+        for i, ptr := range hm.hmarr </span><span class="cov7" title="200">{
+                if ptr == nil </span><span class="cov5" title="50">{
+                        continue</span>
+                }
+                <span class="cov6" title="150">hashIdx := hm.hashFromKey(ptr.Key)
+                cycl := 0
+                for newhmarr[hashIdx] != nil </span><span class="cov7" title="324">{
+                        hashIdx++
+                        if hashIdx &gt;= hm.bktsnum </span><span class="cov0" title="0">{
+                                hashIdx = 0
+                        }</span>
+                        <span class="cov7" title="324">cycl++
+                        if cycl &gt;= hm.bktsnum*2 </span><span class="cov0" title="0">{
+                                return
+                        }</span>
+                }
+                <span class="cov6" title="150">newhmarr[hashIdx] = ptr
+                hm.hmarr[i] = nil</span>
+        }
+        <span class="cov1" title="1">hm.hmarr = newhmarr</span>
+}
+
+func (hm *HMap[K, V]) Set(key K, val V) <span class="cov6" title="162">{
+        hm.rwm.Lock()
+        defer hm.rwm.Unlock()
+
+        newnode := &amp;OAnode[K, V]{Key: key, Val: val}
+        hashIdx := hm.hashFromKey(key)
+        if (hm.hmarr[hashIdx] != nil) &amp;&amp; (hm.hmarr[hashIdx].Key == key) </span><span class="cov3" title="10">{
+                hm.hmarr[hashIdx].Val = val
                 return
         }</span>
-        <span class="cov2" title="2">for i, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="2">{
-                if hnode.Key == key </span><span class="cov2" title="2">{
-                        (*hm.hmarr[hashIdx])[i] = node
+
+        <span class="cov6" title="152">isNeedToGrow := (hm.keysnum &gt;= (int(float64(hm.bktsnum) * GROWCOND)))
+        if isNeedToGrow </span><span class="cov1" title="1">{
+                hm.evacuate()
+                hashIdx = hm.hashFromKey(key)
+        }</span>
+
+        <span class="cov6" title="152">cycl := 0
+        for hm.hmarr[hashIdx] != nil </span><span class="cov10" title="2187">{
+                hashIdx++
+                if hashIdx &gt;= hm.bktsnum </span><span class="cov3" title="8">{
+                        hashIdx = 0
+                }</span>
+                <span class="cov10" title="2187">cycl++
+                if cycl &gt;= hm.bktsnum*2 </span><span class="cov0" title="0">{
                         return
                 }</span>
         }
-        <span class="cov0" title="0">*hm.hmarr[hashIdx] = append(*hm.hmarr[hashIdx], node)
+        <span class="cov6" title="152">hm.hmarr[hashIdx] = newnode
         hm.keysnum++</span>
 }
 
-func (hm *Hmap[K, V]) IsKey(key K) bool <span class="cov3" title="6">{
-        hashIdx := hashFromKey(key)
-        if hm.hmarr[hashIdx] == nil </span><span class="cov2" title="2">{
-                return false
-        }</span>
-        <span class="cov3" title="4">for _, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="3">{
-                if hnode.Key == key </span><span class="cov2" title="3">{
-                        return true
-                }</span>
-        }
-        <span class="cov1" title="1">return false</span>
-}
+func (hm *HMap[K, V]) Del(key K) *V <span class="cov1" title="1">{
+        hm.rwm.Lock()
+        defer hm.rwm.Unlock()
 
-func (hm *Hmap[K, V]) Get(key K) V <span class="cov3" title="4">{
-        hashIdx := hashFromKey(key)
-        if hm.hmarr[hashIdx] == nil </span><span class="cov2" title="2">{
-                panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
-        }
-        <span class="cov2" title="2">for _, hnode := range *hm.hmarr[hashIdx] </span><span class="cov2" title="2">{
-                if hnode.Key == key </span><span class="cov2" title="2">{
-                        return hnode.Val
-                }</span>
-        }
-        <span class="cov0" title="0">panic("algos.array.(Hmap).Get(key K): No any key found, check first")</span>
-}
-
-func (hm *Hmap[K, V]) Del(key K) <span class="cov2" title="2">{
-        hashIdx := hashFromKey(key)
-        if hm.hmarr[hashIdx] == nil </span><span class="cov1" title="1">{
-                panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
-        }
-        <span class="cov1" title="1">for i, hnode := range *hm.hmarr[hashIdx] </span><span class="cov1" title="1">{
-                if hnode.Key == key </span><span class="cov1" title="1">{
-                        *hm.hmarr[hashIdx] = append((*hm.hmarr[hashIdx])[:i], (*hm.hmarr[hashIdx])[i+1:]...)
-                        hm.keysnum--
-                        return
-                }</span>
-        }
-        <span class="cov0" title="0">panic("algos.array.(Hmap).Del(key K): No any key found, check first")</span>
-}
-
-func (hm *Hmap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
-        res := []K{}
-        for _, ptr := range hm.hmarr </span><span class="cov10" title="256">{
-                if ptr != nil </span><span class="cov4" title="9">{
-                        for _, kvnode := range *ptr </span><span class="cov4" title="8">{
-                                res = append(res, kvnode.Key)
+        hashIdx := hm.hashFromKey(key)
+        cycl := 0
+        var val V
+        found := false
+        for hm.hmarr[hashIdx] != nil </span><span class="cov1" title="1">{
+                if (hm.hmarr[hashIdx].Key == key) || found </span><span class="cov1" title="1">{
+                        found = true
+                        if hm.hmarr[hashIdx].Key == key </span><span class="cov1" title="1">{
+                                val = hm.hmarr[hashIdx].Val
+                                hm.keysnum--
+                        }</span>
+                        <span class="cov1" title="1">if (hashIdx + 1) &gt;= hm.bktsnum </span><span class="cov0" title="0">{
+                                hm.hmarr[hashIdx] = hm.hmarr[0]
+                        }</span> else<span class="cov1" title="1"> {
+                                hm.hmarr[hashIdx] = hm.hmarr[hashIdx+1]
                         }</span>
                 }
+                <span class="cov1" title="1">hashIdx++
+                if hashIdx &gt;= hm.bktsnum </span><span class="cov0" title="0">{
+                        hashIdx = 0
+                }</span>
+                <span class="cov1" title="1">cycl++
+                if cycl &gt;= hm.bktsnum*2 </span><span class="cov0" title="0">{
+                        break</span>
+                }
         }
-        <span class="cov1" title="1">return res</span>
+        <span class="cov1" title="1">return &amp;val</span>
+}
+
+func (hm *HMap[K, V]) Get(key K) *V <span class="cov3" title="8">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        cycl := 0
+        hashIdx := hm.hashFromKey(key)
+        for hm.hmarr[hashIdx] != nil </span><span class="cov2" title="5">{
+                if hm.hmarr[hashIdx].Key == key </span><span class="cov2" title="5">{
+                        return &amp;hm.hmarr[hashIdx].Val
+                }</span>
+                <span class="cov0" title="0">hashIdx++
+                if hashIdx &gt;= hm.bktsnum </span><span class="cov0" title="0">{
+                        hashIdx = 0
+                }</span>
+                <span class="cov0" title="0">cycl++
+                if cycl &gt;= hm.bktsnum*2 </span><span class="cov0" title="0">{
+                        break</span>
+                }
+        }
+        <span class="cov2" title="3">return nil</span>
+}
+
+func (hm *HMap[K, V]) IterateKeys() []K <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        keysarr := make([]K, 0, hm.keysnum)
+        for _, node := range hm.hmarr </span><span class="cov7" title="200">{
+                if node != nil </span><span class="cov3" title="8">{
+                        keysarr = append(keysarr, node.Key)
+                }</span>
+        }
+        <span class="cov1" title="1">return keysarr</span>
+}
+
+func (hm *HMap[K, V]) PrintAll() <span class="cov1" title="1">{
+        hm.rwm.RLock()
+        defer hm.rwm.RUnlock()
+
+        for idx, ptr := range hm.hmarr </span><span class="cov8" title="400">{
+                fmt.Printf("| %d | %p |", idx, ptr)
+                if ptr != nil </span><span class="cov6" title="151">{
+                        fmt.Printf(" -&gt; [key:%v, val:%v]", ptr.Key, ptr.Val)
+                }</span>
+                <span class="cov8" title="400">fmt.Printf("\n")</span>
+        }
 }
 </pre>
 		
@@ -771,13 +885,13 @@ func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="281">{
                 return
         }</span>
         <span class="cov6" title="119">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="473">{
+        for i &lt;= g </span><span class="cov7" title="458">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="253">
+                case I.LT(arr[i], v):<span class="cov7" title="228">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov6" title="220">
+                case I.GT(arr[i], v):<span class="cov7" title="230">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
@@ -820,21 +934,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="196">{
+        for </span><span class="cov6" title="184">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="196">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="184">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="196">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="184">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="154">swap(arr, i, j)</span>
+                <span class="cov6" title="142">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -948,10 +1062,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1572">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1233">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1582">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1240">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="339"> {
+                        }</span> else<span class="cov7" title="342"> {
                                 break</span>
                         }
                 }
@@ -1011,7 +1125,7 @@ func IsSorted[T any](arr []T) bool <span class="cov2" title="4">{
         <span class="cov1" title="2">return true</span>
 }
 
-func swap[T any](arr []T, i, j int) <span class="cov10" title="3299">{
+func swap[T any](arr []T, i, j int) <span class="cov10" title="3279">{
         arr[i], arr[j] = arr[j], arr[i]
 }</span>
 </pre>
@@ -1403,8 +1517,8 @@ import (
         "sync"
 )
 
-// [list/hmap] This struct is size-optimized.
-// If the number of K-V pairs is more than 10^6 it seems you should use some other tool.
+// [list/hmap] Separate-chained.
+// If the number of K-V pairs is more than 2^16*10 (655 360) it seems you should use some other tool.
 
 const (
         MAXUINT16  int = (1 &lt;&lt; 16)
@@ -1413,28 +1527,28 @@ const (
         GROWCOND   int = 10
 )
 
-type HMnode[K comparable, V any] struct {
+type SCnode[K comparable, V any] struct {
         Key  K
         Val  V
-        Next *HMnode[K, V]
+        Next *SCnode[K, V]
 }
 
 type HMap[K comparable, V any] struct {
         keysnum int
         bktsnum int
         rwm     sync.RWMutex
-        hmarr   []*HMnode[K, V]
+        hmarr   []*SCnode[K, V]
 }
 
 func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] <span class="cov1" title="1">{
         bktsnum := STARTBCKTS
-        if len(buckets) &gt; 0 &amp;&amp; (int(buckets[0]) &gt; STARTBCKTS) </span><span class="cov0" title="0">{
+        if (len(buckets) &gt; 0) &amp;&amp; (int(buckets[0]) &gt; STARTBCKTS) </span><span class="cov0" title="0">{
                 bktsnum = int(buckets[0])
         }</span>
         <span class="cov1" title="1">return &amp;HMap[K, V]{
                 keysnum: 0,
                 bktsnum: bktsnum,
-                hmarr:   make([]*HMnode[K, V], bktsnum),
+                hmarr:   make([]*SCnode[K, V], bktsnum),
         }</span>
 }
 
@@ -1453,23 +1567,23 @@ func (hm *HMap[K, V]) Size() int <span class="cov4" title="8">{
 }</span>
 
 func (hm *HMap[K, V]) IsEmpty() bool <span class="cov3" title="4">{
-        return hm.Size() == 0
+        return (hm.Size() == 0)
 }</span>
 
-func (hm *HMap[K, V]) convToBytes(key K) []byte <span class="cov8" title="224">{
+func (hm *HMap[K, V]) convToBytes(key K) []byte <span class="cov8" title="225">{
         return []byte(fmt.Sprintf("%v", key))
 }</span>
 
-func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov8" title="224">{
+func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov8" title="225">{
         var hash uint32 = 5381
         mlen := len(data)
-        for i := 0; i &lt; mlen; i++ </span><span class="cov9" title="406">{
+        for i := 0; i &lt; mlen; i++ </span><span class="cov9" title="409">{
                 hash = ((hash &lt;&lt; 5) + hash) ^ uint32(data[i])
         }</span>
-        <span class="cov8" title="224">return hash</span>
+        <span class="cov8" title="225">return hash</span>
 }
 
-func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov8" title="224">{
+func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov8" title="225">{
         bytesarr := hm.convToBytes(key)
         hash := hm.hashDJB2a(bytesarr)
         return int(hash&amp;0x0000ffff) % hm.bktsnum
@@ -1486,7 +1600,7 @@ func (hm *HMap[K, V]) evacuate() <span class="cov1" title="1">{
                 return</span>
         }
 
-        <span class="cov1" title="1">newhmarr := make([]*HMnode[K, V], hm.bktsnum)
+        <span class="cov1" title="1">newhmarr := make([]*SCnode[K, V], hm.bktsnum)
         for i, ptr := range hm.hmarr </span><span class="cov4" title="10">{
                 if ptr != nil </span><span class="cov4" title="10">{
                         for node, next := ptr, ptr.Next; node != nil; </span><span class="cov7" title="100">{
@@ -1509,7 +1623,7 @@ func (hm *HMap[K, V]) Set(key K, val V) <span class="cov7" title="112">{
         hm.rwm.Lock()
         defer hm.rwm.Unlock()
 
-        newnode := &amp;HMnode[K, V]{Key: key, Val: val, Next: nil}
+        newnode := &amp;SCnode[K, V]{Key: key, Val: val, Next: nil}
         hashIDX := hm.hashFromKey(key)
         for node := hm.hmarr[hashIDX]; node != nil; node = node.Next </span><span class="cov10" title="491">{
                 if node.Key == key </span><span class="cov4" title="10">{
@@ -1521,6 +1635,7 @@ func (hm *HMap[K, V]) Set(key K, val V) <span class="cov7" title="112">{
         <span class="cov7" title="102">isNeedToGrow := (hm.keysnum &gt;= (hm.bktsnum * GROWCOND))
         if isNeedToGrow </span><span class="cov1" title="1">{
                 hm.evacuate()
+                hashIDX = hm.hashFromKey(key)
         }</span>
 
         <span class="cov7" title="102">newnode.Next = hm.hmarr[hashIDX]

@@ -1,110 +1,224 @@
 package array
 
 import (
-	"github.com/kselnaag/algos/amath"
-	I "github.com/kselnaag/algos/types"
+	"fmt"
+	"sync"
 )
 
-const maxUint8 int = (1 << 8)
+// [array/hmap] Open-addressed.
+// If the number of K-V pairs is more than 2^16 (65 536) it seems you should use some other tool.
 
-type Anode[K I.Ord, V any] struct {
+const (
+	MAXUINT16  int     = (1 << 16)
+	STARTBCKTS int     = 200
+	GROWCOND   float64 = 0.75
+	GROWCOEFF  int     = 2
+)
+
+type OAnode[K comparable, V any] struct {
 	Key K
 	Val V
 }
 
-type Hmap[K I.Ord, V any] struct {
-	hmarr   [maxUint8]*[]Anode[K, V]
+type HMap[K comparable, V any] struct {
 	keysnum int
+	bktsnum int
+	rwm     sync.RWMutex
+	hmarr   []*OAnode[K, V]
 }
 
-func NewHmap[K I.Ord, V any]() Hmap[K, V] {
-	return Hmap[K, V]{
-		hmarr:   [maxUint8]*[]Anode[K, V]{},
+func NewHMap[K comparable, V any](buckets ...uint16) *HMap[K, V] {
+	bktsnum := STARTBCKTS
+	if (len(buckets) > 0) && (int(buckets[0]) > STARTBCKTS) {
+		bktsnum = int(buckets[0])
+	}
+	return &HMap[K, V]{
 		keysnum: 0,
+		bktsnum: bktsnum,
+		hmarr:   make([]*OAnode[K, V], bktsnum),
 	}
 }
 
-func (hm *Hmap[K, V]) Size() int {
+func (hm *HMap[K, V]) Buckets() int {
+	hm.rwm.RLock()
+	defer hm.rwm.RUnlock()
+
+	return hm.bktsnum
+}
+
+func (hm *HMap[K, V]) Size() int {
+	hm.rwm.RLock()
+	defer hm.rwm.RUnlock()
+
 	return hm.keysnum
 }
 
-func (hm *Hmap[K, V]) IsEmpty() bool {
-	return hm.Size() == 0
+func (hm *HMap[K, V]) IsEmpty() bool {
+	return (hm.Size() == 0)
 }
 
-func hashFromKey[K I.Ord](key K) int {
-	bytesarr := I.ConvToBytes(key)
-	hash := amath.HashDJB2a[uint32](bytesarr)
-	return int(hash & 0x000000FF)
+func (hm *HMap[K, V]) convToBytes(key K) []byte {
+	return []byte(fmt.Sprintf("%v", key))
 }
 
-func (hm *Hmap[K, V]) Set(key K, val V) {
-	hashIdx := hashFromKey(key)
-	node := Anode[K, V]{Key: key, Val: val}
-	if hm.hmarr[hashIdx] == nil {
-		hm.hmarr[hashIdx] = &[]Anode[K, V]{node}
-		hm.keysnum++
+func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 {
+	var hash uint32 = 5381
+	mlen := len(data)
+	for i := 0; i < mlen; i++ {
+		hash = ((hash << 5) + hash) ^ uint32(data[i])
+	}
+	return hash
+}
+
+func (hm *HMap[K, V]) hashFromKey(key K) int {
+	bytesarr := hm.convToBytes(key)
+	hash := hm.hashDJB2a(bytesarr)
+	return int(hash&0x0000ffff) % hm.bktsnum
+}
+
+func (hm *HMap[K, V]) evacuate() {
+	newbkts := hm.bktsnum * GROWCOEFF
+	switch { // isSpaceToGrow
+	case newbkts < MAXUINT16:
+		hm.bktsnum = newbkts
+	case newbkts > MAXUINT16:
+		hm.bktsnum = MAXUINT16
+	default:
 		return
 	}
-	for i, hnode := range *hm.hmarr[hashIdx] {
-		if hnode.Key == key {
-			(*hm.hmarr[hashIdx])[i] = node
+
+	newhmarr := make([]*OAnode[K, V], hm.bktsnum)
+	for i, ptr := range hm.hmarr {
+		if ptr == nil {
+			continue
+		}
+		hashIdx := hm.hashFromKey(ptr.Key)
+		cycl := 0
+		for newhmarr[hashIdx] != nil {
+			hashIdx++
+			if hashIdx >= hm.bktsnum {
+				hashIdx = 0
+			}
+			cycl++
+			if cycl >= hm.bktsnum*2 {
+				return
+			}
+		}
+		newhmarr[hashIdx] = ptr
+		hm.hmarr[i] = nil
+	}
+	hm.hmarr = newhmarr
+}
+
+func (hm *HMap[K, V]) Set(key K, val V) {
+	hm.rwm.Lock()
+	defer hm.rwm.Unlock()
+
+	newnode := &OAnode[K, V]{Key: key, Val: val}
+	hashIdx := hm.hashFromKey(key)
+	if (hm.hmarr[hashIdx] != nil) && (hm.hmarr[hashIdx].Key == key) {
+		hm.hmarr[hashIdx].Val = val
+		return
+	}
+
+	isNeedToGrow := (hm.keysnum >= (int(float64(hm.bktsnum) * GROWCOND)))
+	if isNeedToGrow {
+		hm.evacuate()
+		hashIdx = hm.hashFromKey(key)
+	}
+
+	cycl := 0
+	for hm.hmarr[hashIdx] != nil {
+		hashIdx++
+		if hashIdx >= hm.bktsnum {
+			hashIdx = 0
+		}
+		cycl++
+		if cycl >= hm.bktsnum*2 {
 			return
 		}
 	}
-	*hm.hmarr[hashIdx] = append(*hm.hmarr[hashIdx], node)
+	hm.hmarr[hashIdx] = newnode
 	hm.keysnum++
 }
 
-func (hm *Hmap[K, V]) IsKey(key K) bool {
-	hashIdx := hashFromKey(key)
-	if hm.hmarr[hashIdx] == nil {
-		return false
-	}
-	for _, hnode := range *hm.hmarr[hashIdx] {
-		if hnode.Key == key {
-			return true
-		}
-	}
-	return false
-}
+func (hm *HMap[K, V]) Del(key K) *V {
+	hm.rwm.Lock()
+	defer hm.rwm.Unlock()
 
-func (hm *Hmap[K, V]) Get(key K) V {
-	hashIdx := hashFromKey(key)
-	if hm.hmarr[hashIdx] == nil {
-		panic("algos.array.(Hmap).Get(key K): No any key found, check first")
-	}
-	for _, hnode := range *hm.hmarr[hashIdx] {
-		if hnode.Key == key {
-			return hnode.Val
-		}
-	}
-	panic("algos.array.(Hmap).Get(key K): No any key found, check first")
-}
-
-func (hm *Hmap[K, V]) Del(key K) {
-	hashIdx := hashFromKey(key)
-	if hm.hmarr[hashIdx] == nil {
-		panic("algos.array.(Hmap).Del(key K): No any key found, check first")
-	}
-	for i, hnode := range *hm.hmarr[hashIdx] {
-		if hnode.Key == key {
-			*hm.hmarr[hashIdx] = append((*hm.hmarr[hashIdx])[:i], (*hm.hmarr[hashIdx])[i+1:]...)
-			hm.keysnum--
-			return
-		}
-	}
-	panic("algos.array.(Hmap).Del(key K): No any key found, check first")
-}
-
-func (hm *Hmap[K, V]) IterateKeys() []K {
-	res := []K{}
-	for _, ptr := range hm.hmarr {
-		if ptr != nil {
-			for _, kvnode := range *ptr {
-				res = append(res, kvnode.Key)
+	hashIdx := hm.hashFromKey(key)
+	cycl := 0
+	var val V
+	found := false
+	for hm.hmarr[hashIdx] != nil {
+		if (hm.hmarr[hashIdx].Key == key) || found {
+			found = true
+			if hm.hmarr[hashIdx].Key == key {
+				val = hm.hmarr[hashIdx].Val
+				hm.keysnum--
+			}
+			if (hashIdx + 1) >= hm.bktsnum {
+				hm.hmarr[hashIdx] = hm.hmarr[0]
+			} else {
+				hm.hmarr[hashIdx] = hm.hmarr[hashIdx+1]
 			}
 		}
+		hashIdx++
+		if hashIdx >= hm.bktsnum {
+			hashIdx = 0
+		}
+		cycl++
+		if cycl >= hm.bktsnum*2 {
+			break
+		}
 	}
-	return res
+	return &val
+}
+
+func (hm *HMap[K, V]) Get(key K) *V {
+	hm.rwm.RLock()
+	defer hm.rwm.RUnlock()
+
+	cycl := 0
+	hashIdx := hm.hashFromKey(key)
+	for hm.hmarr[hashIdx] != nil {
+		if hm.hmarr[hashIdx].Key == key {
+			return &hm.hmarr[hashIdx].Val
+		}
+		hashIdx++
+		if hashIdx >= hm.bktsnum {
+			hashIdx = 0
+		}
+		cycl++
+		if cycl >= hm.bktsnum*2 {
+			break
+		}
+	}
+	return nil
+}
+
+func (hm *HMap[K, V]) IterateKeys() []K {
+	hm.rwm.RLock()
+	defer hm.rwm.RUnlock()
+
+	keysarr := make([]K, 0, hm.keysnum)
+	for _, node := range hm.hmarr {
+		if node != nil {
+			keysarr = append(keysarr, node.Key)
+		}
+	}
+	return keysarr
+}
+
+func (hm *HMap[K, V]) PrintAll() {
+	hm.rwm.RLock()
+	defer hm.rwm.RUnlock()
+
+	for idx, ptr := range hm.hmarr {
+		fmt.Printf("| %d | %p |", idx, ptr)
+		if ptr != nil {
+			fmt.Printf(" -> [key:%v, val:%v]", ptr.Key, ptr.Val)
+		}
+		fmt.Printf("\n")
+	}
 }

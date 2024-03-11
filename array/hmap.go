@@ -6,12 +6,12 @@ import (
 )
 
 // [array/hmap] Open-addressed.
-// If the number of K-V pairs is more than 2^16 (65 536) it seems you should use some other tool.
+// If the number of K-V pairs is more than 2^15 (32 768) it seems you should use some other tool.
 
 const (
 	MAXUINT16  int     = (1 << 16)
 	STARTBCKTS int     = 200
-	GROWCOND   float64 = 0.75
+	GROWCOND   float64 = 0.5
 	GROWCOEFF  int     = 2
 )
 
@@ -146,22 +146,19 @@ func (hm *HMap[K, V]) Del(key K) *V {
 	hm.rwm.Lock()
 	defer hm.rwm.Unlock()
 
-	hashIdx := hm.hashFromKey(key)
-	cycl := 0
-	var val V
-	found := false
+	var (
+		hashIdx int = hm.hashFromKey(key)
+		cycl    int
+		val     V
+		keyIdx  int
+		found   bool
+	)
 	for hm.hmarr[hashIdx] != nil {
-		if (hm.hmarr[hashIdx].Key == key) || found {
+		if hm.hmarr[hashIdx].Key == key {
+			keyIdx = hashIdx
+			val = hm.hmarr[hashIdx].Val
+			hm.keysnum--
 			found = true
-			if hm.hmarr[hashIdx].Key == key {
-				val = hm.hmarr[hashIdx].Val
-				hm.keysnum--
-			}
-			if (hashIdx + 1) >= hm.bktsnum {
-				hm.hmarr[hashIdx] = hm.hmarr[0]
-			} else {
-				hm.hmarr[hashIdx] = hm.hmarr[hashIdx+1]
-			}
 		}
 		hashIdx++
 		if hashIdx >= hm.bktsnum {
@@ -171,6 +168,14 @@ func (hm *HMap[K, V]) Del(key K) *V {
 		if cycl >= hm.bktsnum*2 {
 			break
 		}
+	}
+	if found {
+		if hashIdx == 0 {
+			hashIdx = hm.bktsnum
+		}
+		hashIdx--
+		hm.hmarr[keyIdx] = hm.hmarr[hashIdx]
+		hm.hmarr[hashIdx] = nil
 	}
 	return &val
 }

@@ -48,7 +48,7 @@ func TestHmap(t *testing.T) {
 		asrt.Equal(8, hmap.Size())
 		asrt.Equal([]int{5, 4, 7, 6, 3, 2, 9, 8}, hmap.IterateKeys())
 
-		for i := 0; i < 151; i++ {
+		for i := 0; i < 101; i++ {
 			hmap.Set(i, strconv.Itoa(i))
 		}
 		asrt.Equal(400, hmap.Buckets())

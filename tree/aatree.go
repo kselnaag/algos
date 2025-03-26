@@ -3,8 +3,8 @@ package tree
 import (
 	"fmt"
 
-	"github.com/kselnaag/algos/amath"
-	I "github.com/kselnaag/algos/types"
+	"algos/amath"
+	I "algos/types"
 )
 
 // right-linear Arne Andersson tree with intensive node deletion
@@ -142,9 +142,9 @@ func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V] {
 		if node.R == nil {
 			return node.L
 		}
-		min := tm.min(node.R)
-		node.Key = min.Key
-		node.Val = min.Val
+		minnode := tm.min(node.R)
+		node.Key = minnode.Key
+		node.Val = minnode.Val
 		node.R = tm.delmin(node.R)
 	}
 	return tm.balanceDel(node)
@@ -231,11 +231,12 @@ func (tm *AAmap[K, V]) PrintTreeCheck() {
 
 func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int) {
 	if node != nil {
-		tm.printtree(node.R, n+5)
+		margin := 5
+		tm.printtree(node.R, n+margin)
 		for i := 0; i < n; i++ {
 			fmt.Printf(" ")
 		}
 		fmt.Printf("%v^%v:%v\n", node.Lvl, node.Key, node.Val)
-		tm.printtree(node.L, n+5)
+		tm.printtree(node.L, n+margin)
 	}
 }

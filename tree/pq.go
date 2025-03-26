@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 // tree based Priority Queue
@@ -27,42 +27,42 @@ func NewMinPQ[K I.Ord, V any]() MinPQ[K, V] {
 	}
 }
 
-func (min *MinPQ[K, V]) Size() int {
-	return min.size
+func (minpq *MinPQ[K, V]) Size() int {
+	return minpq.size
 }
 
-func (min *MinPQ[K, V]) IsEmpty() bool {
-	return min.Size() == 0
+func (minpq *MinPQ[K, V]) IsEmpty() bool {
+	return minpq.Size() == 0
 }
 
-func (min *MinPQ[K, V]) Add(key K, val V) {
-	if min.IsEmpty() {
-		min.root = &PQnode[K, V]{Key: key, Val: val, P: nil, L: nil, R: nil}
-		min.root.P = min.root
+func (minpq *MinPQ[K, V]) Add(key K, val V) {
+	if minpq.IsEmpty() {
+		minpq.root = &PQnode[K, V]{Key: key, Val: val, P: nil, L: nil, R: nil}
+		minpq.root.P = minpq.root
 	} else {
-		nodePar := min.lastRightNodePar(min.root.P)
+		nodePar := minpq.lastRightNodePar(minpq.root.P)
 		node := &PQnode[K, V]{Key: key, Val: val, P: nodePar, L: nil, R: nil}
 		if nodePar.L == nil {
 			nodePar.L = node
 		} else {
 			nodePar.R = node
 		}
-		min.root.P = node
-		min.swimNode(node)
+		minpq.root.P = node
+		minpq.swimNode(node)
 	}
-	min.size++
+	minpq.size++
 }
 
-func (min *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] {
+func (minpq *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] {
 	if lastnode == nil {
 		return nil
 	}
-	if lastnode == min.root {
-		return min.root
+	if lastnode == minpq.root {
+		return minpq.root
 	}
 	node := lastnode.P
 	if lastnode == node.R {
-		for (node != min.root) && (lastnode == node.R) {
+		for (node != minpq.root) && (lastnode == node.R) {
 			lastnode = node
 			node = node.P
 		}
@@ -76,59 +76,59 @@ func (min *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] {
 	return node
 }
 
-func (min *MinPQ[K, V]) swapNode(i, j *PQnode[K, V]) {
+func (minpq *MinPQ[K, V]) swapNode(i, j *PQnode[K, V]) {
 	i.Key, i.Val, j.Key, j.Val = j.Key, j.Val, i.Key, i.Val
 }
 
-func (min *MinPQ[K, V]) swimNode(node *PQnode[K, V]) {
+func (minpq *MinPQ[K, V]) swimNode(node *PQnode[K, V]) {
 	if (node == nil) || (node.P == nil) {
 		return
 	}
-	for (node != min.root) && I.LT(node.Key, node.P.Key) {
-		min.swapNode(node, node.P)
+	for (node != minpq.root) && I.LT(node.Key, node.P.Key) {
+		minpq.swapNode(node, node.P)
 		node = node.P
 	}
 }
 
-func (min *MinPQ[K, V]) Min() (key K, val V) {
-	return min.root.Key, min.root.Val
+func (minpq *MinPQ[K, V]) Min() (key K, val V) {
+	return minpq.root.Key, minpq.root.Val
 }
 
-func (min *MinPQ[K, V]) DelMin() (key K, val V) {
-	if min.IsEmpty() {
+func (minpq *MinPQ[K, V]) DelMin() (key K, val V) {
+	if minpq.IsEmpty() {
 		panic("algos.tree.(MinPQ).DelMin(): No any node found, tree is empty")
 	}
-	key, val = min.root.Key, min.root.Val
-	if min.size == 1 {
-		min.root = nil
-		min.size--
+	key, val = minpq.root.Key, minpq.root.Val
+	if minpq.size == 1 {
+		minpq.root = nil
+		minpq.size--
 		return key, val
 	}
-	node := min.lastLeftNode(min.root.P)
-	min.swapNode(min.root.P, min.root)
-	if min.root.P.P.R == nil {
-		min.root.P.P.L = nil
+	node := minpq.lastLeftNode(minpq.root.P)
+	minpq.swapNode(minpq.root.P, minpq.root)
+	if minpq.root.P.P.R == nil {
+		minpq.root.P.P.L = nil
 	} else {
-		min.root.P.P.R = nil
+		minpq.root.P.P.R = nil
 	}
-	min.root.P = node
-	min.sinkNode(min.root)
-	min.size--
+	minpq.root.P = node
+	minpq.sinkNode(minpq.root)
+	minpq.size--
 	return key, val
 }
 
-func (min *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] {
+func (minpq *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] {
 	if lastnode == nil {
 		return nil
 	}
-	if lastnode == min.root {
+	if lastnode == minpq.root {
 		return nil
 	}
 	node := lastnode.P
 	if lastnode != node.L {
 		return node.L
 	} else {
-		for (node != min.root) && (lastnode == node.L) {
+		for (node != minpq.root) && (lastnode == node.L) {
 			lastnode = node
 			node = node.P
 		}
@@ -142,30 +142,30 @@ func (min *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] {
 	return node
 }
 
-func (min *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) {
+func (minpq *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) {
 	for {
-		if (node == nil) || ((node.L == nil) && (node.R == nil)) {
+		if (node == nil) || ((node.L == nil) && (node.R == nil)) { //nolint:staticcheck // in case of consistency
 			break
 		}
 		if (node.R == nil) && (node.L != nil) && I.GT(node.Key, node.L.Key) {
-			min.swapNode(node, node.L)
+			minpq.swapNode(node, node.L)
 			node = node.L
 			continue
 		}
 		if (node.L == nil) && (node.R != nil) && I.GT(node.Key, node.R.Key) {
-			min.swapNode(node, node.R)
+			minpq.swapNode(node, node.R)
 			node = node.R
 			continue
 		}
 		if I.GT(node.L.Key, node.R.Key) {
-			min.swapNode(node.L, node.R)
+			minpq.swapNode(node.L, node.R)
 		}
 		if I.GT(node.Key, node.L.Key) {
-			min.swapNode(node, node.L)
+			minpq.swapNode(node, node.L)
 			node = node.L
 			continue
 		} else if I.GT(node.Key, node.R.Key) {
-			min.swapNode(node, node.R)
+			minpq.swapNode(node, node.R)
 			node = node.R
 			continue
 		}
@@ -173,40 +173,41 @@ func (min *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) {
 	}
 }
 
-func (min *MinPQ[K, V]) Iterate() []K {
-	keysarr := make([]K, 0, min.Size())
-	return min.iterate(min.root, keysarr)
+func (minpq *MinPQ[K, V]) Iterate() []K {
+	keysarr := make([]K, 0, minpq.Size())
+	return minpq.iterate(minpq.root, keysarr)
 }
 
-func (min *MinPQ[K, V]) iterate(node *PQnode[K, V], keysarr []K) []K {
+func (minpq *MinPQ[K, V]) iterate(node *PQnode[K, V], keysarr []K) []K {
 	if node == nil {
 		return keysarr
 	}
 	keysarr = append(keysarr, node.Key)
-	keysarr = min.iterate(node.L, keysarr)
-	keysarr = min.iterate(node.R, keysarr)
+	keysarr = minpq.iterate(node.L, keysarr)
+	keysarr = minpq.iterate(node.R, keysarr)
 	return keysarr
 }
 
-func (min *MinPQ[K, V]) HeightTreeCheck() int {
-	if min.IsEmpty() {
+func (minpq *MinPQ[K, V]) HeightTreeCheck() int {
+	if minpq.IsEmpty() {
 		return 0
 	}
-	sqrt := math.Sqrt(float64(min.size))
+	sqrt := math.Sqrt(float64(minpq.size))
 	return int(math.Ceil(sqrt))
 }
 
-func (min *MinPQ[K, V]) IsCompleteBTcheck() bool {
-	return min.iscompleteBTcheck(min.root, min.Size())
+func (minpq *MinPQ[K, V]) IsCompleteBTcheck() bool {
+	return minpq.iscompleteBTcheck(minpq.root, minpq.Size())
 }
 
-func (min *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool {
+func (minpq *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool {
 	if node == nil {
 		return true
 	}
 	sqrt := math.Sqrt(float64(size))
 	CBTlvl := math.Ceil(sqrt)
-	maxCBTsize := int(math.Pow(2, CBTlvl))
+	base := 2.0
+	maxCBTsize := int(math.Pow(base, CBTlvl))
 	arr := make([]*PQnode[K, V], maxCBTsize)
 	arr[1] = node
 	for i := 1; i < maxCBTsize; i++ {
@@ -225,21 +226,22 @@ func (min *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool {
 	return true
 }
 
-func (min *MinPQ[K, V]) PrintTreeCheck() {
+func (minpq *MinPQ[K, V]) PrintTreeCheck() {
 	fmt.Printf("\n")
 	fmt.Printf("<- left rotated tree pic <-\n")
-	min.printtree(min.root, 0)
+	minpq.printtree(minpq.root, 0)
 	fmt.Printf("=============================\n\n")
 }
 
-func (min *MinPQ[K, V]) printtree(node *PQnode[K, V], n int) {
+func (minpq *MinPQ[K, V]) printtree(node *PQnode[K, V], n int) {
 	if node != nil {
-		min.printtree(node.R, n+5)
-		for i := 0; i < n; i++ {
+		margin := 5
+		minpq.printtree(node.R, n+margin)
+		for range n {
 			fmt.Printf(" ")
 		}
 		fmt.Printf("%v:%v\n", node.Key, node.Val)
-		min.printtree(node.L, n+5)
+		minpq.printtree(node.L, n+margin)
 	}
 }
 

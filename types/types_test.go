@@ -2,12 +2,19 @@ package types_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 
 	"github.com/stretchr/testify/assert"
 )
+
+var errTest = errors.New("test error")
+
+func testError(msg string) error {
+	return fmt.Errorf("%w: %s", errTest, msg)
+}
 
 func TestTypes(t *testing.T) {
 	asrt := assert.New(t)
@@ -31,7 +38,6 @@ func TestTypes(t *testing.T) {
 		})
 		asrt.Equal("Some(42)", some.ToString())
 		asrt.Equal("None", none.ToString())
-
 	})
 	t.Run("Either", func(t *testing.T) {
 		left := I.NewEitherLeft[int, string](42)
@@ -84,9 +90,8 @@ func TestTypes(t *testing.T) {
 		asrt.Panics(func() { wrong.ToString() })
 	})
 	t.Run("Result", func(t *testing.T) {
-		testerror := errors.New("test error")
 		result := I.NewResult(42)
-		err := I.NewResultError[int](testerror)
+		err := I.NewResultError[int](testError(""))
 		wrong := I.Result[int]{}
 
 		asrt.False(result.IsErr())
@@ -98,7 +103,7 @@ func TestTypes(t *testing.T) {
 
 		asrt.Equal(I.NewOptionNone[error](), result.ValErr())
 		asrt.Equal(I.NewOptionSome(42), result.ValRes())
-		asrt.Equal(I.NewOptionSome(testerror), err.ValErr())
+		asrt.Equal(I.NewOptionSome(testError("")), err.ValErr())
 		asrt.Equal(I.NewOptionNone[int](), err.ValRes())
 		asrt.Panics(func() { wrong.ValErr() })
 		asrt.Panics(func() { wrong.ValRes() })
@@ -113,7 +118,7 @@ func TestTypes(t *testing.T) {
 		asrt.Panics(func() {
 			err.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
 		})
-		asrt.Equal(testerror, err.Err(func() error { panic("algos.types.(Result): Result can not be Erred") }))
+		asrt.Equal(testError(""), err.Err(func() error { panic("algos.types.(Result): Result can not be Erred") }))
 		asrt.Panics(func() {
 			wrong.Res(func() int { panic("algos.types.(Result): Result can not be Resed") })
 		})
@@ -133,7 +138,7 @@ func TestTypes(t *testing.T) {
 		})
 
 		asrt.Equal("Result(42)", result.ToString())
-		asrt.Equal("Error(test error)", err.ToString())
+		asrt.Equal("Error(test error: )", err.ToString())
 		asrt.Panics(func() { wrong.ToString() })
 	})
 }

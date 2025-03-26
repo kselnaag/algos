@@ -3,8 +3,8 @@ package tree
 import (
 	"fmt"
 
-	"github.com/kselnaag/algos/amath"
-	I "github.com/kselnaag/algos/types"
+	"algos/amath"
+	I "algos/types"
 )
 
 // left-linear red-black tree with lazy node deletion
@@ -191,17 +191,17 @@ func (tm *RBmap[K, V]) IsBSTcheck() bool {
 	return tm.isbst(tm.root, nil, nil)
 }
 
-func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min, max *K) bool {
+func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], kmin, kmax *K) bool {
 	if node == nil {
 		return true
 	}
-	if (min != nil) && (node.Key <= *min) {
+	if (kmin != nil) && (node.Key <= *kmin) {
 		return false
 	}
-	if (max != nil) && (node.Key >= *max) {
+	if (kmax != nil) && (node.Key >= *kmax) {
 		return false
 	}
-	return tm.isbst(node.L, min, &node.Key) && tm.isbst(node.R, &node.Key, max)
+	return tm.isbst(node.L, kmin, &node.Key) && tm.isbst(node.R, &node.Key, kmax)
 }
 
 func (tm *RBmap[K, V]) BSTheightCheck() int {
@@ -263,7 +263,8 @@ func (tm *RBmap[K, V]) PrintTreeCheck() {
 
 func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) {
 	if node != nil {
-		tm.printtree(node.R, n+5)
+		margin := 5
+		tm.printtree(node.R, n+margin)
 		for i := 0; i < n; i++ {
 			fmt.Printf(" ")
 		}
@@ -278,6 +279,6 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) {
 			}
 		}
 		fmt.Printf("%v:%v\n", node.Key, node.Val)
-		tm.printtree(node.L, n+5)
+		tm.printtree(node.L, n+margin)
 	}
 }

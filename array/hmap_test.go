@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/kselnaag/algos/array"
+	"algos/array"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -19,7 +19,7 @@ func TestHmap(t *testing.T) {
 	t.Run("Hmap", func(t *testing.T) {
 		hmap := array.NewHMap[int, string]()
 		asrt.True(hmap.IsEmpty())
-		asrt.Equal(hmap.Size(), 0)
+		asrt.Equal(0, hmap.Size())
 		asrt.Nil(hmap.Get(1))
 		asrt.Nil(hmap.Get(2))
 		hmap.Set(1, "one")

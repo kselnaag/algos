@@ -2,14 +2,21 @@ package sync_test
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
-	S "github.com/kselnaag/algos/sync"
-	I "github.com/kselnaag/algos/types"
+	S "algos/sync"
+	I "algos/types"
 
 	"github.com/stretchr/testify/assert"
 )
+
+var errTest = errors.New("test error")
+
+func testError(msg string) error {
+	return fmt.Errorf("%w: %s", errTest, msg)
+}
 
 func TestSync(t *testing.T) {
 	asrt := assert.New(t)
@@ -19,7 +26,6 @@ func TestSync(t *testing.T) {
 	}()
 
 	t.Run("Future", func(t *testing.T) {
-		testerror := errors.New("future error")
 		fut := S.NewFuture(func() I.Result[int] {
 			time.Sleep(10 * time.Millisecond)
 			return I.NewResult(42)
@@ -36,7 +42,7 @@ func TestSync(t *testing.T) {
 
 		err := S.NewFuture(func() I.Result[int] {
 			time.Sleep(10 * time.Millisecond)
-			return I.NewResultError[int](testerror)
+			return I.NewResultError[int](testError(""))
 		})
 		asrt.False(err.IsCompleted())
 		err.OnComplete(func(i I.Result[int]) {
@@ -44,9 +50,9 @@ func TestSync(t *testing.T) {
 				i.Unbox(func() int { panic("algos.sync.(Future): Result can not be Unboxed") })
 			})
 		})
-		asrt.Equal(testerror, err.Value().Err(func() error { panic("algos.sync.(Future): Result can not be Resed") }))
+		asrt.Equal(testError(""), err.Value().Err(func() error { panic("algos.sync.(Future): Result can not be Resed") }))
 		asrt.True(err.IsCompleted())
-		asrt.Equal("Error(future error)", err.ToString())
+		asrt.Equal("Error(test error: )", err.ToString())
 
 		wrong := S.NewFuture(func() I.Result[int] { return I.Result[int]{} })
 		asrt.False(wrong.IsCompleted())
@@ -63,7 +69,6 @@ func TestSync(t *testing.T) {
 		})
 		asrt.True(wrong.IsCompleted())
 		asrt.Panics(func() { wrong.ToString() })
-
 	})
 	t.Run("Promise", func(t *testing.T) {
 		d := make(chan int)
@@ -80,7 +85,6 @@ func TestSync(t *testing.T) {
 		asrt.True(prom.IsCompleted())
 		asrt.Equal("Result(42)", prom.ToString())
 
-		testerror := errors.New("algos.types.(Future): callback is timed out")
 		morp := S.NewPromise(50, func() I.Result[int] {
 			time.Sleep(100 * time.Millisecond)
 			return I.NewResult(42)
@@ -91,8 +95,8 @@ func TestSync(t *testing.T) {
 				i.Unbox(func() int { panic("algos.sync.(Promise): Result can not be Unboxed") })
 			})
 		})
-		asrt.Equal(testerror, morp.Value().Err(func() error { panic("algos.sync.(Promise): Result can not be Resed") }))
+		asrt.Equal(S.FutureError("callback is timed out"), morp.Value().Err(func() error { panic("algos.sync.(Promise): Result can not be Resed") }))
 		asrt.True(morp.IsCompleted())
-		asrt.Equal("Error(algos.types.(Future): callback is timed out)", morp.ToString())
+		asrt.Equal("Error("+S.FutureError("callback is timed out").Error()+")", morp.ToString())
 	})
 }

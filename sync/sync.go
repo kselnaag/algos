@@ -2,10 +2,11 @@ package sync
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 // ====================
@@ -16,9 +17,15 @@ type Future[F any] struct {
 	cpl  bool
 }
 
+var errFuture error = errors.New("Future[F any] error")
+
+func FutureError(msg string) error {
+	return fmt.Errorf("%w: %s", errFuture, msg)
+}
+
 func NewFuture[F any](fn func() I.Result[F]) Future[F] {
 	future := Future[F]{
-		val:  I.NewResultError[F](errors.New("algos.types.(Future): callback is timed out")),
+		val:  I.NewResultError[F](FutureError("callback is timed out")),
 		ch:   make(chan I.Result[F]),
 		once: new(sync.Once),
 		cpl:  false,

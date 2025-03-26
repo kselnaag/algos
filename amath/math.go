@@ -3,23 +3,23 @@ package amath
 import (
 	"fmt"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
+	"math"
 )
 
 func HashELF(mess []byte) uint32 {
 	var hash uint32 = 0
-	mlen := len(mess)
-	for i := 0; i < mlen; i++ {
+	var mask uint32 = 0x0fffffff
+	for i := range mess {
 		hash = (hash << 4) + uint32(mess[i])
 		hash ^= (hash >> 24) & 0xf0
 	}
-	return hash & 0x0fffffff
+	return hash & mask
 }
 
 func HashDJB2a[R uint32 | uint64](mess []byte) (hash R) {
 	hash = 5381
-	mlen := len(mess)
-	for i := 0; i < mlen; i++ {
+	for i := range mess {
 		hash = ((hash << 5) + hash) ^ R(mess[i])
 	}
 	return hash
@@ -27,8 +27,7 @@ func HashDJB2a[R uint32 | uint64](mess []byte) (hash R) {
 
 func HashDJB2[R uint32 | uint64](mess []byte) (hash R) {
 	hash = 5381
-	mlen := len(mess)
-	for i := 0; i < mlen; i++ {
+	for i := range mess {
 		hash = ((hash << 5) + hash) + R(mess[i])
 	}
 	return hash
@@ -52,7 +51,7 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 		14, 62, 154, 78, 81, 134, 162, 105, 63, 244, 77, 190, 209, 150, 233, 159, 202, 191,
 		40, 87, 180, 188, 36, 238, 9, 140, 128, 147, 174, 1, 2, 182, 243, 29, 115, 205, 225,
 	}
-	rounds := 0
+	var rounds int
 	switch any(result).(type) {
 	case uint8:
 		rounds = 1
@@ -66,10 +65,9 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 		panic(fmt.Sprintf("rules.HashPirson[R](mess []byte): "+
 			"Type of R is unknown, expected (uint8 | uint16 | uint32 | uint64), actual %T", result))
 	}
-	mlen := len(mess)
-	hash := T[mlen%256]
-	for j := 0; j < rounds; j++ {
-		for i := 0; i < mlen; i++ {
+	hash := T[len(mess)%256]
+	for j := range rounds {
+		for i := range mess {
 			hash = T[int(hash^mess[i])]
 		}
 		result += R(hash) << (8 * j)
@@ -79,7 +77,7 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) {
 
 func Harmonic(n int) float64 {
 	if n < 0 {
-		panic("algos.amath.Harmonic(x) -> 'x' can not be negative")
+		return math.NaN()
 	}
 	sum := 0.0
 	for i := 1; i <= n; i++ {
@@ -91,7 +89,7 @@ func Harmonic(n int) float64 {
 // Newton square root
 func Sqrt(c float64) float64 {
 	if c < 0 {
-		panic("algos.amath.Sqrt(x) -> 'x' can not be negative")
+		return math.NaN()
 	}
 	err := 1e-15
 	t := c

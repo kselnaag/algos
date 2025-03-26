@@ -1,11 +1,12 @@
 package amath_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kselnaag/algos/amath"
+	"algos/amath"
 )
 
 func TestMath(t *testing.T) {
@@ -14,6 +15,8 @@ func TestMath(t *testing.T) {
 		err := recover()
 		asrt.Nil(err)
 	}()
+
+	eps := 0.000001
 
 	t.Run("HashELF", func(t *testing.T) {
 		asrt.Equal(uint32(0x00000048), amath.HashELF([]byte("H")))
@@ -45,31 +48,30 @@ func TestMath(t *testing.T) {
 		asrt.Equal(uint64(0x1be6c14bc5b612bd), amath.HashPirson[uint64]([]byte{0, 0, 0, 1, 0, 0, 0, 0}))
 	})
 	t.Run("Harmonic", func(t *testing.T) {
-		asrt.Panics(func() { amath.Harmonic(-1) }, "The code is not panic")
-		asrt.Panics(func() { amath.Harmonic(-265) }, "The code is not panic")
-		asrt.Equal(0.0, amath.Harmonic(0))
-		asrt.Equal(1.0, amath.Harmonic(1))
-		asrt.Equal(2.083333333333333, amath.Harmonic(4))
-		asrt.Equal(6.124344962817281, amath.Harmonic(256))
+		asrt.True(math.IsNaN(amath.Harmonic(-1)))
+		asrt.True(math.IsNaN(amath.Harmonic(-265)))
+		asrt.Zero(amath.Harmonic(0))
+		asrt.InEpsilon(1.0, amath.Harmonic(1), eps)
+		asrt.InEpsilon(2.083333333333333, amath.Harmonic(4), eps)
+		asrt.InEpsilon(6.124344962817281, amath.Harmonic(256), eps)
 	})
 	t.Run("Sqrt", func(t *testing.T) {
-		asrt.Panics(func() { amath.Sqrt(-4) }, "The code is not panic")
-		asrt.Panics(func() { amath.Sqrt(-147) }, "The code is not panic")
-		asrt.Equal(0.0, amath.Sqrt(0))
-		asrt.Equal(2.0, amath.Sqrt(4))
-		asrt.Equal(11.0, amath.Sqrt(121))
-		asrt.Equal(857.0, amath.Sqrt(734449))
+		asrt.True(math.IsNaN(amath.Sqrt(-4)))
+		asrt.True(math.IsNaN(amath.Sqrt(-147)))
+		asrt.Zero(amath.Sqrt(0))
+		asrt.InEpsilon(2.0, amath.Sqrt(4), eps)
+		asrt.InEpsilon(11.0, amath.Sqrt(121), eps)
+		asrt.InEpsilon(857.0, amath.Sqrt(734449), eps)
 	})
 	t.Run("Abs", func(t *testing.T) {
-		asrt.Equal(0, amath.Abs(0))
-		asrt.Equal(0.0, amath.Abs(0.0))
+		asrt.Zero(amath.Abs(0))
+		asrt.Zero(amath.Abs(0.0))
 		asrt.Equal(2, amath.Abs(-2))
-		asrt.Equal(5.0, amath.Abs(-5.0))
+		asrt.InEpsilon(5.0, amath.Abs(-5.0), eps)
 		asrt.Equal(467, amath.Abs(467))
-		asrt.Equal(975.0, amath.Abs(975.0))
+		asrt.InEpsilon(975.0, amath.Abs(975.0), eps)
 		asrt.Equal(467, amath.Abs(-467))
-		asrt.Equal(975.0, amath.Abs(-975.0))
-
+		asrt.InEpsilon(975.0, amath.Abs(-975.0), eps)
 	})
 	t.Run("IsPrime", func(t *testing.T) {
 		asrt.False(amath.IsPrime(-1))
@@ -96,7 +98,7 @@ func TestMath(t *testing.T) {
 		asrt.Equal(0, amath.Min(0, 0))
 		asrt.Equal(-14, amath.Min(-14, 6))
 		asrt.Equal(-24, amath.Min(-14, -24))
-		asrt.Equal(4.093, amath.Min(4.093, 16.77))
+		asrt.InEpsilon(4.093, amath.Min(4.093, 16.77), eps)
 		asrt.Equal("aa", amath.Min("aac", "aa"))
 	})
 	t.Run("Max", func(t *testing.T) {
@@ -107,18 +109,18 @@ func TestMath(t *testing.T) {
 		asrt.Equal(0, amath.Max(0, 0))
 		asrt.Equal(6, amath.Max(-14, 6))
 		asrt.Equal(-14, amath.Max(-14, -24))
-		asrt.Equal(16.77, amath.Max(4.093, 16.77))
+		asrt.InEpsilon(16.77, amath.Max(4.093, 16.77), eps)
 		asrt.Equal("aac", amath.Max("aac", "aa"))
 	})
 	t.Run("Ternar", func(t *testing.T) {
-		asrt.Equal(false, amath.Ternar(true, false, true))
-		asrt.Equal(true, amath.Ternar(false, false, true))
+		asrt.False(amath.Ternar(true, false, true))
+		asrt.True(amath.Ternar(false, false, true))
 
 		asrt.Equal(1, amath.Ternar(true, 1, 2))
 		asrt.Equal(2, amath.Ternar(false, 1, 2))
 
-		asrt.Equal(2.0, amath.Ternar(true, 2.0, -1.1))
-		asrt.Equal(-1.1, amath.Ternar(false, 2.0, -1.1))
+		asrt.InEpsilon(2.0, amath.Ternar(true, 2.0, -1.1), eps)
+		asrt.InEpsilon(-1.1, amath.Ternar(false, 2.0, -1.1), eps)
 
 		asrt.Equal("aaa", amath.Ternar(true, "aaa", "bbb"))
 		asrt.Equal("bbb", amath.Ternar(false, "aaa", "bbb"))

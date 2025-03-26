@@ -147,7 +147,7 @@ func (hm *HMap[K, V]) Del(key K) *V {
 	defer hm.rwm.Unlock()
 
 	var (
-		hashIdx int = hm.hashFromKey(key)
+		hashIdx = hm.hashFromKey(key)
 		cycl    int
 		val     V
 		keyIdx  int

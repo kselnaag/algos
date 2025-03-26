@@ -9,7 +9,7 @@ import (
 // If the number of K-V pairs is more than 2^16*10 (655 360) it seems you should use some other tool.
 
 const (
-	MAXUINT16  int = (1 << 16)
+	MAXUINT16  int = (1 << 16) //nolint:mnd // max val const
 	STARTBCKTS int = 10
 	GROWCOEFF  int = 5
 	GROWCOND   int = 10
@@ -64,9 +64,8 @@ func (hm *HMap[K, V]) convToBytes(key K) []byte {
 
 func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 {
 	var hash uint32 = 5381
-	mlen := len(data)
-	for i := 0; i < mlen; i++ {
-		hash = ((hash << 5) + hash) ^ uint32(data[i])
+	for i := range len(data) {
+		hash = ((hash << 5) + hash) ^ uint32(data[i]) //nolint:mnd // cryptostuff
 	}
 	return hash
 }
@@ -74,7 +73,8 @@ func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 {
 func (hm *HMap[K, V]) hashFromKey(key K) int {
 	bytesarr := hm.convToBytes(key)
 	hash := hm.hashDJB2a(bytesarr)
-	return int(hash&0x0000ffff) % hm.bktsnum
+	var mask uint32 = 0x0000ffff
+	return int(hash&mask) % hm.bktsnum
 }
 
 func (hm *HMap[K, V]) evacuate() {

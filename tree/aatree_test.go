@@ -3,7 +3,7 @@ package tree_test
 import (
 	"testing"
 
-	"github.com/kselnaag/algos/tree"
+	"algos/tree"
 
 	"github.com/stretchr/testify/assert"
 )

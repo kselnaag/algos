@@ -3,7 +3,7 @@ package array
 import (
 	"math/rand"
 
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 func Quick3Sort[T any](arr []T) {
@@ -137,36 +137,36 @@ func merge[T any](src, dst []T, lo, mid, hi int) {
 func ReverseSort[T any](arr []T) {
 	alen := len(arr)
 	mid := alen / 2
-	for i := 0; i < mid; i++ {
-		min := i
-		max := i
+	for i := range mid {
+		minidx := i
+		maxidx := i
 		for j := 1 + i; j < (alen - i); j++ {
-			if I.LT(arr[j], arr[min]) {
-				min = j
+			if I.LT(arr[j], arr[minidx]) {
+				minidx = j
 			}
-			if I.GT(arr[j], arr[max]) {
-				max = j
+			if I.GT(arr[j], arr[maxidx]) {
+				maxidx = j
 			}
 		}
-		if (max == i) && (min == (alen - 1 - i)) {
-			swap(arr, min, max)
+		if (maxidx == i) && (minidx == (alen - 1 - i)) {
+			swap(arr, minidx, maxidx)
 		} else {
-			swap(arr, min, i)
-			swap(arr, max, alen-1-i)
+			swap(arr, minidx, i)
+			swap(arr, maxidx, alen-1-i)
 		}
 	}
 }
 
 func SelectSort[T any](arr []T) {
 	alen := len(arr)
-	for i := 0; i < alen; i++ {
-		min := i
+	for i := range alen {
+		minidx := i
 		for j := i + 1; j < alen; j++ {
-			if I.LT(arr[j], arr[min]) {
-				min = j
+			if I.LT(arr[j], arr[minidx]) {
+				minidx = j
 			}
 		}
-		swap(arr, i, min)
+		swap(arr, i, minidx)
 	}
 }
 

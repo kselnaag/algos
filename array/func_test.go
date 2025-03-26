@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/kselnaag/algos/array"
+	"algos/array"
 
 	"github.com/stretchr/testify/assert"
 )

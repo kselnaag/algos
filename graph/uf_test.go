@@ -3,7 +3,7 @@ package graph_test
 import (
 	"testing"
 
-	"github.com/kselnaag/algos/graph"
+	"algos/graph"
 
 	"github.com/stretchr/testify/assert"
 )

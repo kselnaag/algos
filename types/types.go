@@ -5,7 +5,7 @@ import (
 )
 
 type STOrd interface {
-	CompareTo(STOrd) int
+	CompareTo(st STOrd) int
 }
 
 type Comp interface {

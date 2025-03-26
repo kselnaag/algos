@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kselnaag/algos/array"
+	"algos/array"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -15,6 +15,8 @@ func TestPQ(t *testing.T) {
 		err := recover()
 		asrt.Nil(err)
 	}()
+
+	EPS := 0.000001
 
 	t.Run("LRU", func(t *testing.T) {
 		t.Run("integers", func(t *testing.T) {
@@ -127,19 +129,19 @@ func TestPQ(t *testing.T) {
 			asrt.False(minPQ.IsEmpty())
 			asrt.Equal(7, minPQ.Size())
 
-			asrt.Equal(3.0, minPQ.Min())
-			asrt.Equal(3.0, minPQ.GetMin())
+			asrt.InEpsilon(3.0, minPQ.Min(), EPS)
+			asrt.InEpsilon(3.0, minPQ.GetMin(), EPS)
 
-			asrt.Equal(23.0, minPQ.Min())
-			asrt.Equal(23.0, minPQ.GetMin())
+			asrt.InEpsilon(23.0, minPQ.Min(), EPS)
+			asrt.InEpsilon(23.0, minPQ.GetMin(), EPS)
 			asrt.False(minPQ.IsEmpty())
 			asrt.Equal(5, minPQ.Size())
 
-			asrt.Equal(25.0, minPQ.GetMin())
-			asrt.Equal(29.0, minPQ.GetMin())
-			asrt.Equal(43.0, minPQ.GetMin())
-			asrt.Equal(67.0, minPQ.GetMin())
-			asrt.Equal(134.0, minPQ.GetMin())
+			asrt.InEpsilon(25.0, minPQ.GetMin(), EPS)
+			asrt.InEpsilon(29.0, minPQ.GetMin(), EPS)
+			asrt.InEpsilon(43.0, minPQ.GetMin(), EPS)
+			asrt.InEpsilon(67.0, minPQ.GetMin(), EPS)
+			asrt.InEpsilon(134.0, minPQ.GetMin(), EPS)
 
 			asrt.True(minPQ.IsEmpty())
 			asrt.Equal(0, minPQ.Size())
@@ -253,7 +255,6 @@ func TestPQ(t *testing.T) {
 			maxPQ = array.NewMaxPQ[int]()
 			asrt.Panics(func() { maxPQ.Max() }, "algos.array.(maxPQ).Max():  the code is not panic when structure is empty")
 			asrt.Panics(func() { maxPQ.GetMax() }, "algos.array.(maxPQ).GetMax():  the code is not panic when structure is empty")
-
 		})
 		t.Run("floats", func(t *testing.T) {
 			maxPQ := array.NewMaxPQ[float64]()
@@ -269,19 +270,20 @@ func TestPQ(t *testing.T) {
 			asrt.False(maxPQ.IsEmpty())
 			asrt.Equal(7, maxPQ.Size())
 
-			asrt.Equal(134.0, maxPQ.Max())
-			asrt.Equal(134.0, maxPQ.GetMax())
+			eps := 0.000001
+			asrt.InEpsilon(134.0, maxPQ.Max(), eps)
+			asrt.InEpsilon(134.0, maxPQ.GetMax(), eps)
 
-			asrt.Equal(67.0, maxPQ.Max())
-			asrt.Equal(67.0, maxPQ.GetMax())
+			asrt.InEpsilon(67.0, maxPQ.Max(), eps)
+			asrt.InEpsilon(67.0, maxPQ.GetMax(), eps)
 			asrt.False(maxPQ.IsEmpty())
 			asrt.Equal(5, maxPQ.Size())
 
-			asrt.Equal(43.0, maxPQ.GetMax())
-			asrt.Equal(29.0, maxPQ.GetMax())
-			asrt.Equal(25.0, maxPQ.GetMax())
-			asrt.Equal(23.0, maxPQ.GetMax())
-			asrt.Equal(3.0, maxPQ.GetMax())
+			asrt.InEpsilon(43.0, maxPQ.GetMax(), eps)
+			asrt.InEpsilon(29.0, maxPQ.GetMax(), eps)
+			asrt.InEpsilon(25.0, maxPQ.GetMax(), eps)
+			asrt.InEpsilon(23.0, maxPQ.GetMax(), eps)
+			asrt.InEpsilon(3.0, maxPQ.GetMax(), eps)
 
 			asrt.True(maxPQ.IsEmpty())
 			asrt.Equal(0, maxPQ.Size())

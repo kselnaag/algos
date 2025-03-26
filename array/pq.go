@@ -1,7 +1,7 @@
 package array
 
 import (
-	I "github.com/kselnaag/algos/types"
+	I "algos/types"
 )
 
 func swimLT[T any](arr []T, k int) {
@@ -59,52 +59,52 @@ func NewMinPQ[T any]() MinPQ[T] {
 	}
 }
 
-func (min *MinPQ[T]) Size() int {
-	return min.size
+func (minpq *MinPQ[T]) Size() int {
+	return minpq.size
 }
 
-func (min *MinPQ[T]) IsEmpty() bool {
-	return min.Size() == 0
+func (minpq *MinPQ[T]) IsEmpty() bool {
+	return minpq.Size() == 0
 }
 
-func (min *MinPQ[T]) swim(k int) {
-	swimLT(min.pq, k)
+func (minpq *MinPQ[T]) swim(k int) {
+	swimLT(minpq.pq, k)
 }
 
-func (min *MinPQ[T]) sink(k int) {
-	sinkLT(min.pq, k, min.size)
+func (minpq *MinPQ[T]) sink(k int) {
+	sinkLT(minpq.pq, k, minpq.size)
 }
 
-func (min *MinPQ[T]) Add(val T) {
-	min.size++
-	if len(min.pq) > min.size {
-		min.pq[min.size] = val
+func (minpq *MinPQ[T]) Add(val T) {
+	minpq.size++
+	if len(minpq.pq) > minpq.size {
+		minpq.pq[minpq.size] = val
 	} else {
-		min.pq = append(min.pq, val)
+		minpq.pq = append(minpq.pq, val)
 	}
-	min.swim(min.size)
+	minpq.swim(minpq.size)
 }
 
-func (min *MinPQ[T]) Min() T {
-	if min.size < 1 {
+func (minpq *MinPQ[T]) Min() T {
+	if minpq.size < 1 {
 		panic("algos.array.(MinPQ).Min(): Queue is empty ")
 	}
-	return min.pq[1]
+	return minpq.pq[1]
 }
 
-func (min *MinPQ[T]) GetMin() T {
-	if min.size < 1 {
+func (minpq *MinPQ[T]) GetMin() T {
+	if minpq.size < 1 {
 		panic("algos.array.(MinPQ).GetMin(): Queue is empty ")
 	}
-	ret := min.pq[1]
-	swap(min.pq, 1, min.size)
-	min.size--
-	min.sink(1)
+	ret := minpq.pq[1]
+	swap(minpq.pq, 1, minpq.size)
+	minpq.size--
+	minpq.sink(1)
 	return ret
 }
 
-func (min *MinPQ[T]) Iterate() []T {
-	return min.pq[1:(min.size + 1)]
+func (minpq *MinPQ[T]) Iterate() []T {
+	return minpq.pq[1:(minpq.size + 1)]
 }
 
 // ===========================
@@ -120,52 +120,52 @@ func NewMaxPQ[T any]() MaxPQ[T] {
 	}
 }
 
-func (max *MaxPQ[T]) Size() int {
-	return max.size
+func (maxpq *MaxPQ[T]) Size() int {
+	return maxpq.size
 }
 
-func (max *MaxPQ[T]) IsEmpty() bool {
-	return max.Size() == 0
+func (maxpq *MaxPQ[T]) IsEmpty() bool {
+	return maxpq.Size() == 0
 }
 
-func (max *MaxPQ[T]) swim(k int) {
-	swimGT(max.pq, k)
+func (maxpq *MaxPQ[T]) swim(k int) {
+	swimGT(maxpq.pq, k)
 }
 
-func (max *MaxPQ[T]) sink(k int) {
-	sinkGT(max.pq, k, max.size)
+func (maxpq *MaxPQ[T]) sink(k int) {
+	sinkGT(maxpq.pq, k, maxpq.size)
 }
 
-func (max *MaxPQ[T]) Add(val T) {
-	max.size++
-	if len(max.pq) > max.size {
-		max.pq[max.size] = val
+func (maxpq *MaxPQ[T]) Add(val T) {
+	maxpq.size++
+	if len(maxpq.pq) > maxpq.size {
+		maxpq.pq[maxpq.size] = val
 	} else {
-		max.pq = append(max.pq, val)
+		maxpq.pq = append(maxpq.pq, val)
 	}
-	max.swim(max.size)
+	maxpq.swim(maxpq.size)
 }
 
-func (max *MaxPQ[T]) Max() T {
-	if max.size < 1 {
+func (maxpq *MaxPQ[T]) Max() T {
+	if maxpq.size < 1 {
 		panic("algos.array.(MaxPQ).Max(): Queue is empty ")
 	}
-	return max.pq[1]
+	return maxpq.pq[1]
 }
 
-func (max *MaxPQ[T]) GetMax() T {
-	if max.size < 1 {
+func (maxpq *MaxPQ[T]) GetMax() T {
+	if maxpq.size < 1 {
 		panic("algos.array.(MaxPQ).GetMax(): Queue is empty ")
 	}
-	ret := max.pq[1]
-	swap(max.pq, 1, max.size)
-	max.size--
-	max.sink(1)
+	ret := maxpq.pq[1]
+	swap(maxpq.pq, 1, maxpq.size)
+	maxpq.size--
+	maxpq.sink(1)
 	return ret
 }
 
-func (max *MaxPQ[T]) Iterate() []T {
-	return max.pq[1:(max.size + 1)]
+func (maxpq *MaxPQ[T]) Iterate() []T {
+	return maxpq.pq[1:(maxpq.size + 1)]
 }
 
 // ===========================

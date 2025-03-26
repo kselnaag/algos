@@ -55,39 +55,43 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/kselnaag/algos/amath/math.go (98.4%)</option>
+				<option value="file0">algos/amath/math.go (98.3%)</option>
 				
-				<option value="file1">github.com/kselnaag/algos/array/func.go (100.0%)</option>
+				<option value="file1">algos/array/func.go (100.0%)</option>
 				
-				<option value="file2">github.com/kselnaag/algos/array/hmap.go (85.7%)</option>
+				<option value="file2">algos/array/hmap.go (85.7%)</option>
 				
-				<option value="file3">github.com/kselnaag/algos/array/pq.go (96.8%)</option>
+				<option value="file3">algos/array/pq.go (96.8%)</option>
 				
-				<option value="file4">github.com/kselnaag/algos/array/sort.go (83.2%)</option>
+				<option value="file4">algos/array/ringBuffer.go (50.0%)</option>
 				
-				<option value="file5">github.com/kselnaag/algos/array/stack.go (100.0%)</option>
+				<option value="file5">algos/array/sort.go (83.2%)</option>
 				
-				<option value="file6">github.com/kselnaag/algos/graph/uf.go (96.0%)</option>
+				<option value="file6">algos/array/stack.go (100.0%)</option>
 				
-				<option value="file7">github.com/kselnaag/algos/list/cache3A.go (0.0%)</option>
+				<option value="file7">algos/graph/dfs.go (0.0%)</option>
 				
-				<option value="file8">github.com/kselnaag/algos/list/func.go (100.0%)</option>
+				<option value="file8">algos/graph/uf.go (96.0%)</option>
 				
-				<option value="file9">github.com/kselnaag/algos/list/hmap.go (94.3%)</option>
+				<option value="file9">algos/list/cache3A.go (0.0%)</option>
 				
-				<option value="file10">github.com/kselnaag/algos/list/stack.go (96.5%)</option>
+				<option value="file10">algos/list/func.go (100.0%)</option>
 				
-				<option value="file11">github.com/kselnaag/algos/sync/sync.go (95.8%)</option>
+				<option value="file11">algos/list/hmap.go (94.3%)</option>
 				
-				<option value="file12">github.com/kselnaag/algos/tree/aatree.go (93.0%)</option>
+				<option value="file12">algos/list/stack.go (96.5%)</option>
 				
-				<option value="file13">github.com/kselnaag/algos/tree/pq.go (0.0%)</option>
+				<option value="file13">algos/sync/sync.go (96.0%)</option>
 				
-				<option value="file14">github.com/kselnaag/algos/tree/rbtree.go (94.7%)</option>
+				<option value="file14">algos/tree/aatree.go (93.0%)</option>
 				
-				<option value="file15">github.com/kselnaag/algos/types/equals.go (47.2%)</option>
+				<option value="file15">algos/tree/pq.go (0.0%)</option>
 				
-				<option value="file16">github.com/kselnaag/algos/types/types.go (93.0%)</option>
+				<option value="file16">algos/tree/rbtree.go (94.8%)</option>
+				
+				<option value="file17">algos/types/equals.go (47.2%)</option>
+				
+				<option value="file18">algos/types/types.go (93.0%)</option>
 				
 				</select>
 			</div>
@@ -115,23 +119,23 @@
 import (
         "fmt"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
+        "math"
 )
 
 func HashELF(mess []byte) uint32 <span class="cov2" title="3">{
         var hash uint32 = 0
-        mlen := len(mess)
-        for i := 0; i &lt; mlen; i++ </span><span class="cov5" title="22">{
+        var mask uint32 = 0x0fffffff
+        for i := range mess </span><span class="cov5" title="22">{
                 hash = (hash &lt;&lt; 4) + uint32(mess[i])
                 hash ^= (hash &gt;&gt; 24) &amp; 0xf0
         }</span>
-        <span class="cov2" title="3">return hash &amp; 0x0fffffff</span>
+        <span class="cov2" title="3">return hash &amp; mask</span>
 }
 
 func HashDJB2a[R uint32 | uint64](mess []byte) (hash R) <span class="cov3" title="4">{
         hash = 5381
-        mlen := len(mess)
-        for i := 0; i &lt; mlen; i++ </span><span class="cov7" title="42">{
+        for i := range mess </span><span class="cov7" title="42">{
                 hash = ((hash &lt;&lt; 5) + hash) ^ R(mess[i])
         }</span>
         <span class="cov3" title="4">return hash</span>
@@ -139,8 +143,7 @@ func HashDJB2a[R uint32 | uint64](mess []byte) (hash R) <span class="cov3" title
 
 func HashDJB2[R uint32 | uint64](mess []byte) (hash R) <span class="cov4" title="8">{
         hash = 5381
-        mlen := len(mess)
-        for i := 0; i &lt; mlen; i++ </span><span class="cov7" title="46">{
+        for i := range mess </span><span class="cov7" title="46">{
                 hash = ((hash &lt;&lt; 5) + hash) + R(mess[i])
         }</span>
         <span class="cov4" title="8">return hash</span>
@@ -164,7 +167,7 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) <spa
                 14, 62, 154, 78, 81, 134, 162, 105, 63, 244, 77, 190, 209, 150, 233, 159, 202, 191,
                 40, 87, 180, 188, 36, 238, 9, 140, 128, 147, 174, 1, 2, 182, 243, 29, 115, 205, 225,
         }
-        rounds := 0
+        var rounds int
         switch any(result).(type) </span>{
         case uint8:<span class="cov1" title="1">
                 rounds = 1</span>
@@ -178,10 +181,9 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) <spa
                 panic(fmt.Sprintf("rules.HashPirson[R](mess []byte): "+
                         "Type of R is unknown, expected (uint8 | uint16 | uint32 | uint64), actual %T", result))</span>
         }
-        <span class="cov3" title="4">mlen := len(mess)
-        hash := T[mlen%256]
-        for j := 0; j &lt; rounds; j++ </span><span class="cov5" title="15">{
-                for i := 0; i &lt; mlen; i++ </span><span class="cov8" title="120">{
+        <span class="cov3" title="4">hash := T[len(mess)%256]
+        for j := range rounds </span><span class="cov5" title="15">{
+                for i := range mess </span><span class="cov8" title="120">{
                         hash = T[int(hash^mess[i])]
                 }</span>
                 <span class="cov5" title="15">result += R(hash) &lt;&lt; (8 * j)</span>
@@ -191,8 +193,9 @@ func HashPirson[R uint8 | uint16 | uint32 | uint64](mess []byte) (result R) <spa
 
 func Harmonic(n int) float64 <span class="cov3" title="6">{
         if n &lt; 0 </span><span class="cov2" title="2">{
-                panic("algos.amath.Harmonic(x) -&gt; 'x' can not be negative")</span>
-        }
+                return math.NaN()
+                // panic("algos.amath.Harmonic(x) -&gt; 'x' can not be negative")
+        }</span>
         <span class="cov3" title="4">sum := 0.0
         for i := 1; i &lt;= n; i++ </span><span class="cov10" title="261">{
                 sum += 1.0 / float64(i)
@@ -203,8 +206,9 @@ func Harmonic(n int) float64 <span class="cov3" title="6">{
 // Newton square root
 func Sqrt(c float64) float64 <span class="cov3" title="6">{
         if c &lt; 0 </span><span class="cov2" title="2">{
-                panic("algos.amath.Sqrt(x) -&gt; 'x' can not be negative")</span>
-        }
+                return math.NaN()
+                // panic("algos.amath.Sqrt(x) -&gt; 'x' can not be negative")
+        }</span>
         <span class="cov3" title="4">err := 1e-15
         t := c
         for Abs(t-c/t) &gt; (err * t) </span><span class="cov6" title="28">{
@@ -473,7 +477,7 @@ func (hm *HMap[K, V]) Del(key K) *V <span class="cov1" title="1">{
         defer hm.rwm.Unlock()
 
         var (
-                hashIdx int = hm.hashFromKey(key)
+                hashIdx = hm.hashFromKey(key)
                 cycl    int
                 val     V
                 keyIdx  int
@@ -558,7 +562,7 @@ func (hm *HMap[K, V]) PrintAll() <span class="cov1" title="1">{
 		<pre class="file" id="file3" style="display: none">package array
 
 import (
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 func swimLT[T any](arr []T, k int) <span class="cov6" title="42">{
@@ -616,52 +620,52 @@ func NewMinPQ[T any]() MinPQ[T] <span class="cov3" title="6">{
         }
 }</span>
 
-func (min *MinPQ[T]) Size() int <span class="cov6" title="30">{
-        return min.size
+func (minpq *MinPQ[T]) Size() int <span class="cov6" title="30">{
+        return minpq.size
 }</span>
 
-func (min *MinPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
-        return min.Size() == 0
+func (minpq *MinPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
+        return minpq.Size() == 0
 }</span>
 
-func (min *MinPQ[T]) swim(k int) <span class="cov6" title="42">{
-        swimLT(min.pq, k)
+func (minpq *MinPQ[T]) swim(k int) <span class="cov6" title="42">{
+        swimLT(minpq.pq, k)
 }</span>
 
-func (min *MinPQ[T]) sink(k int) <span class="cov5" title="21">{
-        sinkLT(min.pq, k, min.size)
+func (minpq *MinPQ[T]) sink(k int) <span class="cov5" title="21">{
+        sinkLT(minpq.pq, k, minpq.size)
 }</span>
 
-func (min *MinPQ[T]) Add(val T) <span class="cov6" title="42">{
-        min.size++
-        if len(min.pq) &gt; min.size </span><span class="cov5" title="21">{
-                min.pq[min.size] = val
+func (minpq *MinPQ[T]) Add(val T) <span class="cov6" title="42">{
+        minpq.size++
+        if len(minpq.pq) &gt; minpq.size </span><span class="cov5" title="21">{
+                minpq.pq[minpq.size] = val
         }</span> else<span class="cov5" title="21"> {
-                min.pq = append(min.pq, val)
+                minpq.pq = append(minpq.pq, val)
         }</span>
-        <span class="cov6" title="42">min.swim(min.size)</span>
+        <span class="cov6" title="42">minpq.swim(minpq.size)</span>
 }
 
-func (min *MinPQ[T]) Min() T <span class="cov4" title="9">{
-        if min.size &lt; 1 </span><span class="cov2" title="3">{
+func (minpq *MinPQ[T]) Min() T <span class="cov4" title="9">{
+        if minpq.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MinPQ).Min(): Queue is empty ")</span>
         }
-        <span class="cov3" title="6">return min.pq[1]</span>
+        <span class="cov3" title="6">return minpq.pq[1]</span>
 }
 
-func (min *MinPQ[T]) GetMin() T <span class="cov5" title="24">{
-        if min.size &lt; 1 </span><span class="cov2" title="3">{
+func (minpq *MinPQ[T]) GetMin() T <span class="cov5" title="24">{
+        if minpq.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MinPQ).GetMin(): Queue is empty ")</span>
         }
-        <span class="cov5" title="21">ret := min.pq[1]
-        swap(min.pq, 1, min.size)
-        min.size--
-        min.sink(1)
+        <span class="cov5" title="21">ret := minpq.pq[1]
+        swap(minpq.pq, 1, minpq.size)
+        minpq.size--
+        minpq.sink(1)
         return ret</span>
 }
 
-func (min *MinPQ[T]) Iterate() []T <span class="cov2" title="3">{
-        return min.pq[1:(min.size + 1)]
+func (minpq *MinPQ[T]) Iterate() []T <span class="cov2" title="3">{
+        return minpq.pq[1:(minpq.size + 1)]
 }</span>
 
 // ===========================
@@ -677,52 +681,52 @@ func NewMaxPQ[T any]() MaxPQ[T] <span class="cov3" title="6">{
         }
 }</span>
 
-func (max *MaxPQ[T]) Size() int <span class="cov6" title="30">{
-        return max.size
+func (maxpq *MaxPQ[T]) Size() int <span class="cov6" title="30">{
+        return maxpq.size
 }</span>
 
-func (max *MaxPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
-        return max.Size() == 0
+func (maxpq *MaxPQ[T]) IsEmpty() bool <span class="cov5" title="15">{
+        return maxpq.Size() == 0
 }</span>
 
-func (max *MaxPQ[T]) swim(k int) <span class="cov6" title="42">{
-        swimGT(max.pq, k)
+func (maxpq *MaxPQ[T]) swim(k int) <span class="cov6" title="42">{
+        swimGT(maxpq.pq, k)
 }</span>
 
-func (max *MaxPQ[T]) sink(k int) <span class="cov5" title="21">{
-        sinkGT(max.pq, k, max.size)
+func (maxpq *MaxPQ[T]) sink(k int) <span class="cov5" title="21">{
+        sinkGT(maxpq.pq, k, maxpq.size)
 }</span>
 
-func (max *MaxPQ[T]) Add(val T) <span class="cov6" title="42">{
-        max.size++
-        if len(max.pq) &gt; max.size </span><span class="cov5" title="21">{
-                max.pq[max.size] = val
+func (maxpq *MaxPQ[T]) Add(val T) <span class="cov6" title="42">{
+        maxpq.size++
+        if len(maxpq.pq) &gt; maxpq.size </span><span class="cov5" title="21">{
+                maxpq.pq[maxpq.size] = val
         }</span> else<span class="cov5" title="21"> {
-                max.pq = append(max.pq, val)
+                maxpq.pq = append(maxpq.pq, val)
         }</span>
-        <span class="cov6" title="42">max.swim(max.size)</span>
+        <span class="cov6" title="42">maxpq.swim(maxpq.size)</span>
 }
 
-func (max *MaxPQ[T]) Max() T <span class="cov4" title="9">{
-        if max.size &lt; 1 </span><span class="cov2" title="3">{
+func (maxpq *MaxPQ[T]) Max() T <span class="cov4" title="9">{
+        if maxpq.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MaxPQ).Max(): Queue is empty ")</span>
         }
-        <span class="cov3" title="6">return max.pq[1]</span>
+        <span class="cov3" title="6">return maxpq.pq[1]</span>
 }
 
-func (max *MaxPQ[T]) GetMax() T <span class="cov5" title="24">{
-        if max.size &lt; 1 </span><span class="cov2" title="3">{
+func (maxpq *MaxPQ[T]) GetMax() T <span class="cov5" title="24">{
+        if maxpq.size &lt; 1 </span><span class="cov2" title="3">{
                 panic("algos.array.(MaxPQ).GetMax(): Queue is empty ")</span>
         }
-        <span class="cov5" title="21">ret := max.pq[1]
-        swap(max.pq, 1, max.size)
-        max.size--
-        max.sink(1)
+        <span class="cov5" title="21">ret := maxpq.pq[1]
+        swap(maxpq.pq, 1, maxpq.size)
+        maxpq.size--
+        maxpq.sink(1)
         return ret</span>
 }
 
-func (max *MaxPQ[T]) Iterate() []T <span class="cov2" title="3">{
-        return max.pq[1:(max.size + 1)]
+func (maxpq *MaxPQ[T]) Iterate() []T <span class="cov2" title="3">{
+        return maxpq.pq[1:(maxpq.size + 1)]
 }</span>
 
 // ===========================
@@ -874,10 +878,113 @@ func (mru *MRU[T]) Set(val T) <span class="cov4" title="9">{
 		
 		<pre class="file" id="file4" style="display: none">package array
 
+import "fmt"
+
+type RingBuff[T any] struct {
+        size int
+        buff []T
+        head int
+        tail int
+}
+
+func NewRingBuff[T any](size int) *RingBuff[T] <span class="cov1" title="1">{
+        return &amp;RingBuff[T]{
+                size: size,
+                buff: make([]T, size),
+                head: 0,
+                tail: 0,
+        }
+}</span>
+
+func (rb *RingBuff[T]) Clear() <span class="cov0" title="0">{
+        var val T
+        rb.head = 0
+        rb.tail = 0
+        rb.buff[0] = val
+}</span>
+
+func (rb *RingBuff[T]) Size() int <span class="cov1" title="1">{
+        return rb.size
+}</span>
+
+func (rb *RingBuff[T]) DataLen() int <span class="cov6" title="5">{
+        switch </span>{
+        case rb.head &lt; rb.tail:<span class="cov1" title="1">
+                return rb.tail - rb.head</span>
+        case rb.head &gt; rb.tail:<span class="cov1" title="1">
+                return rb.size - rb.head + rb.tail</span>
+        default:<span class="cov4" title="3">
+                return 0</span>
+        }
+}
+
+func (rb *RingBuff[T]) Set(val T) <span class="cov10" title="12">{
+        rb.buff[rb.tail] = val
+        rb.tail++
+        if rb.tail == rb.size </span><span class="cov1" title="1">{
+                rb.tail = 0
+        }</span>
+        <span class="cov10" title="12">if rb.tail == rb.head </span><span class="cov0" title="0">{
+                rb.head++
+                if rb.head == rb.size </span><span class="cov0" title="0">{
+                        rb.head = 0
+                }</span>
+        }
+}
+
+func (rb *RingBuff[T]) Get() T <span class="cov10" title="12">{
+        var res T
+        if rb.head == rb.tail </span><span class="cov0" title="0">{
+                return res
+        }</span>
+        <span class="cov10" title="12">res = rb.buff[rb.head]
+        rb.head++
+        if rb.head == rb.size </span><span class="cov1" title="1">{
+                rb.head = 0
+        }</span>
+        <span class="cov10" title="12">return res</span>
+}
+
+func (rb *RingBuff[T]) Change(pos int, val T) <span class="cov0" title="0">{
+        rb.buff[(rb.head+pos)%rb.size] = val
+}</span>
+
+func (rb *RingBuff[T]) Read(pos int) T <span class="cov0" title="0">{
+        return rb.buff[(rb.head+pos)%rb.size]
+}</span>
+
+func (rb *RingBuff[T]) Back() <span class="cov0" title="0">{
+        if rb.tail == rb.head </span><span class="cov0" title="0">{
+                return
+        }</span>
+        <span class="cov0" title="0">rb.tail--
+        if rb.tail &lt; 0 </span><span class="cov0" title="0">{
+                rb.tail = rb.size - 1
+        }</span>
+}
+
+func (rb *RingBuff[T]) Iterate() []T <span class="cov0" title="0">{
+        switch </span>{
+        case rb.head &lt; rb.tail:<span class="cov0" title="0">
+                return rb.buff[rb.head:rb.tail]</span>
+        case rb.head &gt; rb.tail:<span class="cov0" title="0">
+                return append(rb.buff[rb.head:], rb.buff[:rb.tail]...)</span>
+        default:<span class="cov0" title="0">
+                return []T{}</span>
+        }
+}
+
+func (rb *RingBuff[T]) ToString() string <span class="cov3" title="2">{
+        return fmt.Sprintf("%v", rb.buff)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package array
+
 import (
         "math/rand"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
@@ -885,25 +992,25 @@ func Quick3Sort[T any](arr []T) <span class="cov5" title="43">{
         q3sort(arr, 0, len(arr)-1)
 }</span>
 
-func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="291">{
-        if hi &lt;= lo </span><span class="cov6" title="167">{
+func q3sort[T any](arr []T, lo, hi int) <span class="cov7" title="281">{
+        if hi &lt;= lo </span><span class="cov6" title="162">{
                 return
         }</span>
-        <span class="cov6" title="124">l, i, v, g := lo, lo+1, arr[lo], hi
-        for i &lt;= g </span><span class="cov7" title="479">{
+        <span class="cov6" title="119">l, i, v, g := lo, lo+1, arr[lo], hi
+        for i &lt;= g </span><span class="cov7" title="484">{
                 switch </span>{
-                case I.LT(arr[i], v):<span class="cov7" title="234">
+                case I.LT(arr[i], v):<span class="cov7" title="260">
                         swap(arr, l, i)
                         l++
                         i++</span>
-                case I.GT(arr[i], v):<span class="cov7" title="245">
+                case I.GT(arr[i], v):<span class="cov7" title="224">
                         swap(arr, i, g)
                         g--</span>
                 default:<span class="cov0" title="0">
                         i++</span>
                 }
         }
-        <span class="cov6" title="124">q3sort(arr, lo, l-1)
+        <span class="cov6" title="119">q3sort(arr, lo, l-1)
         q3sort(arr, g+1, hi)</span>
 }
 
@@ -939,21 +1046,21 @@ func qsort[T any](arr []T, lo, hi int) <span class="cov6" title="127">{
 
 func pivot[T any](arr []T, lo, hi int) int <span class="cov5" title="42">{
         i, j, v := lo, hi, lo
-        for </span><span class="cov6" title="186">{
+        for </span><span class="cov6" title="210">{
                 for ; I.LT(arr[i], arr[v]); i++ </span><span class="cov0" title="0">{
                         if i == hi </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="186">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
+                <span class="cov6" title="210">for ; I.LT(arr[v], arr[j]); j-- </span><span class="cov8" title="777">{
                         if j == lo </span><span class="cov0" title="0">{
                                 break</span>
                         }
                 }
-                <span class="cov6" title="186">if i &gt;= j </span><span class="cov5" title="42">{
+                <span class="cov6" title="210">if i &gt;= j </span><span class="cov5" title="42">{
                         break</span>
                 }
-                <span class="cov6" title="144">swap(arr, i, j)</span>
+                <span class="cov6" title="168">swap(arr, i, j)</span>
         }
         <span class="cov5" title="42">swap(arr, lo, j)
         return j</span>
@@ -1011,36 +1118,36 @@ func merge[T any](src, dst []T, lo, mid, hi int) <span class="cov3" title="9">{
 func ReverseSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
         mid := alen / 2
-        for i := 0; i &lt; mid; i++ </span><span class="cov5" title="87">{
-                min := i
-                max := i
+        for i := range mid </span><span class="cov5" title="87">{
+                minidx := i
+                maxidx := i
                 for j := 1 + i; j &lt; (alen - i); j++ </span><span class="cov8" title="635">{
-                        if I.LT(arr[j], arr[min]) </span><span class="cov0" title="0">{
-                                min = j
+                        if I.LT(arr[j], arr[minidx]) </span><span class="cov0" title="0">{
+                                minidx = j
                         }</span>
-                        <span class="cov8" title="635">if I.GT(arr[j], arr[max]) </span><span class="cov8" title="635">{
-                                max = j
+                        <span class="cov8" title="635">if I.GT(arr[j], arr[maxidx]) </span><span class="cov8" title="635">{
+                                maxidx = j
                         }</span>
                 }
-                <span class="cov5" title="87">if (max == i) &amp;&amp; (min == (alen - 1 - i)) </span><span class="cov0" title="0">{
-                        swap(arr, min, max)
+                <span class="cov5" title="87">if (maxidx == i) &amp;&amp; (minidx == (alen - 1 - i)) </span><span class="cov0" title="0">{
+                        swap(arr, minidx, maxidx)
                 }</span> else<span class="cov5" title="87"> {
-                        swap(arr, min, i)
-                        swap(arr, max, alen-1-i)
+                        swap(arr, minidx, i)
+                        swap(arr, maxidx, alen-1-i)
                 }</span>
         }
 }
 
 func SelectSort[T any](arr []T) <span class="cov5" title="43">{
         alen := len(arr)
-        for i := 0; i &lt; alen; i++ </span><span class="cov6" title="203">{
-                min := i
+        for i := range alen </span><span class="cov6" title="203">{
+                minidx := i
                 for j := i + 1; j &lt; alen; j++ </span><span class="cov8" title="1183">{
-                        if I.LT(arr[j], arr[min]) </span><span class="cov0" title="0">{
-                                min = j
+                        if I.LT(arr[j], arr[minidx]) </span><span class="cov0" title="0">{
+                                minidx = j
                         }</span>
                 }
-                <span class="cov6" title="203">swap(arr, i, min)</span>
+                <span class="cov6" title="203">swap(arr, i, minidx)</span>
         }
 }
 
@@ -1067,10 +1174,10 @@ func ShellSort[T any](arr []T) <span class="cov5" title="43">{
 func InsertSort[T any](arr []T) <span class="cov6" title="122">{
         alen := len(arr)
         for i := 1; i &lt; alen; i++ </span><span class="cov7" title="480">{
-                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1585">{
-                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1246">{
+                for j := i; j &gt; 0; j-- </span><span class="cov9" title="1562">{
+                        if I.LT(arr[j], arr[j-1]) </span><span class="cov8" title="1217">{
                                 swap(arr, j, j-1)
-                        }</span> else<span class="cov7" title="339"> {
+                        }</span> else<span class="cov7" title="345"> {
                                 break</span>
                         }
                 }
@@ -1135,7 +1242,7 @@ func swap[T any](arr []T, i, j int) <span class="cov10" title="3308">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package array
+		<pre class="file" id="file6" style="display: none">package array
 
 // ===========================
 type Bag[T any] struct {
@@ -1255,11 +1362,75 @@ func (q *Queue[T]) Reverse() <span class="cov1" title="1">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package graph
+		<pre class="file" id="file7" style="display: none">package graph
+
+type Graph[V comparable] struct {
+        graph     map[V][]V
+        isVisited map[V]struct{}
+        buf       []V
+        isBFS     bool
+}
+
+func NewGraph[V comparable]() *Graph[V] <span class="cov0" title="0">{
+        //
+        return &amp;Graph[V]{
+                graph:     make(map[V][]V),
+                isVisited: make(map[V]struct{}),
+                buf:       make([]V, 0, 8),
+        }
+}</span>
+
+func (g *Graph[V]) bufin(val V) <span class="cov0" title="0">{
+        g.buf = append(g.buf, val)
+}</span>
+
+func (g *Graph[V]) bufout() *V <span class="cov0" title="0">{
+        if len(g.buf) &gt; 0 </span><span class="cov0" title="0">{
+                if g.isBFS </span><span class="cov0" title="0">{
+                        head := g.buf[0]
+                        g.buf = g.buf[1:]
+                        return &amp;head
+                }</span> else<span class="cov0" title="0"> {
+                        last := len(g.buf) - 1
+                        tail := g.buf[last]
+                        g.buf = g.buf[:last]
+                        return &amp;tail
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (g *Graph[V]) StartSearch(startVert, endVert V, isBFS bool) bool <span class="cov0" title="0">{
+        var void struct{}
+        g.isBFS = isBFS
+
+        g.isVisited[startVert] = void
+        g.bufin(startVert)
+        for len(g.buf) != 0 </span><span class="cov0" title="0">{
+                vert := g.bufout()
+                if vert == nil </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+                <span class="cov0" title="0">edges := g.graph[*vert]
+                for _, svert := range edges </span><span class="cov0" title="0">{
+                        if _, ok := g.isVisited[svert]; !ok </span><span class="cov0" title="0">{
+                                g.isVisited[svert] = void
+                                g.bufin(svert)
+                        }</span>
+                }
+                <span class="cov0" title="0">if _, ok := g.isVisited[endVert]; ok </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+        }
+        <span class="cov0" title="0">return false</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package graph
 
 import (
-        "github.com/kselnaag/algos/amath"
-        "github.com/kselnaag/algos/array"
+        "algos/amath"
+        "algos/array"
 )
 
 type UF struct {
@@ -1323,13 +1494,13 @@ func (uf *UF) Size() int <span class="cov3" title="3">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package list
+		<pre class="file" id="file9" style="display: none">package list
 
 import (
         "sync/atomic"
         "time"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 const maxUint8 int = (1 &lt;&lt; 8)
@@ -1407,7 +1578,7 @@ func (c *Cache3A[K, V]) IterateLongKeys() []K <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package list
+		<pre class="file" id="file10" style="display: none">package list
 
 func Map[T1, T2 any](root *Snode[T1], fnc func(T1) T2) *Snode[T2] <span class="cov5" title="6">{
         var res, ptr *Snode[T2]
@@ -1515,7 +1686,7 @@ func Reverse[T any](first *Snode[T]) *Snode[T] <span class="cov5" title="6">{
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package list
+		<pre class="file" id="file11" style="display: none">package list
 
 import (
         "fmt"
@@ -1526,7 +1697,7 @@ import (
 // If the number of K-V pairs is more than 2^16*10 (655 360) it seems you should use some other tool.
 
 const (
-        MAXUINT16  int = (1 &lt;&lt; 16)
+        MAXUINT16  int = (1 &lt;&lt; 16) //nolint:mnd // max val const
         STARTBCKTS int = 10
         GROWCOEFF  int = 5
         GROWCOND   int = 10
@@ -1581,9 +1752,8 @@ func (hm *HMap[K, V]) convToBytes(key K) []byte <span class="cov8" title="225">{
 
 func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov8" title="225">{
         var hash uint32 = 5381
-        mlen := len(data)
-        for i := 0; i &lt; mlen; i++ </span><span class="cov9" title="409">{
-                hash = ((hash &lt;&lt; 5) + hash) ^ uint32(data[i])
+        for i := range len(data) </span><span class="cov9" title="409">{
+                hash = ((hash &lt;&lt; 5) + hash) ^ uint32(data[i]) //nolint:mnd // cryptostuff
         }</span>
         <span class="cov8" title="225">return hash</span>
 }
@@ -1591,7 +1761,8 @@ func (hm *HMap[K, V]) hashDJB2a(data []byte) uint32 <span class="cov8" title="22
 func (hm *HMap[K, V]) hashFromKey(key K) int <span class="cov8" title="225">{
         bytesarr := hm.convToBytes(key)
         hash := hm.hashDJB2a(bytesarr)
-        return int(hash&amp;0x0000ffff) % hm.bktsnum
+        var mask uint32 = 0x0000ffff
+        return int(hash&amp;mask) % hm.bktsnum
 }</span>
 
 func (hm *HMap[K, V]) evacuate() <span class="cov1" title="1">{
@@ -1710,7 +1881,7 @@ func (hm *HMap[K, V]) PrintAll() <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package list
+		<pre class="file" id="file12" style="display: none">package list
 
 type Snode[T any] struct {
         Val  T
@@ -1958,14 +2129,15 @@ func (d *Deque[T]) Reverse() <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package sync
+		<pre class="file" id="file13" style="display: none">package sync
 
 import (
         "errors"
+        "fmt"
         "sync"
         "time"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 // ====================
@@ -1976,9 +2148,15 @@ type Future[F any] struct {
         cpl  bool
 }
 
+var errFuture error = errors.New("Future[F any] error")
+
+func FutureError(msg string) error <span class="cov8" title="7">{
+        return fmt.Errorf("%w: %s", errFuture, msg)
+}</span>
+
 func NewFuture[F any](fn func() I.Result[F]) Future[F] <span class="cov7" title="5">{
         future := Future[F]{
-                val:  I.NewResultError[F](errors.New("algos.types.(Future): callback is timed out")),
+                val:  I.NewResultError[F](FutureError("callback is timed out")),
                 ch:   make(chan I.Result[F]),
                 once: new(sync.Once),
                 cpl:  false,
@@ -2050,13 +2228,13 @@ func (pro *Promise[P]) OnComplete(fn func(I.Result[P])) <span class="cov3" title
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package tree
+		<pre class="file" id="file14" style="display: none">package tree
 
 import (
         "fmt"
 
-        "github.com/kselnaag/algos/amath"
-        I "github.com/kselnaag/algos/types"
+        "algos/amath"
+        I "algos/types"
 )
 
 // right-linear Arne Andersson tree with intensive node deletion
@@ -2194,9 +2372,9 @@ func (tm *AAmap[K, V]) del(node *AAnode[K, V], key K) *AAnode[K, V] <span class=
                 <span class="cov3" title="5">if node.R == nil </span><span class="cov1" title="1">{
                         return node.L
                 }</span>
-                <span class="cov3" title="4">min := tm.min(node.R)
-                node.Key = min.Key
-                node.Val = min.Val
+                <span class="cov3" title="4">minnode := tm.min(node.R)
+                node.Key = minnode.Key
+                node.Val = minnode.Val
                 node.R = tm.delmin(node.R)</span>
         }
         <span class="cov4" title="8">return tm.balanceDel(node)</span>
@@ -2283,23 +2461,24 @@ func (tm *AAmap[K, V]) PrintTreeCheck() <span class="cov2" title="2">{
 
 func (tm *AAmap[K, V]) printtree(node *AAnode[K, V], n int) <span class="cov7" title="34">{
         if node != nil </span><span class="cov6" title="16">{
-                tm.printtree(node.R, n+5)
+                margin := 5
+                tm.printtree(node.R, n+margin)
                 for i := 0; i &lt; n; i++ </span><span class="cov10" title="140">{
                         fmt.Printf(" ")
                 }</span>
                 <span class="cov6" title="16">fmt.Printf("%v^%v:%v\n", node.Lvl, node.Key, node.Val)
-                tm.printtree(node.L, n+5)</span>
+                tm.printtree(node.L, n+margin)</span>
         }
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package tree
+		<pre class="file" id="file15" style="display: none">package tree
 
 import (
         "fmt"
         "math"
 
-        I "github.com/kselnaag/algos/types"
+        I "algos/types"
 )
 
 // tree based Priority Queue
@@ -2322,42 +2501,42 @@ func NewMinPQ[K I.Ord, V any]() MinPQ[K, V] <span class="cov0" title="0">{
         }
 }</span>
 
-func (min *MinPQ[K, V]) Size() int <span class="cov0" title="0">{
-        return min.size
+func (minpq *MinPQ[K, V]) Size() int <span class="cov0" title="0">{
+        return minpq.size
 }</span>
 
-func (min *MinPQ[K, V]) IsEmpty() bool <span class="cov0" title="0">{
-        return min.Size() == 0
+func (minpq *MinPQ[K, V]) IsEmpty() bool <span class="cov0" title="0">{
+        return minpq.Size() == 0
 }</span>
 
-func (min *MinPQ[K, V]) Add(key K, val V) <span class="cov0" title="0">{
-        if min.IsEmpty() </span><span class="cov0" title="0">{
-                min.root = &amp;PQnode[K, V]{Key: key, Val: val, P: nil, L: nil, R: nil}
-                min.root.P = min.root
+func (minpq *MinPQ[K, V]) Add(key K, val V) <span class="cov0" title="0">{
+        if minpq.IsEmpty() </span><span class="cov0" title="0">{
+                minpq.root = &amp;PQnode[K, V]{Key: key, Val: val, P: nil, L: nil, R: nil}
+                minpq.root.P = minpq.root
         }</span> else<span class="cov0" title="0"> {
-                nodePar := min.lastRightNodePar(min.root.P)
+                nodePar := minpq.lastRightNodePar(minpq.root.P)
                 node := &amp;PQnode[K, V]{Key: key, Val: val, P: nodePar, L: nil, R: nil}
                 if nodePar.L == nil </span><span class="cov0" title="0">{
                         nodePar.L = node
                 }</span> else<span class="cov0" title="0"> {
                         nodePar.R = node
                 }</span>
-                <span class="cov0" title="0">min.root.P = node
-                min.swimNode(node)</span>
+                <span class="cov0" title="0">minpq.root.P = node
+                minpq.swimNode(node)</span>
         }
-        <span class="cov0" title="0">min.size++</span>
+        <span class="cov0" title="0">minpq.size++</span>
 }
 
-func (min *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
         if lastnode == nil </span><span class="cov0" title="0">{
                 return nil
         }</span>
-        <span class="cov0" title="0">if lastnode == min.root </span><span class="cov0" title="0">{
-                return min.root
+        <span class="cov0" title="0">if lastnode == minpq.root </span><span class="cov0" title="0">{
+                return minpq.root
         }</span>
         <span class="cov0" title="0">node := lastnode.P
         if lastnode == node.R </span><span class="cov0" title="0">{
-                for (node != min.root) &amp;&amp; (lastnode == node.R) </span><span class="cov0" title="0">{
+                for (node != minpq.root) &amp;&amp; (lastnode == node.R) </span><span class="cov0" title="0">{
                         lastnode = node
                         node = node.P
                 }</span>
@@ -2371,59 +2550,59 @@ func (min *MinPQ[K, V]) lastRightNodePar(lastnode *PQnode[K, V]) *PQnode[K, V] <
         <span class="cov0" title="0">return node</span>
 }
 
-func (min *MinPQ[K, V]) swapNode(i, j *PQnode[K, V]) <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) swapNode(i, j *PQnode[K, V]) <span class="cov0" title="0">{
         i.Key, i.Val, j.Key, j.Val = j.Key, j.Val, i.Key, i.Val
 }</span>
 
-func (min *MinPQ[K, V]) swimNode(node *PQnode[K, V]) <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) swimNode(node *PQnode[K, V]) <span class="cov0" title="0">{
         if (node == nil) || (node.P == nil) </span><span class="cov0" title="0">{
                 return
         }</span>
-        <span class="cov0" title="0">for (node != min.root) &amp;&amp; I.LT(node.Key, node.P.Key) </span><span class="cov0" title="0">{
-                min.swapNode(node, node.P)
+        <span class="cov0" title="0">for (node != minpq.root) &amp;&amp; I.LT(node.Key, node.P.Key) </span><span class="cov0" title="0">{
+                minpq.swapNode(node, node.P)
                 node = node.P
         }</span>
 }
 
-func (min *MinPQ[K, V]) Min() (key K, val V) <span class="cov0" title="0">{
-        return min.root.Key, min.root.Val
+func (minpq *MinPQ[K, V]) Min() (key K, val V) <span class="cov0" title="0">{
+        return minpq.root.Key, minpq.root.Val
 }</span>
 
-func (min *MinPQ[K, V]) DelMin() (key K, val V) <span class="cov0" title="0">{
-        if min.IsEmpty() </span><span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) DelMin() (key K, val V) <span class="cov0" title="0">{
+        if minpq.IsEmpty() </span><span class="cov0" title="0">{
                 panic("algos.tree.(MinPQ).DelMin(): No any node found, tree is empty")</span>
         }
-        <span class="cov0" title="0">key, val = min.root.Key, min.root.Val
-        if min.size == 1 </span><span class="cov0" title="0">{
-                min.root = nil
-                min.size--
+        <span class="cov0" title="0">key, val = minpq.root.Key, minpq.root.Val
+        if minpq.size == 1 </span><span class="cov0" title="0">{
+                minpq.root = nil
+                minpq.size--
                 return key, val
         }</span>
-        <span class="cov0" title="0">node := min.lastLeftNode(min.root.P)
-        min.swapNode(min.root.P, min.root)
-        if min.root.P.P.R == nil </span><span class="cov0" title="0">{
-                min.root.P.P.L = nil
+        <span class="cov0" title="0">node := minpq.lastLeftNode(minpq.root.P)
+        minpq.swapNode(minpq.root.P, minpq.root)
+        if minpq.root.P.P.R == nil </span><span class="cov0" title="0">{
+                minpq.root.P.P.L = nil
         }</span> else<span class="cov0" title="0"> {
-                min.root.P.P.R = nil
+                minpq.root.P.P.R = nil
         }</span>
-        <span class="cov0" title="0">min.root.P = node
-        min.sinkNode(min.root)
-        min.size--
+        <span class="cov0" title="0">minpq.root.P = node
+        minpq.sinkNode(minpq.root)
+        minpq.size--
         return key, val</span>
 }
 
-func (min *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] <span class="cov0" title="0">{
         if lastnode == nil </span><span class="cov0" title="0">{
                 return nil
         }</span>
-        <span class="cov0" title="0">if lastnode == min.root </span><span class="cov0" title="0">{
+        <span class="cov0" title="0">if lastnode == minpq.root </span><span class="cov0" title="0">{
                 return nil
         }</span>
         <span class="cov0" title="0">node := lastnode.P
         if lastnode != node.L </span><span class="cov0" title="0">{
                 return node.L
         }</span> else<span class="cov0" title="0"> {
-                for (node != min.root) &amp;&amp; (lastnode == node.L) </span><span class="cov0" title="0">{
+                for (node != minpq.root) &amp;&amp; (lastnode == node.L) </span><span class="cov0" title="0">{
                         lastnode = node
                         node = node.P
                 }</span>
@@ -2437,30 +2616,30 @@ func (min *MinPQ[K, V]) lastLeftNode(lastnode *PQnode[K, V]) *PQnode[K, V] <span
         <span class="cov0" title="0">return node</span>
 }
 
-func (min *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) <span class="cov0" title="0">{
         for </span><span class="cov0" title="0">{
-                if (node == nil) || ((node.L == nil) &amp;&amp; (node.R == nil)) </span><span class="cov0" title="0">{
+                if (node == nil) || ((node.L == nil) &amp;&amp; (node.R == nil)) </span><span class="cov0" title="0">{ //nolint:staticcheck // in case of consistency
                         break</span>
                 }
                 <span class="cov0" title="0">if (node.R == nil) &amp;&amp; (node.L != nil) &amp;&amp; I.GT(node.Key, node.L.Key) </span><span class="cov0" title="0">{
-                        min.swapNode(node, node.L)
+                        minpq.swapNode(node, node.L)
                         node = node.L
                         continue</span>
                 }
                 <span class="cov0" title="0">if (node.L == nil) &amp;&amp; (node.R != nil) &amp;&amp; I.GT(node.Key, node.R.Key) </span><span class="cov0" title="0">{
-                        min.swapNode(node, node.R)
+                        minpq.swapNode(node, node.R)
                         node = node.R
                         continue</span>
                 }
                 <span class="cov0" title="0">if I.GT(node.L.Key, node.R.Key) </span><span class="cov0" title="0">{
-                        min.swapNode(node.L, node.R)
+                        minpq.swapNode(node.L, node.R)
                 }</span>
                 <span class="cov0" title="0">if I.GT(node.Key, node.L.Key) </span><span class="cov0" title="0">{
-                        min.swapNode(node, node.L)
+                        minpq.swapNode(node, node.L)
                         node = node.L
                         continue</span>
                 } else<span class="cov0" title="0"> if I.GT(node.Key, node.R.Key) </span><span class="cov0" title="0">{
-                        min.swapNode(node, node.R)
+                        minpq.swapNode(node, node.R)
                         node = node.R
                         continue</span>
                 }
@@ -2468,40 +2647,41 @@ func (min *MinPQ[K, V]) sinkNode(node *PQnode[K, V]) <span class="cov0" title="0
         }
 }
 
-func (min *MinPQ[K, V]) Iterate() []K <span class="cov0" title="0">{
-        keysarr := make([]K, 0, min.Size())
-        return min.iterate(min.root, keysarr)
+func (minpq *MinPQ[K, V]) Iterate() []K <span class="cov0" title="0">{
+        keysarr := make([]K, 0, minpq.Size())
+        return minpq.iterate(minpq.root, keysarr)
 }</span>
 
-func (min *MinPQ[K, V]) iterate(node *PQnode[K, V], keysarr []K) []K <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) iterate(node *PQnode[K, V], keysarr []K) []K <span class="cov0" title="0">{
         if node == nil </span><span class="cov0" title="0">{
                 return keysarr
         }</span>
         <span class="cov0" title="0">keysarr = append(keysarr, node.Key)
-        keysarr = min.iterate(node.L, keysarr)
-        keysarr = min.iterate(node.R, keysarr)
+        keysarr = minpq.iterate(node.L, keysarr)
+        keysarr = minpq.iterate(node.R, keysarr)
         return keysarr</span>
 }
 
-func (min *MinPQ[K, V]) HeightTreeCheck() int <span class="cov0" title="0">{
-        if min.IsEmpty() </span><span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) HeightTreeCheck() int <span class="cov0" title="0">{
+        if minpq.IsEmpty() </span><span class="cov0" title="0">{
                 return 0
         }</span>
-        <span class="cov0" title="0">sqrt := math.Sqrt(float64(min.size))
+        <span class="cov0" title="0">sqrt := math.Sqrt(float64(minpq.size))
         return int(math.Ceil(sqrt))</span>
 }
 
-func (min *MinPQ[K, V]) IsCompleteBTcheck() bool <span class="cov0" title="0">{
-        return min.iscompleteBTcheck(min.root, min.Size())
+func (minpq *MinPQ[K, V]) IsCompleteBTcheck() bool <span class="cov0" title="0">{
+        return minpq.iscompleteBTcheck(minpq.root, minpq.Size())
 }</span>
 
-func (min *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool <span class="cov0" title="0">{
         if node == nil </span><span class="cov0" title="0">{
                 return true
         }</span>
         <span class="cov0" title="0">sqrt := math.Sqrt(float64(size))
         CBTlvl := math.Ceil(sqrt)
-        maxCBTsize := int(math.Pow(2, CBTlvl))
+        base := 2.0
+        maxCBTsize := int(math.Pow(base, CBTlvl))
         arr := make([]*PQnode[K, V], maxCBTsize)
         arr[1] = node
         for i := 1; i &lt; maxCBTsize; i++ </span><span class="cov0" title="0">{
@@ -2520,21 +2700,22 @@ func (min *MinPQ[K, V]) iscompleteBTcheck(node *PQnode[K, V], size int) bool <sp
         <span class="cov0" title="0">return true</span>
 }
 
-func (min *MinPQ[K, V]) PrintTreeCheck() <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) PrintTreeCheck() <span class="cov0" title="0">{
         fmt.Printf("\n")
         fmt.Printf("&lt;- left rotated tree pic &lt;-\n")
-        min.printtree(min.root, 0)
+        minpq.printtree(minpq.root, 0)
         fmt.Printf("=============================\n\n")
 }</span>
 
-func (min *MinPQ[K, V]) printtree(node *PQnode[K, V], n int) <span class="cov0" title="0">{
+func (minpq *MinPQ[K, V]) printtree(node *PQnode[K, V], n int) <span class="cov0" title="0">{
         if node != nil </span><span class="cov0" title="0">{
-                min.printtree(node.R, n+5)
-                for i := 0; i &lt; n; i++ </span><span class="cov0" title="0">{
+                margin := 5
+                minpq.printtree(node.R, n+margin)
+                for range n </span><span class="cov0" title="0">{
                         fmt.Printf(" ")
                 }</span>
                 <span class="cov0" title="0">fmt.Printf("%v:%v\n", node.Key, node.Val)
-                min.printtree(node.L, n+5)</span>
+                minpq.printtree(node.L, n+margin)</span>
         }
 }
 
@@ -2549,13 +2730,13 @@ CompleteBTCheck HeightTreeCheck PrintTreeCheck printtree
 // ===========================
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package tree
+		<pre class="file" id="file16" style="display: none">package tree
 
 import (
         "fmt"
 
-        "github.com/kselnaag/algos/amath"
-        I "github.com/kselnaag/algos/types"
+        "algos/amath"
+        I "algos/types"
 )
 
 // left-linear red-black tree with lazy node deletion
@@ -2742,17 +2923,17 @@ func (tm *RBmap[K, V]) IsBSTcheck() bool <span class="cov2" title="2">{
         return tm.isbst(tm.root, nil, nil)
 }</span>
 
-func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], min, max *K) bool <span class="cov8" title="42">{
+func (tm *RBmap[K, V]) isbst(node *RBnode[K, V], kmin, kmax *K) bool <span class="cov8" title="42">{
         if node == nil </span><span class="cov7" title="22">{
                 return true
         }</span>
-        <span class="cov6" title="20">if (min != nil) &amp;&amp; (node.Key &lt;= *min) </span><span class="cov0" title="0">{
+        <span class="cov6" title="20">if (kmin != nil) &amp;&amp; (node.Key &lt;= *kmin) </span><span class="cov0" title="0">{
                 return false
         }</span>
-        <span class="cov6" title="20">if (max != nil) &amp;&amp; (node.Key &gt;= *max) </span><span class="cov0" title="0">{
+        <span class="cov6" title="20">if (kmax != nil) &amp;&amp; (node.Key &gt;= *kmax) </span><span class="cov0" title="0">{
                 return false
         }</span>
-        <span class="cov6" title="20">return tm.isbst(node.L, min, &amp;node.Key) &amp;&amp; tm.isbst(node.R, &amp;node.Key, max)</span>
+        <span class="cov6" title="20">return tm.isbst(node.L, kmin, &amp;node.Key) &amp;&amp; tm.isbst(node.R, &amp;node.Key, kmax)</span>
 }
 
 func (tm *RBmap[K, V]) BSTheightCheck() int <span class="cov2" title="2">{
@@ -2814,7 +2995,8 @@ func (tm *RBmap[K, V]) PrintTreeCheck() <span class="cov1" title="1">{
 
 func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" title="21">{
         if node != nil </span><span class="cov5" title="10">{
-                tm.printtree(node.R, n+5)
+                margin := 5
+                tm.printtree(node.R, n+margin)
                 for i := 0; i &lt; n; i++ </span><span class="cov10" title="95">{
                         fmt.Printf(" ")
                 }</span>
@@ -2829,12 +3011,12 @@ func (tm *RBmap[K, V]) printtree(node *RBnode[K, V], n int) <span class="cov7" t
                         }</span>
                 }
                 <span class="cov5" title="10">fmt.Printf("%v:%v\n", node.Key, node.Val)
-                tm.printtree(node.L, n+5)</span>
+                tm.printtree(node.L, n+margin)</span>
         }
 }
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package types
+		<pre class="file" id="file17" style="display: none">package types
 
 import "fmt"
 
@@ -3100,14 +3282,14 @@ func EQ[T any](i, j T) bool <span class="cov10" title="12">{
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package types
+		<pre class="file" id="file18" style="display: none">package types
 
 import (
         "fmt"
 )
 
 type STOrd interface {
-        CompareTo(STOrd) int
+        CompareTo(st STOrd) int
 }
 
 type Comp interface {
